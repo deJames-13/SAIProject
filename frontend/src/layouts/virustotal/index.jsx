@@ -29,9 +29,11 @@ export default function VirusTotal() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDTabs tabs={tabs}>
+      <MDBox height="100vh">
+        <MDTabs tabs={tabs}>
 
-      </MDTabs>
+        </MDTabs>
+      </MDBox>
       <Footer />
     </DashboardLayout>
   );
