@@ -24,6 +24,8 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+
+.pytest_cache
 commit.sh
 .env
 venv
