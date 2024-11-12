@@ -30,11 +30,11 @@ ALLOWED_HOSTS = [
 ]
 # Application definition
 THIRD_PARTY_APPS = [
-    'material',
-    'material.admin',
+    # 'material',
+    # 'material.admin',
 ]
 DJANGO_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

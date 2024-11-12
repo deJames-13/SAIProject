@@ -29,6 +29,11 @@ import Tables from "layouts/tables";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
+// Import chart components
+import PieChartComponent from "components/Charts/PieChartComponent";
+import BarChartComponent from "components/Charts/BarChartComponent";
+import LineChartComponent from "components/Charts/LineChartComponent";
+
 export const dashboardRoutes = [
   {
     type: "collapse",
@@ -77,5 +82,29 @@ export const dashboardRoutes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    name: "Pie Chart",
+    key: "pie-chart",
+    icon: <Icon>pie_chart</Icon>,
+    route: "/charts/pie",
+    component: <PieChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Bar Chart",
+    key: "bar-chart",
+    icon: <Icon>bar_chart</Icon>,
+    route: "/charts/bar",
+    component: <BarChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Line Chart",
+    key: "line-chart",
+    icon: <Icon>show_chart</Icon>,
+    route: "/charts/line",
+    component: <LineChartComponent />,
   },
 ];

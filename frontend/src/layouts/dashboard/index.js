@@ -21,6 +21,10 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import Projects from "layouts/dashboard/components/Projects";
 
+import PieChartComponent from "components/Charts/PieChartComponent";
+import BarChartComponent from "components/Charts/BarChartComponent";
+import LineChartComponent from "components/Charts/LineChartComponent";
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
@@ -136,6 +140,52 @@ function Dashboard() {
             </Grid>
           </Grid>
         </MDBox>
+
+        {/* Charts Overview */}
+        <MDBox mt={4.5}>
+          <Grid container spacing={3}>
+            {/* Bar Chart */}
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <BarChartComponent
+                  color="info"
+                  title="Website Views"
+                  description="Last Campaign Performance"
+                  date="Campaign sent 2 days ago"
+                />
+              </MDBox>
+            </Grid>
+
+            {/* Line Chart */}
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <LineChartComponent
+                  color="success"
+                  title="Daily Sales"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase in today's sales.
+                    </>
+                  }
+                  date="Updated 4 minutes ago"
+                />
+              </MDBox>
+            </Grid>
+
+            {/* Pie Chart */}
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <PieChartComponent
+                  color="dark"
+                  title="VirusTotal Status"
+                  description="Distribution of VirusTotal statuses"
+                  date="Updated 1 hour ago"
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+
 
         {/* Progress Overview */}
         <MDBox>
