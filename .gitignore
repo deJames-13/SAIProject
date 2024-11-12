@@ -28,4 +28,4 @@ commit.sh
 .env
 venv
 *.lock
-
+.code-workspace

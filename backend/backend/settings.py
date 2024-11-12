@@ -19,9 +19,8 @@ getEnv = os.getenv
 
 SECRET_KEY =  getEnv('SECRET_KEY')
 DEBUG = getEnv('DEBUG')
-
-
-
+VIRUSTOTAL_API = getEnv('VIRUSTOTAL_API')
+VIRUSTOTAL_URL = getEnv('VIRUSTOTAL_URL')
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +42,7 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api',
+    'virustotal',
 ]
 
 

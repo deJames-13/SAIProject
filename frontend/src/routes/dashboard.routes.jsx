@@ -21,10 +21,8 @@ import Dashboard from "layouts/dashboard";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import Tables from "layouts/tables";
+import VirusTotal from "layouts/virustotal";
 
-// Useless
-// import Billing from "layouts/billing";
-// import RTL from "layouts/rtl";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -45,12 +43,20 @@ export const dashboardRoutes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    name: "Virus Total",
+    key: "virus-total",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/virus-total",
+    component: <VirusTotal />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Tables",
+  //   key: "tables",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/tables",
+  //   component: <Tables />,
+  // },
   {
     type: "collapse",
     name: "Notifications",
