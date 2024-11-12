@@ -26,11 +26,6 @@ class VirusTotalService:
             data = response.get("data")
             if data.get("id"):
                 data['analyses'] = self.get_url_report(data.get("id"))
-            
-            # clear console
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print(f"Getting report for scan ID: {data}")
-            
             return data
         else:
             print(f"An error occurred: {response.status_code} - {response.text}")
