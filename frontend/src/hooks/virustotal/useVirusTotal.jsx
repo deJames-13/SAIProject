@@ -1,3 +1,4 @@
+import useNotification from 'hooks/notifications/useNotification';
 import { useEffect, useState } from 'react';
 
 
@@ -8,6 +9,8 @@ import {
 
 
 const useVirusTotal = () => {
+    const { showNotification, renderNotifications } = useNotification();
+
     const [url, setUrl] = useState('');
     const [id, setId] = useState('');
     const [data, setData] = useState(null);
@@ -16,26 +19,37 @@ const useVirusTotal = () => {
     const [status, setStatus] = useState();
 
     const handleGetData = (id) => {
+        setStatus("Scan finished. Getting data...");
         if (id) {
             getData(id).unwrap().then(({ data }) => {
                 setData(data);
+                setStatus("Data fetched successfully.");
             });
         }
     }
 
     const handleScan = (id) => {
-
         console.clear()
-        // let a = JSON.parse(localStorage.getItem('data'))
-        // console.log(a)
-        // setData(a);
-
-        scanUrl(url).unwrap().then(data => {
-            const { id = null } = data
-            setId(id);
-            handleGetData(id);
-        });
+        let a = JSON.parse(localStorage.getItem('data'))
+        console.log(a)
+        setData(a);
+        // setStatus("Scanning...");
+        // scanUrl(url).unwrap().then(data => {
+        //     const { id = null } = data
+        //     setId(id);
+        //     handleGetData(id);
+        // });
     };
+
+    useEffect(() => {
+        if (status) {
+            showNotification(
+                "info",
+                "notifications",
+                "Scan Status: " + status
+            );
+        }
+    }, [status]);
 
     return {
         url,
@@ -44,6 +58,7 @@ const useVirusTotal = () => {
         handleScan,
         status,
         setStatus,
+        renderNotifications
     }
 
 

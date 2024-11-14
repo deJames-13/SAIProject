@@ -38,7 +38,7 @@ export const dashboardRoutes = [
   },
   {
     type: "collapse",
-    name: "Threat Hunting",
+    name: "Threat Intelligence",
     key: "threats",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/threats",

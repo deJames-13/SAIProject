@@ -1,31 +1,21 @@
 import { Button, TextField } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
-import useNotification from 'hooks/notifications/useNotification';
 import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import React, { useEffect } from 'react';
 import AnalysesTable from './scan-table';
 
 
 export default function Scan() {
-  const { showNotification, renderNotifications } = useNotification();
   const {
     url,
     setUrl,
     handleScan,
     data,
-    status
+    renderNotifications
   } = useVirusTotal();
 
-  useEffect(() => {
-    if (status) {
-      showNotification(
-        "info",
-        "notifications",
-        "Scan Status: " + status.toUpperCase(),
-      );
-    }
-  }, [status]);
+
 
 
   return (

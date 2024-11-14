@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
 ]
 # Application definition
 THIRD_PARTY_APPS = [
+    'rest_framework',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -136,11 +137,11 @@ CORS_ALLOW_CREDENTIALS = True
 # Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10

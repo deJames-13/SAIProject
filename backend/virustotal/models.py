@@ -2,37 +2,19 @@ from django.db import models
 
 # Create your models here.
 
-# Reports
-# class Report(models.Model):
-#     id = models.CharField(max_length=200)
-#     status = models.CharField(max_length=200)
-#     results = models.JSONField()
-#     harmless = models.IntegerField()
-#     malicious = models.IntegerField()
-#     suspicious = models.IntegerField()
-#     undetected = models.IntegerField()
-#     timeout = models.IntegerField()
-#     date = models.DateTimeField()
-#     url = models.URLField()
-
-#     def __str__(self):
-#         return
+# Saved Urls model
+class UrlReports(models.Model):
+    id = models.AutoField(primary_key=True)
+    url = models.TextField(unique=True)
+    scan_id = models.CharField(max_length=200)
+    title = models.TextField()
+    description = models.TextField()
+    reputation = models.TextField()
+    votes = models.JSONField()
+    times_submitted = models.IntegerField()
+    last_analysis_stats = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     
-# Historical Reports
-# class HistoricalReport(models.Model):
-#     id = models.CharField(max_length=200)
-#     harmless = models.IntegerField()
-#     malicious = models.IntegerField()
-#     suspicious = models.IntegerField()
-#     undetected = models.IntegerField()
-#     timeout = models.IntegerField()
-#     url = models.URLField()
-#     analyses_url = models.URLField()
-#     date = models.DateTimeField()
-#     timestamp = models.DateTimeField(auto_now_add=True)
-    
-#     def __str__(self):
-#         return
-    
-    
+    def __str__(self):
+        return self.scan_id
     

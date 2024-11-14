@@ -1,6 +1,9 @@
 import requests
 import os
+
 from django.conf import settings
+from .models import UrlReports
+from .serializers import UrlReportsSerializer
 
 API_KEY = settings.VIRUSTOTAL_API
 BASE_URL = settings.VIRUSTOTAL_URL
@@ -44,5 +47,4 @@ class VirusTotalService:
         else:
             print(f"An error occurred: {response.status_code} - {response.text}")
             return None
-
 
