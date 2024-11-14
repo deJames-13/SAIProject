@@ -19,9 +19,8 @@ getEnv = os.getenv
 
 SECRET_KEY =  getEnv('SECRET_KEY')
 DEBUG = getEnv('DEBUG')
-
-
-
+VIRUSTOTAL_API = getEnv('VIRUSTOTAL_API')
+VIRUSTOTAL_URL = getEnv('VIRUSTOTAL_URL')
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,11 +29,9 @@ ALLOWED_HOSTS = [
 ]
 # Application definition
 THIRD_PARTY_APPS = [
-    'material',
-    'material.admin',
 ]
 DJANGO_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -43,7 +40,7 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'api',
+    'virustotal',
 ]
 
 
