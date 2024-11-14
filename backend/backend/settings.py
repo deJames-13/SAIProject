@@ -30,11 +30,11 @@ ALLOWED_HOSTS = [
 ]
 # Application definition
 THIRD_PARTY_APPS = [
-    'material',
-    'material.admin',
+    # 'material',
+    # 'material.admin',
 ]
 DJANGO_APPS = [
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -107,6 +107,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# settings.py
+
+AUTHENTICATION_BACKENDS = [
+   
+    'django.contrib.auth.backends.ModelBackend',  # The default backend for other methods (optional)
+]
+
 
 
 # Internationalization
