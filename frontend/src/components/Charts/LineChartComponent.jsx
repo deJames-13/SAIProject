@@ -1,36 +1,50 @@
-import React from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
-import MDBox from "components/MDBox";
+import React, { useEffect, useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import axios from 'axios';
 
-const data = [
-  { name: "Jan", Malware: 400, Phishing: 240, Trojan: 240 },
-  { name: "Feb", Malware: 300, Phishing: 139, Trojan: 221 },
-  { name: "Mar", Malware: 200, Phishing: 980, Trojan: 229 },
-  { name: "Apr", Malware: 278, Phishing: 390, Trojan: 200 },
-  { name: "May", Malware: 189, Phishing: 480, Trojan: 218 },
-];
+const LineChartComponent = () => {
+  const [aggregateData, setAggregateData] = useState([]);
 
-function LineChartComponent() {
+  useEffect(() => {
+    // Fetch aggregate summary data from the Django backend
+    axios.get('http://127.0.0.1:8000/api/charts/aggregate-summary/')
+      .then(response => {
+        setAggregateData(response.data); // Update state with the data from the backend
+      })
+      .catch(error => {
+        console.error("Error fetching aggregate data:", error);
+      });
+  }, []);
+
   return (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="calc(100vh - 64px)"
-      marginLeft="250px"
-    >
-      <LineChart width={500} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="Malware" stroke="#8884d8" />
-        <Line type="monotone" dataKey="Phishing" stroke="#82ca9d" />
-        <Line type="monotone" dataKey="Trojan" stroke="#ffc658" />
-      </LineChart>
-    </MDBox>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ width: '80%', maxWidth: '500px' }}>
+      <h2>Aggregate Summary (Daily)</h2>
+      {aggregateData.length > 0 ? (
+        <LineChart
+          width={500}
+          height={300}
+          data={aggregateData}  // Use the fetched aggregate data
+          margin={{
+            top: 20, right: 30, left: 20, bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="total_scans" stroke="#8884d8" />
+          <Line type="monotone" dataKey="avg_scans" stroke="#82ca9d" />
+        </LineChart>
+      ) : (
+        <p>Loading data...</p> // Display a loading message if data hasn't loaded yet
+      )}
+      </div>
+      </div>
+    </div>
   );
-}
+};
 
 export default LineChartComponent;

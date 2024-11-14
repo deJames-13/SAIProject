@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
 THIRD_PARTY_APPS = [
     # 'material',
     # 'material.admin',
+    'rest_framework',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -43,6 +44,8 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'virustotal',
+    'charts',
+
 ]
 
 
@@ -137,6 +140,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Rest Framework
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -145,7 +151,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+
 }
 
 

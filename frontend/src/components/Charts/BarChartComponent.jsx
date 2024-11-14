@@ -1,36 +1,47 @@
-import React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
-import MDBox from "components/MDBox";
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import axios from 'axios';
 
-const data = [
-  { name: "Jan", Malware: 400, Phishing: 240, Trojan: 240 },
-  { name: "Feb", Malware: 300, Phishing: 139, Trojan: 221 },
-  { name: "Mar", Malware: 200, Phishing: 980, Trojan: 229 },
-  { name: "Apr", Malware: 278, Phishing: 390, Trojan: 200 },
-  { name: "May", Malware: 189, Phishing: 480, Trojan: 218 },
-];
+const BarChartComponent = () => {
+  const [scanData, setScanData] = useState([]);
 
-function BarChartComponent() {
+  useEffect(() => {
+    // Fetch data from the Django backend
+    axios.get('http://127.0.0.1:8000/api/charts/scan-data/')
+      .then(response => {
+        setScanData(response.data); // Update state with the data from the backend
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
   return (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="calc(100vh - 64px)"
-      marginLeft="250px"
-    >
-      <BarChart width={500} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="Malware" fill="#8884d8" />
-        <Bar dataKey="Phishing" fill="#82ca9d" />
-        <Bar dataKey="Trojan" fill="#ffc658" />
-      </BarChart>
-    </MDBox>
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+      <div style={{ width: '80%', maxWidth: '500px' }}>
+        <h2>Scans per Day</h2>
+        {scanData.length > 0 ? (
+          <BarChart
+            width={500}
+            height={300}
+            data={scanData}  // Use the fetched data
+            margin={{
+              top: 20, right: 30, left: 20, bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="scans" fill="#8884d8" />
+          </BarChart>
+        ) : (
+          <p>Loading data...</p> // Display a loading message if data hasn't loaded yet
+        )}
+      </div>
+    </div>
   );
-}
+};
 
 export default BarChartComponent;

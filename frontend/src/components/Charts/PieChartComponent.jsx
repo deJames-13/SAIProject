@@ -1,43 +1,53 @@
-import React from "react";
-import { PieChart, Pie, Tooltip, Cell } from "recharts";
-import MDBox from "components/MDBox"; // Using your MDBox component for consistent styling
+import React, { useEffect, useState } from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import axios from 'axios';
 
-const data = [
-  { name: "Malware", value: 40 },
-  { name: "Phishing", value: 30 },
-  { name: "Trojan", value: 20 },
-  { name: "Other", value: 10 },
-];
+const PieChartComponent = () => {
+  const [pieData, setPieData] = useState([]);
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  useEffect(() => {
+    // Fetch pie chart data from the Django backend
+    axios.get('http://127.0.0.1:8000/api/charts/pie-data/')
+      .then(response => {
+        setPieData(response.data); // Update state with the data from the backend
+      })
+      .catch(error => {
+        console.error("Error fetching pie chart data:", error);
+      });
+  }, []);
 
-function PieChartComponent() {
+  // Define the colors for the pie chart segments
+  const COLORS = ['#ff7300', '#00C49F', '#FFBB28'];
+
   return (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="calc(100vh - 64px)" // Full height minus header size
-      marginLeft="250px" // Adjust this based on sidebar width
-    >
-      <PieChart width={400} height={400}>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          outerRadius={150}
-          fill="#8884d8"
-          dataKey="value"
-          label
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
-    </MDBox>
+    <div>
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+    <div style={{ width: '80%', maxWidth: '500px' }}>
+      <h2>Scan Categories Distribution</h2>
+      {pieData.length > 0 ? (
+        <PieChart width={400} height={400}>
+          <Pie
+            data={pieData}
+            dataKey="scans"
+            nameKey="category"
+            outerRadius={150}
+            fill="#8884d8"
+            label
+          >
+            {pieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      ) : (
+        <p>Loading data...</p> // Display a loading message if data hasn't loaded yet
+      )}
+    </div>
+    </div>
+    </div>
   );
-}
+};
 
 export default PieChartComponent;
