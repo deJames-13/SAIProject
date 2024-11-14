@@ -29,12 +29,18 @@ export default function VirusTotal() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox height="100vh">
-        <MDTabs tabs={tabs}>
+      <div className="flex flex-col h-svh overflow-auto">
 
-        </MDTabs>
-      </MDBox>
-      <Footer />
+        <MDBox>
+          <MDTabs tabs={tabs}>
+
+          </MDTabs>
+        </MDBox>
+        <div className="mt-auto">
+          <Footer />
+
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

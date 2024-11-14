@@ -1,20 +1,40 @@
 import { Button, TextField } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
-import React from 'react';
-import { useScanUrlMutation } from 'states/virustotal/api';
+import useNotification from 'hooks/notifications/useNotification';
+import useVirusTotal from 'hooks/virustotal/useVirusTotal';
+import React, { useEffect } from 'react';
+import AnalysesTable from './scan-table';
 
 
 export default function Scan() {
-  const [url, setUrl] = React.useState('');
-  const [report, setReport] = React.useState(null);
-  const [scanUrl] = useScanUrlMutation();
-  const handleScan = () => {
-    scanUrl(url).unwrap().then(data => {
-      setReport(data);
-      console.log(data);
-    });
-  };
+  const { showNotification, renderNotifications } = useNotification();
+  const {
+    url,
+    setUrl,
+    handleScan,
+    analyses,
+    status
+  } = useVirusTotal();
+
+
+  useEffect(() => {
+    if (status === 'queued' || status === 'in-progress') {
+      setTimeout(() => {
+        handleScan();
+      }, 3000);
+    }
+  }, [analyses]);
+
+  useEffect(() => {
+    if (status) {
+      showNotification(
+        "info",
+        "notifications",
+        "Scan Status: " + status.toUpperCase(),
+      );
+    }
+  }, [status]);
 
 
   return (
@@ -37,14 +57,18 @@ export default function Scan() {
               width: '100%',
               height: '100%',
             }}
-            defaultValue={url}
+            value={url}
             onChange={e => setUrl(e.target.value)}
           />
           <MDButton color='secondary' variant='outlined' onClick={handleScan}>
             Scan
           </MDButton>
         </MDBox>
+        <p className='italic ml-4'>
+          By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
+        </p>
       </MDBox>
+
       <MDBox style={{
         display: 'flex',
         flexDirection: 'column',
@@ -52,7 +76,8 @@ export default function Scan() {
         padding: '1rem',
         border: '1px solid #ccc',
       }}>
-
+        <AnalysesTable analyses={analyses} />
+        {renderNotifications}
       </MDBox>
     </MDBox>
   );
