@@ -9,7 +9,7 @@ export const vtApi = apiSlice.injectEndpoints({
     endpoints: build => ({
         scanUrl: build.mutation({
             query: url => ({
-                url: `${baseUrl}/get_url_report/`,
+                url: `${baseUrl}/scan-url/`,
                 method: 'POST',
                 headers,
                 body: JSON.stringify({
@@ -17,7 +17,18 @@ export const vtApi = apiSlice.injectEndpoints({
                 }),
             }),
         }),
+        getData: build.mutation({
+            query: (id) => ({
+                url: `${baseUrl}/get-analysis/?id=${id}`,
+                method: 'GET',
+                headers,
+            }),
+        }),
     }),
 });
 
-export const { useScanUrlMutation } = vtApi;
+export const { 
+    useScanUrlMutation,
+    useGetDataMutation,
+  } = vtApi;
+export default vtApi;

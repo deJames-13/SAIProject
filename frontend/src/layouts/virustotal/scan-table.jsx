@@ -29,46 +29,134 @@ export default function AnalysesTable({ analyses = null }) {
         </h4>
     </>;
     const {
-        data: {
-            id = null,
-            attributes: {
-                status = null,
-                results = {},
-                stats: {
-                    harmless = 0,
-                    malicious = 0,
-                    suspicious = 0,
-                    undetected = 0,
-                    timeout = 0,
-                } = {},
-                date = null,
+        id = null,
+        status = 'ok',
+        type = null,
+        attributes: {
+            url = '',
+            categories = {},
+            last_analysis_date: date = '',
+            last_analysis_results: results = {},
+            last_analysis_stats: {
+                harmless = 0,
+                malicious = 0,
+                suspicious = 0,
+                undetected = 0,
+                timeout = 0,
             } = {},
-        } = {},
-        meta: {
-            url_info: {
-                url = '',
+            last_http_response_code = 0,
+            last_submission_date = '',
+            times_submitted = 0,
+            total_votes = {},
+            title = '',
+            html_meta: {
+                description = [],
             } = {},
+            reputation = 0,
         } = {},
-
     } = analyses
 
     return !id ? '' : (
         <>
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
+                <div className=''>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Title:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {title}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                        <p className='italic font-light m-0'>
+                            Description:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {description.join(' ')}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            URL:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {url}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Reputation:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {reputation}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Votes:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {
+                                Object.values(total_votes).reduce((a, b) => a + b, 0)
+                            }
+                            &nbsp;
+                            <span className='font-light italic'>
+                                ({
+                                    Object.entries(total_votes).map(([key, value]) => `${key}: ${value}`).join(', ')
+                                })
+                            </span>
+                        </h4>
+                    </div>
+
+
+                </div>
+                <div className=''>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Status Code:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {last_http_response_code}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Last Submitted:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {Date(last_submission_date)}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Last Analysis:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {Date(date)}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className='italic font-light m-0'>
+                            Time Submitted:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {times_submitted}
+                        </h4>
+                    </div>
+                </div>
+
                 <div>
                     <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
                         {
                             status === 'in-progress' || status === 'queued' ? <CircularProgress size="1.2rem" /> : ''
                         }
                         <span>
-                            URL Security analysis: {url}
+                            URL Security analysis
                         </span>
                     </h4>
                     <p className='italic font-light text-gray-600 m-0'>
                         ID: {id}
-                    </p>
-                    <p className='italic font-light text-gray-600 m-0'>
-                        Status: {status.toUpperCase()}
                     </p>
                     <p className='italic font-light text-gray-600 m-0'>
                         {Date(date)}

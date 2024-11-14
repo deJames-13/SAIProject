@@ -1,26 +1,46 @@
 import { useEffect, useState } from 'react';
-import { useScanUrlMutation } from 'states/virustotal/api';
+
+
+import {
+    useGetDataMutation,
+    useScanUrlMutation,
+} from 'states/virustotal/api';
 
 
 const useVirusTotal = () => {
     const [url, setUrl] = useState('');
-    const [analyses, setAnalyses] = useState(null);
+    const [id, setId] = useState('');
+    const [data, setData] = useState(null);
     const [scanUrl] = useScanUrlMutation();
+    const [getData] = useGetDataMutation();
     const [status, setStatus] = useState();
 
-    const handleScan = () => {
+    const handleGetData = (id) => {
+        if (id) {
+            getData(id).unwrap().then(({ data }) => {
+                setData(data);
+            });
+        }
+    }
+
+    const handleScan = (id) => {
+
+        console.clear()
+        // let a = JSON.parse(localStorage.getItem('data'))
+        // console.log(a)
+        // setData(a);
+
         scanUrl(url).unwrap().then(data => {
-            const { analyses = null, ...meta } = data
-            setAnalyses(analyses);
-            setStatus(analyses?.data?.attributes?.status ?? 'idle');
-            console.log('analyses', analyses);
+            const { id = null } = data
+            setId(id);
+            handleGetData(id);
         });
     };
 
     return {
         url,
         setUrl,
-        analyses,
+        data,
         handleScan,
         status,
         setStatus,

@@ -13,18 +13,9 @@ export default function Scan() {
     url,
     setUrl,
     handleScan,
-    analyses,
+    data,
     status
   } = useVirusTotal();
-
-
-  useEffect(() => {
-    if (status === 'queued' || status === 'in-progress') {
-      setTimeout(() => {
-        handleScan();
-      }, 3000);
-    }
-  }, [analyses]);
 
   useEffect(() => {
     if (status) {
@@ -76,7 +67,7 @@ export default function Scan() {
         padding: '1rem',
         border: '1px solid #ccc',
       }}>
-        <AnalysesTable analyses={analyses} />
+        <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>
     </MDBox>
