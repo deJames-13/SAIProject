@@ -24,6 +24,43 @@ export const vtApi = apiSlice.injectEndpoints({
                 headers,
             }),
         }),
+        getUrlReports: build.mutation({
+            query: () => ({
+                url: `/url-reports/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+        getUrlReport: build.mutation({
+            query: (id) => ({
+                url: `/url-reports/${id}/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+        saveUrlReport: build.mutation({
+            query: (report) => ({
+                url: `/url-reports/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify(report),
+            }),
+        }),
+        editUrlReport: build.mutation({
+            query: (report) => ({
+                url: `/url-reports/${report.id}/`,
+                method: 'PUT',
+                headers,
+                body: JSON.stringify(report),
+            }),
+        }),
+        deleteUrlReport: build.mutation({
+            query: (id) => ({
+                url: `/url-reports/${id}/`,
+                method: 'DELETE',
+                headers,
+            }),
+        }),
     }),
 });
 

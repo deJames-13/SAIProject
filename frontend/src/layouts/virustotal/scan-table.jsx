@@ -1,6 +1,5 @@
 import BlockIcon from '@mui/icons-material/Block';
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import WarningIcon from '@mui/icons-material/Warning';
 import { CircularProgress } from '@mui/material';
@@ -61,7 +60,7 @@ export default function AnalysesTable({ analyses = null }) {
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
                 <div className=''>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Title:
                         </p>
                         <h4 className='font-semibold m-0'>
@@ -69,7 +68,7 @@ export default function AnalysesTable({ analyses = null }) {
                         </h4>
                     </div>
                     <div className="flex gap-4 items-start">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Description:
                         </p>
                         <h4 className='font-semibold m-0'>
@@ -77,35 +76,11 @@ export default function AnalysesTable({ analyses = null }) {
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             URL:
                         </p>
                         <h4 className='font-semibold m-0'>
                             {url}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
-                            Reputation:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {reputation}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
-                            Votes:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {
-                                Object.values(total_votes).reduce((a, b) => a + b, 0)
-                            }
-                            &nbsp;
-                            <span className='font-light italic'>
-                                ({
-                                    Object.entries(total_votes).map(([key, value]) => `${key}: ${value}`).join(', ')
-                                })
-                            </span>
                         </h4>
                     </div>
 
@@ -113,7 +88,7 @@ export default function AnalysesTable({ analyses = null }) {
                 </div>
                 <div className=''>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Status Code:
                         </p>
                         <h4 className='font-semibold m-0'>
@@ -121,23 +96,23 @@ export default function AnalysesTable({ analyses = null }) {
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Last Submitted:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {Date(last_submission_date)}
+                            {new Date(last_submission_date * 1000).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Last Analysis:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {Date(date)}
+                            {new Date(last_submission_date * 1000).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
-                        <p className='italic font-light m-0'>
+                        <p className=''>
                             Time Submitted:
                         </p>
                         <h4 className='font-semibold m-0'>
@@ -155,12 +130,48 @@ export default function AnalysesTable({ analyses = null }) {
                             URL Security analysis
                         </span>
                     </h4>
-                    <p className='italic font-light text-gray-600 m-0'>
-                        ID: {id}
-                    </p>
-                    <p className='italic font-light text-gray-600 m-0'>
-                        {Date(date)}
-                    </p>
+
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            ID:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {id}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Date:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {new Date(date * 1000).toLocaleString()}
+                        </h4>
+                    </div>
+
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Reputation:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {reputation}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Votes:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {
+                                Object.values(total_votes).reduce((a, b) => a + b, 0)
+                            }
+                            &nbsp;
+                            <span className='font-light italic'>
+                                ({
+                                    Object.entries(total_votes).map(([key, value]) => `${key}: ${value}`).join(', ')
+                                })
+                            </span>
+                        </h4>
+                    </div>
                 </div>
                 <div>
                     <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
@@ -173,23 +184,23 @@ export default function AnalysesTable({ analyses = null }) {
                             <h4 className='font-semibold border-slate-300 m-0'>
                                 Harmless
                             </h4>
-                            <p className='italic font-light m-0'>
+                            <p className=''>
                                 {harmless}
                             </p>
                         </div>
-                        <div className='grid grid-cols-3 border-b'>
-                            <h4 className='font-semibold border-slate-300 m-0'>
+                        <div className='grid grid-cols-3 border-b text-red-400'>
+                            <h4 className='font-semibold border-slate-300 m-0 '>
                                 Malicious
                             </h4>
-                            <p className='italic font-light m-0'>
+                            <p className=''>
                                 {malicious}
                             </p>
                         </div>
-                        <div className='grid grid-cols-3 border-b'>
+                        <div className='grid grid-cols-3 border-b text-yellow-400' >
                             <h4 className='font-semibold border-slate-300 m-0'>
                                 Suspicious
                             </h4>
-                            <p className='italic font-light m-0'>
+                            <p className=''>
                                 {suspicious}
                             </p>
                         </div>
@@ -197,7 +208,7 @@ export default function AnalysesTable({ analyses = null }) {
                             <h4 className='font-semibold border-slate-300 m-0'>
                                 Undetected
                             </h4>
-                            <p className='italic font-light m-0'>
+                            <p className=''>
                                 {undetected}
                             </p>
                         </div>
@@ -205,7 +216,7 @@ export default function AnalysesTable({ analyses = null }) {
                             <h4 className='font-semibold border-slate-300 m-0'>
                                 Timeout
                             </h4>
-                            <p className='italic font-light m-0'>
+                            <p className=''>
                                 {timeout}
                             </p>
                         </div>
@@ -226,10 +237,10 @@ export default function AnalysesTable({ analyses = null }) {
                                         {key}
                                     </h4>
                                     <div className={`flex gap-2 col-span-2 ${color}`}>
-                                        <p className='italic font-light m-0'>
+                                        <p className=''>
                                             {icon}
                                         </p>
-                                        <p className='italic font-light m-0'>
+                                        <p className=''>
                                             {results[key]?.category}
                                         </p>
                                     </div>

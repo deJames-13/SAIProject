@@ -19,12 +19,7 @@ export default function Scan() {
 
 
   return (
-    <MDBox style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1rem',
-      padding: '1rem',
-    }}>
+    <>
       <MDBox>
         <MDBox style={{
           width: '100%',
@@ -50,16 +45,18 @@ export default function Scan() {
         </p>
       </MDBox>
 
+      <div className="divider"></div>
+
       <MDBox style={{
         display: 'flex',
         flexDirection: 'column',
         gap: '1rem',
         padding: '1rem',
-        border: '1px solid #ccc',
       }}>
         <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>
-    </MDBox>
+    </>
+
   );
 }
