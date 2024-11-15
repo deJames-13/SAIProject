@@ -6,20 +6,22 @@ import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import AnalysesTable from './scan-table';
 
 import React from 'react';
+import ScanFile from './scan-file';
 
 
-export default function Scan() {
+export default function Scan({ type = "url" }) {
   const {
     url,
     setUrl,
     handleScan,
     data,
+    setData,
     renderNotifications
-  } = useVirusTotal();
+  } = useVirusTotal({ type });
 
 
-  return (
-    <>
+  const inputUrlComponent = () => {
+    return (
       <MDBox>
         <MDBox style={{
           width: '100%',
@@ -44,6 +46,18 @@ export default function Scan() {
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
         </p>
       </MDBox>
+    )
+  }
+
+  React.useEffect(() => {
+    console.clear()
+    console.log(data)
+  }, [data])
+
+  return (
+    <>
+      {type === "url" && inputUrlComponent()}
+      {type === "file" && <ScanFile onScan={setData} />}
 
       <div className="divider"></div>
 
@@ -53,7 +67,6 @@ export default function Scan() {
         gap: '1rem',
         padding: '1rem',
       }}>
-
         <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>
