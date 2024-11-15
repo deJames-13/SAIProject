@@ -16,7 +16,7 @@ export default function Scan({ type = "url" }) {
     handleScan,
     data,
     renderNotifications
-  } = useVirusTotal();
+  } = useVirusTotal({ type });
 
 
   const inputUrlComponent = () => {
@@ -64,7 +64,7 @@ export default function Scan({ type = "url" }) {
         padding: '1rem',
       }}>
 
-        <AnalysesTable analyses={data} />
+        {type === 'url' && data && <AnalysesTable analyses={data} />}
         {renderNotifications}
       </MDBox>
     </>

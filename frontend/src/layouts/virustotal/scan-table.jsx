@@ -31,6 +31,7 @@ export default function AnalysesTable({ analyses = null }) {
             </span>
         </h4>
     </>);
+
     const {
         id = null,
         status = 'ok',
@@ -58,10 +59,7 @@ export default function AnalysesTable({ analyses = null }) {
             reputation = 0,
         } = {},
     } = analyses
-
-
     const { createReport, renderNotifications } = useUrlReportAction();
-
     const handleSave = () => {
 
         const payload = {

@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react';
 import vtApi from 'states/virustotal/api';
 
 
-const useVirusTotal = () => {
+const useVirusTotal = ({ type = 'url' } = {}) => {
     const { showNotification, renderNotifications, ...noti } = useNotification();
     const {
         useGetDataMutation,
         useScanUrlMutation,
         useScanFileMutation,
         useScanHashMutation,
+        useGetFileReportMutation,
     } = vtApi;
 
     const [url, setUrl] = useState('');
@@ -46,6 +47,10 @@ const useVirusTotal = () => {
             noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
         });
     }
+
+    const fetchHashData = (hash) => { }
+
+    const fetchFileData = (fileId) => { }
 
     const handleGetData = (id) => {
         setStatus("Scan finished. Getting data...");
@@ -82,6 +87,11 @@ const useVirusTotal = () => {
             );
         }
     }, [status]);
+
+    useEffect(() => {
+        if (type)
+            setData(null);
+    }, [type]);
 
     return {
         url,
