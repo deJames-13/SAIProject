@@ -35,46 +35,43 @@ function Basic() {
 
   // Get the CSRF token from the cookie
   const getCsrfToken = () => { 
-    const match = document.cookie.match(/csrftoken=([^;]+)/);
-    return match ? match[1] : null;
+    const name = "csrftoken";
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name))
+      ?.split('=')[1];
+    return cookieValue || '';
   };
 
-  // Handle sign in request
+  
   const handleSignin = async (event) => {
     event.preventDefault();
-
+  
     try {
-      const csrfToken = getCsrfToken();  // Get the CSRF token from the document cookie
-
       // Send the login request to the backend
       const response = await axios.post(
         "http://localhost:8000/user/login/", 
         { email, password },
         {
           headers: {
-            "X-CSRFToken": csrfToken,
             "Content-Type": "application/json",
           },
         }
       );
-
-      // Store the token in localStorage after successful login
-      localStorage.setItem("auth_token", response.data.token);
-
-      // Set success message and clear any previous error
+  
+      
+      localStorage.setItem("token", response.data.token);
+  
       setSuccessMessage("Login successful!");
-      setErrorMessage("");  // Clear any previous errors
-
-      // Redirect to another page after successful login (e.g., home or dashboard)
-      navigate("/dashboard");  // Change this path to where you want the user to be redirected
-
+      setErrorMessage("");  
+      navigate("/dashboard");  
     } catch (error) {
-      // Handle error response
+      
       setErrorMessage(error.response?.data?.message || "An error occurred during login");
-      setSuccessMessage("");  // Clear any success message
+      setSuccessMessage("");  
     }
   };
-
+  
 
   return (
     <BasicLayout image={bgImage}>
