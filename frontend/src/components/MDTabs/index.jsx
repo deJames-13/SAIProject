@@ -104,5 +104,6 @@ const TabsList = styled(BaseTabsList)(
   align-content: space-between;
   box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.4)' : 'rgba(0,0,0, 0.2)'
     };
+  height: 100%;
   `,
 );
