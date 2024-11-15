@@ -45,10 +45,11 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='get-file-report')
     def get_file_report_by_id(self, request):
         scan_id = request.data.get("id")
+        type = request.data.get("type")
         if not scan_id:
             return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         service = VirusTotalService()
-        result = service.get_analyses(scan_id)
+        result = service.get_analyses(scan_id , type)
         if not result:
             return Response({"error": "Failed to get file report"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(result, status=status.HTTP_200_OK)

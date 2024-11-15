@@ -15,6 +15,7 @@ export default function Scan({ type = "url" }) {
     setUrl,
     handleScan,
     data,
+    setData,
     renderNotifications
   } = useVirusTotal({ type });
 
@@ -48,12 +49,15 @@ export default function Scan({ type = "url" }) {
     )
   }
 
-
+  React.useEffect(() => {
+    console.clear()
+    console.log(data)
+  }, [data])
 
   return (
     <>
       {type === "url" && inputUrlComponent()}
-      {type === "file" && <ScanFile />}
+      {type === "file" && <ScanFile onScan={setData} />}
 
       <div className="divider"></div>
 
@@ -63,8 +67,7 @@ export default function Scan({ type = "url" }) {
         gap: '1rem',
         padding: '1rem',
       }}>
-
-        {type === 'url' && data && <AnalysesTable analyses={data} />}
+        <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>
     </>

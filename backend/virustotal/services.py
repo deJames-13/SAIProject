@@ -45,7 +45,9 @@ class VirusTotalService:
             print(f"An error occurred: {e}")
             return None
     
-    def get_analyses(self, id):
+    def get_analyses(self, id, type = 'analysis'):
+        if (type == 'file'): 
+            return self.get_file_report(id)
         analyses_url = f"{self.base_url}/analyses/{id}"
         headers = {
             "x-apikey": self.api_key
@@ -58,7 +60,7 @@ class VirusTotalService:
             return None
     
     def get_file_report(self, scan_id):
-        report_url = f"{self.base_url}/files/{scan_id.split('==')[0]}"
+        report_url = f"{self.base_url}/files/{scan_id}"
         headers = {
             "x-apikey": self.api_key
         }

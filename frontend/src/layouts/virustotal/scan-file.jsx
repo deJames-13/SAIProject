@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function ScanFile() {
+export default function ScanFile({ onScan = () => { } }) {
   const [hash, setHash] = React.useState('');
   const {
     renderNotifications,
@@ -44,7 +44,9 @@ export default function ScanFile() {
       })
     }
 
-    handleFileScan(file);
+    handleFileScan(file).then((data) => {
+      onScan(data);
+    });
 
 
 

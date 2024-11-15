@@ -24,6 +24,9 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
+    const { createReport, renderNotifications } = useUrlReportAction();
+
+
     if (!analyses) return " " || (<>
         <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
             <span>
@@ -35,7 +38,7 @@ export default function AnalysesTable({ analyses = null }) {
     const {
         id = null,
         status = 'ok',
-        type = null,
+        type,
         attributes: {
             url = '',
             categories = {},
@@ -59,29 +62,34 @@ export default function AnalysesTable({ analyses = null }) {
             reputation = 0,
         } = {},
     } = analyses
-    const { createReport, renderNotifications } = useUrlReportAction();
-    const handleSave = () => {
 
-        const payload = {
-            url: url + '1',
-            title,
-            description: description.join(' '),
-            reputation,
-            times_submitted,
-            last_analysis_stats: {
-                harmless,
-                malicious,
-                suspicious,
-                undetected,
-                timeout,
-            },
-            votes: total_votes,
-            scan_id: id,
-        }
-        createReport(payload)
+    const urlPayload = () => ({
+        url: url + '1',
+        title,
+        description: description.join(' '),
+        reputation,
+        times_submitted,
+        last_analysis_stats: {
+            harmless,
+            malicious,
+            suspicious,
+            undetected,
+            timeout,
+        },
+        votes: total_votes,
+        scan_id: id,
+    })
+
+    const filePayload = () => ({})
+
+    const handleSave = () => {
+        const payload = type === 'url' ? urlPayload() : filePayload();
+        if (type === 'url')
+            createReport(payload);
 
 
     };
+
     const formatDate = (timestamp) => {
         const date = new Date(timestamp * 1000);
         return date.toLocaleString();
@@ -105,70 +113,78 @@ export default function AnalysesTable({ analyses = null }) {
                     Comments
                 </MDButton>
             </div>
+            <div className="flex gap-4 items-center">
+                <p className=''>
+                    Type:
+                </p>
+                <h4 className='font-semibold m-0'>
+                    {type.toUpperCase()}
+                </h4>
+            </div>
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
-                <div className=''>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Title:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {title}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-start">
-                        <p className=''>
-                            Description:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {description.join(' ')}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            URL:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {url}
-                        </h4>
-                    </div>
-
-
+                {type == 'url' && <> <div className=''>
+                    <>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                Title:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {title}
+                            </h4>
+                        </div>
+                        <div className="flex gap-4 items-start">
+                            <p className=''>
+                                Description:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {description.join(' ')}
+                            </h4>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                URL:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {url}
+                            </h4>
+                        </div>
+                    </>
                 </div>
-                <div className=''>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Status Code:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {last_http_response_code}
-                        </h4>
+                    <div className=''>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                Status Code:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {last_http_response_code}
+                            </h4>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                Last Submitted:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {formatDate(last_submission_date).toLocaleString()}
+                            </h4>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                Last Analysis:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {formatDate(last_submission_date).toLocaleString()}
+                            </h4>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                            <p className=''>
+                                Time Submitted:
+                            </p>
+                            <h4 className='font-semibold m-0'>
+                                {times_submitted}
+                            </h4>
+                        </div>
                     </div>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Last Submitted:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {formatDate(last_submission_date * 1000).toLocaleString()}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Last Analysis:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {formatDate(last_submission_date * 1000).toLocaleString()}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Time Submitted:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {times_submitted}
-                        </h4>
-                    </div>
-                </div>
-
+                </>}
                 <div>
                     <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
                         {
@@ -192,7 +208,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Date:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {formatDate(date * 1000).toLocaleString()}
+                            {formatDate(date).toLocaleString()}
                         </h4>
                     </div>
 
