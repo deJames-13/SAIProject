@@ -15,17 +15,10 @@ class VirusTotalService:
         if not self.base_url:
             raise ValueError("BASE_URL is not set in settings")
         
-        
     def validate_file(self, file_path):
         if not os.path.exists(file_path):
             return False
         return True
-        
-    def delete_file_from_server(self, file_path):
-        try:
-            os.remove(file_path)
-        except Exception as e:
-            print(f"An error occurred: {e}")
         
     def scan_file(self, files):
         scan_url = f"{self.base_url}/files"

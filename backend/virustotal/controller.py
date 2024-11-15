@@ -7,13 +7,22 @@ from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 import json
 import os
 
-from .models import UrlReports
-from .serializers import UrlReportsSerializer, UploadSerializer
 from .services import VirusTotalService
+from .models import UrlReports, FileReports, Analyses, ScanHistory
+from .serializers import (
+    UrlReportsSerializer,
+    FileReportsSerializer,
+    AnalysesSerializer,
+    ScanHistorySerializer,
+    UploadSerializer
+)
 
 
 class FileUploadViewSet(viewsets.ModelViewSet):
+    queryset = FileReports.objects.all()
+    serializer_class = FileReportsSerializer
     parser_classes = (MultiPartParser, FormParser)
+    
     
     @action(detail=False, methods=['post'], url_path='scan-file')
     def get_file_report(self, request):
@@ -34,9 +43,6 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         
         return Response(result, status=status.HTTP_200_OK)
     
-    
-        
-
 
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
@@ -105,40 +111,4 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
-    
-    # /
-    def list(self, request):
-        reports = UrlReports.objects.all()
-        serializer = UrlReportsSerializer(reports, many=True)
-        return Response(serializer.data)
-
-    # /{pk}
-    def retrieve(self, request, pk=None):
-        report = self.get_object()
-        serializer = UrlReportsSerializer(report)
-        return Response(serializer.data)
-
-    # /create
-    def create(self, request):
-        data = request.data
-        serializer = UrlReportsSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # /{pk}/update
-    def update(self, request, pk=None):
-        report = self.get_object()
-        serializer = UrlReportsSerializer(report, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # /{pk}/delete
-    def destroy(self, request, pk=None):
-        report = self.get_object()
-        report.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
     
