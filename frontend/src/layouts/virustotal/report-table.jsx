@@ -17,9 +17,9 @@ export default function ReportTable() {
         fetchUrlReports();
     }, []);
 
-    React.useEffect(() => {
-        console.log(reports);
-    }, [reports]);
+    // React.useEffect(() => {
+    //     console.log(reports);
+    // }, [reports]);
 
 
     const info = ((report, idx) => {
