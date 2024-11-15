@@ -45,6 +45,7 @@ export default function ScanFile({ onScan = () => { } }) {
     }
 
     handleFileScan(file).then((data) => {
+      console.log(data)
       onScan(data);
     });
 

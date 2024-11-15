@@ -40,6 +40,10 @@ export default function AnalysesTable({ analyses = null }) {
         status = 'ok',
         type,
         attributes: {
+            type_description: file_type = '',
+            meaningful_name: file_name = '',
+            size: file_size = 0,
+            tags = [],
             url = '',
             categories = {},
             last_analysis_date: date = '',
@@ -122,69 +126,110 @@ export default function AnalysesTable({ analyses = null }) {
                 </h4>
             </div>
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
-                {type == 'url' && <> <div className=''>
+                {type == 'url' &&
                     <>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                Title:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {title}
-                            </h4>
-                        </div>
-                        <div className="flex gap-4 items-start">
-                            <p className=''>
-                                Description:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {description.join(' ')}
-                            </h4>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                URL:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {url}
-                            </h4>
+                        <div className=''>
+                            <>
+                                <div className="flex gap-4 items-center">
+                                    <p className=''>
+                                        Title:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {title}
+                                    </h4>
+                                </div>
+                                <div className="flex gap-4 items-start">
+                                    <p className=''>
+                                        Description:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {description.join(' ')}
+                                    </h4>
+                                </div>
+                                <div className="flex gap-4 items-center">
+                                    <p className=''>
+                                        URL:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {url}
+                                    </h4>
+                                </div>
+                            </>
                         </div>
                     </>
-                </div>
+                }
+                {type == 'file' && <>
                     <div className=''>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                Status Code:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {last_http_response_code}
-                            </h4>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                Last Submitted:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {formatDate(last_submission_date).toLocaleString()}
-                            </h4>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                Last Analysis:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {formatDate(last_submission_date).toLocaleString()}
-                            </h4>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <p className=''>
-                                Time Submitted:
-                            </p>
-                            <h4 className='font-semibold m-0'>
-                                {times_submitted}
-                            </h4>
-                        </div>
+                        <>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    File Name:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_name}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-start">
+                                <p className=''>
+                                    File Type:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_type}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    Size:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_size}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    Tags:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {tags.join(', ')}
+                                </h4>
+                            </div>
+                        </>
                     </div>
                 </>}
+                <div className=''>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Status Code:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {last_http_response_code}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Last Submitted:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {formatDate(last_submission_date).toLocaleString()}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Last Analysis:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {formatDate(last_submission_date).toLocaleString()}
+                        </h4>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                        <p className=''>
+                            Time Submitted:
+                        </p>
+                        <h4 className='font-semibold m-0'>
+                            {times_submitted}
+                        </h4>
+                    </div>
+                </div>
                 <div>
                     <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
                         {

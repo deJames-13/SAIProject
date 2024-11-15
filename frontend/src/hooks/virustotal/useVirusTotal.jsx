@@ -17,6 +17,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     } = vtApi;
 
     const [url, setUrl] = useState('');
+    const [file, setFile] = useState(null);
     const [id, setId] = useState('');
     const [data, setData] = useState(null);
     const [scanUrl] = useScanUrlMutation();
@@ -27,8 +28,8 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const [status, setStatus] = useState();
 
 
-    const tryAgain = (id) => {
-        Swal.fire({
+    const tryAgain = async (id) => {
+        return Swal.fire({
             title: 'File Queued',
             text: "Your file has been upload and queued for analysis. Do you want to try getting the file report? FileID: " + id,
             icon: 'success',
@@ -40,7 +41,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 setStatus("Scanning...");
-                fetchFileData(id, 'file');
+                return fetchFileData(id, 'file');
             }
         })
     }
@@ -56,17 +57,10 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         });
     }
 
-    const fetchFileData = (id, type = 'analysis') => {
+    const fetchFileData = async (id, type = 'analysis') => {
         console.clear()
         setStatus("Fetching data...");
         return getFileReport({ id, type }).unwrap().then(({ data, meta }) => {
-            if (type === 'file') {
-                setData(data);
-                setStatus("Data fetched successfully.");
-                console.clear()
-                console.log(data)
-                localStorage.setItem('data', JSON.stringify(data))
-            }
             if (data.attributes.status === "completed") {
                 let itemLinkId = meta.file_info.sha256
                 return fetchFileData(itemLinkId, 'file');
@@ -75,13 +69,25 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
                 let itemLinkId = meta.file_info.sha256
                 return tryAgain(itemLinkId);
             }
+            if (type === 'file') {
+                if (file) {
+                    data.attributes.file_name = file.name
+                    data.attributes.file_size = file.size
+                    data.attributes.file_type = file.type
+                }
+                setData(data);
+                setStatus("Data fetched successfully.");
+                console.clear()
+                console.log(data)
+            }
             return data
         });
     }
 
-    const handleFileScan = (file) => {
+    const handleFileScan = async (file) => {
         setStatus("Scanning...");
         return scanFile(file).unwrap().then(data => {
+            setFile(file);
             return fetchFileData(data.id);
         }).catch((error) => {
             console.log(error);
@@ -127,8 +133,10 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
 
     useEffect(() => {
         console.log(type)
-        if (type)
+        if (type) {
             setData(null);
+        }
+
     }, [type]);
 
     return {
