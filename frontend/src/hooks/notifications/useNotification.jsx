@@ -12,6 +12,23 @@ const useNotification = () => {
         ]);
     };
 
+    const showError = (title, content) => {
+        showNotification("error", "error", title, content);
+    }
+
+    const showSuccess = (title, content) => {
+        showNotification("success", "check_circle", title, content);
+    }
+
+    const showInfo = (title, content) => {
+        showNotification("info", "info", title, content);
+    }
+
+    const showWarning = (title, content) => {
+        showNotification("warning", "warning", title, content);
+    }
+
+
     const closeNotification = (id) => {
         setNotifications((prev) =>
             prev.map((notification) =>
@@ -35,7 +52,16 @@ const useNotification = () => {
         />
     ));
 
-    return { showNotification, renderNotifications };
+    return {
+        showNotification,
+        renderNotifications,
+        error: showError,
+        success: showSuccess,
+        info: showInfo,
+        warning: showWarning,
+
+
+    };
 };
 
 export default useNotification;

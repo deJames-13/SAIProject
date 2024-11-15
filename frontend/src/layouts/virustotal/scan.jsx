@@ -1,9 +1,11 @@
-import { Button, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
+
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import useVirusTotal from 'hooks/virustotal/useVirusTotal';
-import React, { useEffect } from 'react';
 import AnalysesTable from './scan-table';
+
+import React from 'react';
 
 
 export default function Scan() {
@@ -14,8 +16,6 @@ export default function Scan() {
     data,
     renderNotifications
   } = useVirusTotal();
-
-
 
 
   return (
@@ -53,6 +53,7 @@ export default function Scan() {
         gap: '1rem',
         padding: '1rem',
       }}>
+
         <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>

@@ -3,7 +3,11 @@ import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import WarningIcon from '@mui/icons-material/Warning';
 import { CircularProgress } from '@mui/material';
+
+import MDButton from 'components/MDButton';
+import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
 import React from 'react';
+
 
 const colors = {
     'malicious': 'text-red-500',
@@ -20,13 +24,13 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
-    if (!analyses) return <>
+    if (!analyses) return (<>
         <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
             <span>
                 No analyses available
             </span>
         </h4>
-    </>;
+    </>);
     const {
         id = null,
         status = 'ok',
@@ -55,8 +59,54 @@ export default function AnalysesTable({ analyses = null }) {
         } = {},
     } = analyses
 
+
+    const { createReport, renderNotifications } = useUrlReportAction();
+
+    const handleSave = () => {
+
+        const payload = {
+            url: url + '1',
+            title,
+            description: description.join(' '),
+            reputation,
+            times_submitted,
+            last_analysis_stats: {
+                harmless,
+                malicious,
+                suspicious,
+                undetected,
+                timeout,
+            },
+            votes: total_votes,
+            scan_id: id,
+        }
+        createReport(payload)
+
+
+    };
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp * 1000);
+        return date.toLocaleString();
+    };
+
     return !id ? '' : (
         <>
+            <div className="flex w-full justify-end items-center gap-2">
+                <MDButton
+                    color='success'
+                    variant='contained'
+                    onClick={handleSave}
+                >
+                    Save
+                </MDButton>
+                <MDButton
+                    color='info'
+                    variant='contained'
+                    onClick={handleSave}
+                >
+                    Comments
+                </MDButton>
+            </div>
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
                 <div className=''>
                     <div className="flex gap-4 items-center">
@@ -100,7 +150,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Last Submitted:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {new Date(last_submission_date * 1000).toLocaleString()}
+                            {formatDate(last_submission_date * 1000).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -108,7 +158,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Last Analysis:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {new Date(last_submission_date * 1000).toLocaleString()}
+                            {formatDate(last_submission_date * 1000).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -144,7 +194,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Date:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {new Date(date * 1000).toLocaleString()}
+                            {formatDate(date * 1000).toLocaleString()}
                         </h4>
                     </div>
 
@@ -249,6 +299,7 @@ export default function AnalysesTable({ analyses = null }) {
                         })}
                     </div>
                 </div>
+                {renderNotifications}
             </div>
         </>
     )
