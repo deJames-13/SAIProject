@@ -24,7 +24,7 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
-    if (!analyses) return (<>
+    if (!analyses) return " " || (<>
         <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
             <span>
                 No analyses available
