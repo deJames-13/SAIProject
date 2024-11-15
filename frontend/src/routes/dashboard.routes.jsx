@@ -43,10 +43,10 @@ export const dashboardRoutes = [
   },
   {
     type: "collapse",
-    name: "Virus Total",
-    key: "virus-total",
+    name: "Threat Intelligence",
+    key: "threats",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/virus-total",
+    route: "/threats",
     component: <VirusTotal />,
   },
   // {
