@@ -48,3 +48,5 @@ class VirusTotalService:
             print(f"An error occurred: {response.status_code} - {response.text}")
             return None
 
+
+    

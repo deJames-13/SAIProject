@@ -8,6 +8,7 @@ from .models import UrlReports
 from .serializers import UrlReportsSerializer
 from .services import VirusTotalService
 
+
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
@@ -35,26 +36,44 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
             return Response({"error": "Failed to get URL report"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(result)
 
-    @action(detail=False, methods=['post'], url_path='save-url')
-    def save_url(self, request):
-        data = request.data
-        url = data.get("url")
-        if not url:
-            return Response({"error": "URL is required"}, status=status.HTTP_400_BAD_REQUEST)
-        service = VirusTotalService()
-        result = service.save_url(url)
-        if not result:
-            return Response({"error": "Failed to save URL"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(result)
-
-    @action(detail=False, methods=['get'], url_path='get-all-urls')
-    def get_all_urls(self, request):
-        service = VirusTotalService()
-        result = service.get_all_urls()
-        if not result:
-            return Response({"error": "Failed to get URLs"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(result)
 
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
+    
+    # /
+    def list(self, request):
+        reports = UrlReports.objects.all()
+        serializer = UrlReportsSerializer(reports, many=True)
+        return Response(serializer.data)
+
+    # /{pk}
+    def retrieve(self, request, pk=None):
+        report = self.get_object()
+        serializer = UrlReportsSerializer(report)
+        return Response(serializer.data)
+
+    # /create
+    def create(self, request):
+        data = request.data
+        serializer = UrlReportsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # /{pk}/update
+    def update(self, request, pk=None):
+        report = self.get_object()
+        serializer = UrlReportsSerializer(report, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # /{pk}/delete
+    def destroy(self, request, pk=None):
+        report = self.get_object()
+        report.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    

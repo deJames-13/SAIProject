@@ -31,7 +31,7 @@ const useVirusTotal = () => {
     const handleScan = (id) => {
         console.clear()
         let a = JSON.parse(localStorage.getItem('data'))
-        console.log(a)
+        console.log(JSON.stringify(a.attributes.total_votes))
         setData(a);
         // setStatus("Scanning...");
         // scanUrl(url).unwrap().then(data => {
