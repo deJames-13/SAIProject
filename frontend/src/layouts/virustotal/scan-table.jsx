@@ -67,24 +67,36 @@ export default function AnalysesTable({ analyses = null }) {
         } = {},
     } = analyses
 
-    const urlPayload = () => ({
-        url: url + '1',
-        title,
-        description: description.join(' '),
-        reputation,
-        times_submitted,
-        last_analysis_stats: {
-            harmless,
-            malicious,
-            suspicious,
-            undetected,
-            timeout,
+
+    const analysisPayload = () => ({
+        analysis: {
+            description: description.join(' '),
+            reputation,
+            times_submitted,
+            last_analysis_stats: {
+                harmless,
+                malicious,
+                suspicious,
+                undetected,
+                timeout,
+            },
+            votes: total_votes,
+            scan_id: id,
         },
-        votes: total_votes,
-        scan_id: id,
     })
 
-    const filePayload = () => ({})
+    const urlPayload = () => ({
+        title,
+        url: url,
+        analysis: analysisPayload(),
+    })
+
+    const filePayload = () => ({
+        file_name,
+        file_type,
+        hashes,
+        analysis: analysisPayload(),
+    })
 
     const handleSave = () => {
         const payload = type === 'url' ? urlPayload() : filePayload();

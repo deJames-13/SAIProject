@@ -20,5 +20,5 @@ class UrlReportsAdmin(admin.ModelAdmin):
 
 @admin.register(FileReports)
 class FileReportsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'timestamp', 'is_deleted')
-    search_fields = ('name',)
+    list_display = ('file_name', 'timestamp', 'is_deleted')
+    search_fields = ('file_name',)

@@ -85,10 +85,10 @@ class UrlReports(SoftDeleteModel):
 # Saved Files model 
 class FileReports(SoftDeleteModel):
     id = models.AutoField(primary_key=True, editable=False, auto_created=True)
-    name = models.TextField()
-    file = models.FileField(upload_to='uploads/')
-    timestamp = models.DateTimeField(auto_now_add=True)
+    file_name = models.TextField()
+    file_type = models.TextField()
     hashes = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     
     # Relationship 
     scan_id = models.ForeignKey(Analyses, on_delete=models.CASCADE)
@@ -105,6 +105,7 @@ class FileReports(SoftDeleteModel):
     
     class Meta:
         indexes = [
-            models.Index(fields=['name']),  
+            models.Index(fields=['file_name']),  
+            models.Index(fields=['file_type']),  
             models.Index(fields=['timestamp']),  
         ]
