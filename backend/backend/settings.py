@@ -32,6 +32,8 @@ ALLOWED_HOSTS = [
 THIRD_PARTY_APPS = [
     # 'material',
     # 'material.admin',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 TEMPLATES = [

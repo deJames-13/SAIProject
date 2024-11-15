@@ -33,7 +33,7 @@ function Cover() {
     event.preventDefault(); // Prevent form default submission behavior
 
     try {
-      const response = await axios.post("http://localhost:8000/signup/register/", {
+      const response = await axios.post("http://localhost:8000/user/signup/", {
         username: name,
         email: email,
         password: password,

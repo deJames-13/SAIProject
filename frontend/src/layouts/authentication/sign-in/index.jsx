@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
@@ -21,24 +21,27 @@ function Basic() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();  // Navigate hook for redirection after successful login
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
+  // Get the CSRF token from the cookie
   const getCsrfToken = () => { 
-    return document.cookie
-      .split('; ')
-      .find(row => row.startsWith('csrftoken'))
-      ?.split('=')[1];
+    const match = document.cookie.match(/csrftoken=([^;]+)/);
+    return match ? match[1] : null;
   };
 
+  // Handle sign in request
   const handleSignin = async (event) => {
     event.preventDefault();
 
     try {
-      const csrfToken = getCsrfToken();
+      const csrfToken = getCsrfToken();  // Get the CSRF token from the document cookie
 
-      const response = await axios.post("http://localhost:8000/signin/login/", 
-        { email, password }, 
+      // Send the login request to the backend
+      const response = await axios.post(
+        "http://localhost:8000/user/login/", 
+        { email, password },
         {
           headers: {
             "X-CSRFToken": csrfToken,
@@ -47,9 +50,20 @@ function Basic() {
         }
       );
 
-      setSuccessMessage(response.data.message);
+      // Store the token in localStorage after successful login
+      localStorage.setItem("auth_token", response.data.token);
+
+      // Set success message and clear any previous error
+      setSuccessMessage("Login successful!");
+      setErrorMessage("");  // Clear any previous errors
+
+      // Redirect to another page after successful login (e.g., home or dashboard)
+      navigate("/dashboard");  // Change this path to where you want the user to be redirected
+
     } catch (error) {
+      // Handle error response
       setErrorMessage(error.response?.data?.message || "An error occurred during login");
+      setSuccessMessage("");  // Clear any success message
     }
   };
 
