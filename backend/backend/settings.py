@@ -177,3 +177,9 @@ MATERIAL_ADMIN_SITE = {
     #     'site': 'contact_mail',
     # }
 }
+
+MEDIA = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
