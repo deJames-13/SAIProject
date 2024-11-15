@@ -3,9 +3,9 @@
   "version": "2.2.0",
   "private": true,
   "type": "module",
-  "author": "Unthread",
+  "author": "VIPYR",
   "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 by Unthread",
+  "description": "React version of Material Dashboard 2 by VIPYR",
   "bugs": {
     "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
   },

@@ -4,7 +4,7 @@
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Unthread (https://www.creative-tim.com)
+* Copyright 2023 VIPYR (https://www.creative-tim.com)
 
 Coded by www.creative-tim.com
 
@@ -20,13 +20,13 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import {
-    Chart as ChartJS,
-    Filler,
-    Legend,
-    LineElement,
-    PointElement,
-    RadialLinearScale,
-    Tooltip,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
 
@@ -52,11 +52,11 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 function RadarChart({ icon, title, description, height, chart }) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
-        ...dataset,
-        backgroundColor: colors[dataset.color]
-          ? rgba(colors[dataset.color || "dark"].main, 0.2)
-          : rgba(colors.dark.main, 0.2),
-      }))
+      ...dataset,
+      backgroundColor: colors[dataset.color]
+        ? rgba(colors[dataset.color || "dark"].main, 0.2)
+        : rgba(colors.dark.main, 0.2),
+    }))
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);
