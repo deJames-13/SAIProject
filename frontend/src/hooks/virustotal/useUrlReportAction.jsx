@@ -56,7 +56,7 @@ export default function useUrlReportAction() {
                 setReport(response.data);
 
                 if (response.error) {
-                    noti.error(Object.values(response.error?.data || {}).map((item) => item.join('\n')).join(' '));
+                    noti.error(Object.values(response.error?.data || {})?.map((item) => [item].join('\n'))?.join(' '));
                     throw new Error(response.error);
                 }
 
