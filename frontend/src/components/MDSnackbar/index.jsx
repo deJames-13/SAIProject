@@ -86,13 +86,17 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
               color={titleColor}
               textGradient={bgWhite}
             >
-              {title}
+              {title || "Notification"}
             </MDTypography>
           </MDBox>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <MDTypography variant="caption" color={dateTimeColor}>
-              {dateTime}
-            </MDTypography>
+
+            {dateTime &&
+              <MDTypography variant="caption" color={dateTimeColor}>
+                {dateTime}
+              </MDTypography>
+            }
+
             <Icon
               sx={{
                 color: ({ palette: { dark, white } }) =>
@@ -108,24 +112,26 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
             </Icon>
           </MDBox>
         </MDBox>
-        <Divider sx={{ margin: 0 }} light={dividerColor} />
-        <MDBox
-          p={1.5}
-          sx={{
-            fontSize: ({ typography: { size } }) => size.sm,
-            color: ({ palette: { white, text } }) => {
-              let colorValue = bgWhite || color === "light" ? text.main : white.main;
+        {content && <>
+          <Divider sx={{ margin: 0 }} light={dividerColor} />
+          <MDBox
+            p={1.5}
+            sx={{
+              fontSize: ({ typography: { size } }) => size.sm,
+              color: ({ palette: { white, text } }) => {
+                let colorValue = bgWhite || color === "light" ? text.main : white.main;
 
-              if (darkMode) {
-                colorValue = color === "light" ? "inherit" : white.main;
-              }
+                if (darkMode) {
+                  colorValue = color === "light" ? "inherit" : white.main;
+                }
 
-              return colorValue;
-            },
-          }}
-        >
-          {content}
-        </MDBox>
+                return colorValue;
+              },
+            }}
+          >
+            {content}
+          </MDBox>
+        </>}
       </MDBox>
     </Snackbar>
   );
@@ -149,11 +155,11 @@ MDSnackbar.propTypes = {
     "dark",
     "light",
   ]),
-  icon: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
-  dateTime: PropTypes.string.isRequired,
-  content: PropTypes.node.isRequired,
-  close: PropTypes.func.isRequired,
+  icon: PropTypes.node,
+  title: PropTypes.string,
+  dateTime: PropTypes.string,
+  content: PropTypes.node,
+  close: PropTypes.func,
   bgWhite: PropTypes.bool,
 };
 

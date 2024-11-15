@@ -1,16 +1,24 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
+
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
 import Switch from "@mui/material/Switch";
+
+// @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+
+// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
@@ -67,6 +75,7 @@ function Basic() {
     }
   };
 
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -97,7 +106,8 @@ function Basic() {
             </Grid>
             <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />  
+
+                <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>
           </Grid>
@@ -134,6 +144,7 @@ function Basic() {
                 &nbsp;&nbsp;Remember me
               </MDTypography>
             </MDBox>
+
             {errorMessage && (
               <MDBox mt={2}>
                 <MDTypography color="error">{errorMessage}</MDTypography>

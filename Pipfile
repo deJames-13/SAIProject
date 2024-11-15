@@ -16,6 +16,8 @@ sqlparse = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 django-material-admin = "*"
+urllib3 = "*"
+requests = "*"
 
 [dev-packages]
 

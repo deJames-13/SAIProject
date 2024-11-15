@@ -21,13 +21,16 @@ import Dashboard from "layouts/dashboard";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import Tables from "layouts/tables";
+import VirusTotal from "layouts/virustotal";
 
-// Useless
-// import Billing from "layouts/billing";
-// import RTL from "layouts/rtl";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+
+// Import chart components
+import PieChartComponent from "components/Charts/PieChartComponent";
+import BarChartComponent from "components/Charts/BarChartComponent";
+import LineChartComponent from "components/Charts/LineChartComponent";
 
 export const dashboardRoutes = [
   {
@@ -40,12 +43,20 @@ export const dashboardRoutes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    name: "Threat Intelligence",
+    key: "threats",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/threats",
+    component: <VirusTotal />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Tables",
+  //   key: "tables",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/tables",
+  //   component: <Tables />,
+  // },
   {
     type: "collapse",
     name: "Notifications",
@@ -77,5 +88,29 @@ export const dashboardRoutes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    name: "Pie Chart",
+    key: "pie-chart",
+    icon: <Icon>pie_chart</Icon>,
+    route: "/charts/pie",
+    component: <PieChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Bar Chart",
+    key: "bar-chart",
+    icon: <Icon>bar_chart</Icon>,
+    route: "/charts/bar",
+    component: <BarChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Line Chart",
+    key: "line-chart",
+    icon: <Icon>show_chart</Icon>,
+    route: "/charts/line",
+    component: <LineChartComponent />,
   },
 ];

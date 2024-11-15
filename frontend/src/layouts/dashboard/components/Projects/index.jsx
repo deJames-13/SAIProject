@@ -20,7 +20,6 @@ import data from "layouts/dashboard/components/Projects/data";
 function Projects() {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
-
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 

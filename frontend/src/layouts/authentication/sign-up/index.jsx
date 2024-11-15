@@ -101,6 +101,7 @@ function Cover() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Checkbox />
@@ -111,6 +112,7 @@ function Cover() {
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
                 &nbsp;&nbsp;I agree to the&nbsp;
+
               </MDTypography>
               <MDTypography
                 component="a"
