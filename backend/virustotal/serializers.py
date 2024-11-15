@@ -7,3 +7,8 @@ class UrlReportsSerializer(serializers.ModelSerializer):
         fields = '__all__'        
         
 
+class UploadSerializer(serializers.Serializer):
+    file = serializers.FileField()
+    
+    class Meta:
+        fields = ['file']

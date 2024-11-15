@@ -5,6 +5,7 @@ const headers = {
     'Content-Type': 'application/json',
 }
 
+
 export const vtApi = apiSlice.injectEndpoints({
     endpoints: build => ({
         scanUrl: build.mutation({
@@ -14,6 +15,28 @@ export const vtApi = apiSlice.injectEndpoints({
                 headers,
                 body: JSON.stringify({
                     url,
+                }),
+            }),
+        }),
+        scanFile: build.mutation({
+            query: (file) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                return {
+                    url: `${baseUrl}file/scan-file/`,
+                    method: 'POST',
+                    body: formData,
+                    formData: true,
+                }
+            },
+        }),
+        scanHash: build.mutation({
+            query: hash => ({
+                url: `${baseUrl}/scan-hash/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    hash,
                 }),
             }),
         }),

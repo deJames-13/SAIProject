@@ -2,21 +2,50 @@ import useNotification from 'hooks/notifications/useNotification';
 import { useEffect, useState } from 'react';
 
 
-import {
-    useGetDataMutation,
-    useScanUrlMutation,
-} from 'states/virustotal/api';
+import vtApi from 'states/virustotal/api';
 
 
 const useVirusTotal = () => {
-    const { showNotification, renderNotifications } = useNotification();
+    const { showNotification, renderNotifications, ...noti } = useNotification();
+    const {
+        useGetDataMutation,
+        useScanUrlMutation,
+        useScanFileMutation,
+        useScanHashMutation,
+    } = vtApi;
 
     const [url, setUrl] = useState('');
     const [id, setId] = useState('');
     const [data, setData] = useState(null);
     const [scanUrl] = useScanUrlMutation();
     const [getData] = useGetDataMutation();
+    const [scanFile] = useScanFileMutation();
+    const [scanHash] = useScanHashMutation();
     const [status, setStatus] = useState();
+
+
+    const handleHashScan = (hash) => {
+        setStatus("Scanning...");
+        scanHash(hash).unwrap().then(data => {
+            console.log(data)
+            setStatus("Fetching data...");
+
+        }).catch((error) => {
+            console.log(error);
+            noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
+        });
+    }
+
+    const handleFileScan = (file) => {
+        setStatus("Scanning...");
+        scanFile(file).unwrap().then(data => {
+            console.log(data)
+            setStatus("Fetching data...");
+        }).catch((error) => {
+            console.log(error);
+            noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
+        });
+    }
 
     const handleGetData = (id) => {
         setStatus("Scan finished. Getting data...");
@@ -38,6 +67,9 @@ const useVirusTotal = () => {
             const { id = null } = data
             setId(id);
             handleGetData(id);
+        }).catch((error) => {
+            console.log(error);
+            noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
         });
     };
 
@@ -56,6 +88,9 @@ const useVirusTotal = () => {
         setUrl,
         data,
         handleScan,
+        handleGetData,
+        handleFileScan,
+        handleHashScan,
         status,
         setStatus,
         renderNotifications

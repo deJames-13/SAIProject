@@ -6,9 +6,10 @@ import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import AnalysesTable from './scan-table';
 
 import React from 'react';
+import ScanFile from './scan-file';
 
 
-export default function Scan() {
+export default function Scan({ type = "url" }) {
   const {
     url,
     setUrl,
@@ -18,8 +19,8 @@ export default function Scan() {
   } = useVirusTotal();
 
 
-  return (
-    <>
+  const inputUrlComponent = () => {
+    return (
       <MDBox>
         <MDBox style={{
           width: '100%',
@@ -44,6 +45,15 @@ export default function Scan() {
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
         </p>
       </MDBox>
+    )
+  }
+
+
+
+  return (
+    <>
+      {type === "url" && inputUrlComponent()}
+      {type === "file" && <ScanFile />}
 
       <div className="divider"></div>
 
