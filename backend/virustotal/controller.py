@@ -17,33 +17,6 @@ from .serializers import (
     UploadSerializer
 )
 
-
-class FileUploadViewSet(viewsets.ModelViewSet):
-    queryset = FileReports.objects.all()
-    serializer_class = FileReportsSerializer
-    parser_classes = (MultiPartParser, FormParser)
-    
-    
-    @action(detail=False, methods=['post'], url_path='scan-file')
-    def get_file_report(self, request):
-        uploaded_file = request.FILES.get("file")
-        content_type = uploaded_file.content_type
-        
-        if not uploaded_file:
-            return Response({"error": "File is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        files = {
-            "file": (uploaded_file.name, uploaded_file.read(), uploaded_file.content_type)
-        }
-        service = VirusTotalService()
-        result = service.scan_file(files)
-        
-        if not result:
-            return Response({"error": "Failed to scan file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        return Response(result, status=status.HTTP_200_OK)
-    
-
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = (UrlReportsSerializer)
@@ -108,7 +81,61 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class AnalysesViewSet(viewsets.ModelViewSet):
+    queryset = Analyses.objects.all()
+    serializer_class = AnalysesSerializer
+    
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
+    analysis = Analyses.objects.all()
+    analysis_serializer = AnalysesSerializer
+    
+    def create (self, request):
+        if not request.user.is_authenticated:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        data = request.data
+        analysis = data.get("analysis")
+        data.pop("analysis")
+        if not analysis:
+            return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        analysis_instance = Analyses.objects.create(**analysis)
+        data["scan_id"] = analysis_instance.id
+        data["user_id"] = request.user.id
+        
+        
+        serializer = UrlReportsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+
+class FileUploadViewSet(viewsets.ModelViewSet):
+    queryset = FileReports.objects.all()
+    serializer_class = FileReportsSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    
+    @action(detail=False, methods=['post'], url_path='scan-file')
+    def get_file_report(self, request):
+        uploaded_file = request.FILES.get("file")
+        content_type = uploaded_file.content_type
+        
+        if not uploaded_file:
+            return Response({"error": "File is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        files = {
+            "file": (uploaded_file.name, uploaded_file.read(), uploaded_file.content_type)
+        }
+        service = VirusTotalService()
+        result = service.scan_file(files)
+        
+        if not result:
+            return Response({"error": "Failed to scan file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(result, status=status.HTTP_200_OK)
     
