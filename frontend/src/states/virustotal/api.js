@@ -43,9 +43,12 @@ export const vtApi = apiSlice.injectEndpoints({
 
         getFileReport: build.mutation({
             query: (id) => ({
-                url: `${baseUrl}/get-file-reports/?${id}`,
-                method: 'GET',
+                url: `${baseUrl}/get-file-report/`,
+                method: 'POST',
                 headers,
+                body: JSON.stringify({
+                    id,
+                }),
             }),
         }),
 

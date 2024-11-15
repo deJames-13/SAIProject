@@ -45,14 +45,27 @@ class VirusTotalService:
             print(f"An error occurred: {e}")
             return None
     
+    def get_analyses(self, id):
+        analyses_url = f"{self.base_url}/analyses/{id}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(analyses_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+    
     def get_file_report(self, scan_id):
-        report_url = f"{self.base_url}/files/{scan_id}"
+        report_url = f"{self.base_url}/files/{scan_id.split('==')[0]}"
         headers = {
             "x-apikey": self.api_key
         }
         response = requests.get(report_url, headers=headers)
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            return data
         else:
             print(f"An error occurred: {response.status_code} - {response.text}")
             return None

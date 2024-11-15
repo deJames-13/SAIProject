@@ -22,6 +22,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const [getData] = useGetDataMutation();
     const [scanFile] = useScanFileMutation();
     const [scanHash] = useScanHashMutation();
+    const [getFileReport] = useGetFileReportMutation();
     const [status, setStatus] = useState();
 
 
@@ -37,20 +38,27 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         });
     }
 
+    const fetchFileData = (fileId) => {
+        console.clear()
+        console.table(fileId)
+        setStatus("Fetching data...");
+        getFileReport(fileId).unwrap().then(({ data }) => {
+            console.table(fileId, data)
+            setData(data);
+            localStorage.setItem('data', JSON.stringify(data))
+            setStatus("Data fetched successfully.");
+        });
+    }
+
     const handleFileScan = (file) => {
         setStatus("Scanning...");
         scanFile(file).unwrap().then(data => {
-            console.log(data)
-            setStatus("Fetching data...");
+            fetchFileData(data.id);
         }).catch((error) => {
             console.log(error);
             noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
         });
     }
-
-    const fetchHashData = (hash) => { }
-
-    const fetchFileData = (fileId) => { }
 
     const handleGetData = (id) => {
         setStatus("Scan finished. Getting data...");
