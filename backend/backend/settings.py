@@ -32,6 +32,7 @@ THIRD_PARTY_APPS = [
     # 'material',
     # 'material.admin',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -60,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 TEMPLATES = [
@@ -109,6 +111,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# settings.py
+
+AUTHENTICATION_BACKENDS = [
+   
+    'django.contrib.auth.backends.ModelBackend',  # The default backend for other methods (optional)
+]
+
 
 
 # Internationalization
