@@ -88,7 +88,7 @@ export const dashboardRoutes = [
     name: "View History",
     key: "history",
     icon: <Icon fontSize="small">history</Icon>,
-    route: "/threats/history",
+    route: "/threats/view-history",
     component: <VirusTotal type="history" active='view-history' />,
   },
   {

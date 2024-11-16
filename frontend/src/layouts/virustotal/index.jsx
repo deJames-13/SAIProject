@@ -18,6 +18,7 @@ import DashboardNavbar from "components/Navbars/DashboardNavbar";
 
 
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import History from "./history";
 import Reports from "./reports";
 import Scan from "./scan";
@@ -26,6 +27,7 @@ import Scan from "./scan";
 export default function VirusTotal({ type = "url", active = "scan-url" }) {
   const [menu, setMenu] = useState(null);
   const [activeTab, setActiveTab] = useState(active);
+  const nav = useNavigate();
 
 
   const tabs = {
@@ -34,7 +36,7 @@ export default function VirusTotal({ type = "url", active = "scan-url" }) {
       sublabel: 'Scan a URL for malware using VirusTotal API',
       element: <Scan type="url" />,
     },
-    'view-reports': {
+    'scan-url-report': {
       label: 'View Reports',
       sublabel: 'View reports of scanned URLs and files',
       element: <Reports type="type" />,
@@ -51,10 +53,20 @@ export default function VirusTotal({ type = "url", active = "scan-url" }) {
     },
   }
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
+  const openMenu = ({ currentTarget }) => {
+    setMenu(currentTarget);
+  };
   const closeMenu = (tab) => () => {
     setMenu(null);
     setActiveTab(tab);
+    let navTo = `/threats/${tab}`;
+    if (tab === 'scan-url-report') {
+      navTo = '/threats/scan-url/report';
+    } else if (tab === 'scan-file-report') {
+      navTo = '/threats/scan-file/report';
+    }
+    nav(navTo);
+
   };
 
   const renderMenu = (
