@@ -56,7 +56,7 @@ export default function ReportTable() {
     const data = !results?.length ? {} : {
         columns: [
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
-            { Header: "URL", accessor: "votes", width: "20%", align: "left" },
+            { Header: "Votes", accessor: "votes", width: "20%", align: "left" },
             { Header: "Submissions", accessor: "submissions", align: "center" },
             { Header: "Timestamp", accessor: "timestamp", align: "center" },
             { Header: "", accessor: "actions", align: "center" },
@@ -64,8 +64,8 @@ export default function ReportTable() {
         ],
         rows: results.map((report, idx) => ({
             info: info(report, idx),
-            votes: votes(report, idx),
-            submissions: report?.times_submitted,
+            votes: votes(report?.analysis, idx),
+            submissions: report?.analysis?.times_submitted,
             timestamp: report?.timestamp,
             actions: (
                 <MDBox display="flex" alignItems="center" justifyContent="center" gap={2}>
