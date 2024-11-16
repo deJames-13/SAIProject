@@ -14,7 +14,6 @@ class AnalysesSerializer(serializers.ModelSerializer):
 
 class ScanHistorySerializer(serializers.ModelSerializer):
     analysis = AnalysesSerializer()
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = ScanHistory
