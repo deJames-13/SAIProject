@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(default=False)  
@@ -41,15 +42,15 @@ class ScanHistory(SoftDeleteModel):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # Relationship 
-    scan_id = models.ForeignKey(Analyses, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    analysis = models.ForeignKey(Analyses, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.scan_id
+        return self.title
 
     class Meta:
         indexes = [
-            models.Index(fields=['scan_id']), 
+            models.Index(fields=['scan_type']), 
             models.Index(fields=['title']), 
             models.Index(fields=['timestamp']), 
         ]
@@ -63,8 +64,8 @@ class UrlReports(SoftDeleteModel):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # Relationship 
-    scan_id = models.ForeignKey(Analyses, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    analysis = models.ForeignKey(Analyses, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     objects = SoftDeleteManager()
     def delete(self, using=None, keep_parents=False):
@@ -72,9 +73,8 @@ class UrlReports(SoftDeleteModel):
         self.deleted_at = timezone.now()
         self.save()
         
-        
     def __str__(self):
-        return self.scan_id
+        return self.title
     
     class Meta:
         indexes = [
@@ -91,8 +91,8 @@ class FileReports(SoftDeleteModel):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # Relationship 
-    scan_id = models.ForeignKey(Analyses, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    analysis = models.ForeignKey(Analyses, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     objects = SoftDeleteManager()
     def delete(self, using=None, keep_parents=False):
@@ -101,7 +101,7 @@ class FileReports(SoftDeleteModel):
         self.save()
     
     def __str__(self):
-        return self.scan_id
+        return self.file_name
     
     class Meta:
         indexes = [

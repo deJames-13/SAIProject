@@ -57,7 +57,7 @@ export default function useUrlReportAction() {
 
                 if (response.error) {
                     noti.error(Object.values(response.error?.data || {})?.map((item) => [item].join('\n'))?.join(' '));
-                    console.error(response.error);
+                    throw new Error(response.error);
                 }
 
 
@@ -85,8 +85,8 @@ export default function useUrlReportAction() {
             .then((response) => {
                 if (response.error)
                     throw new Error(response.error);
+                setReports(reports.results.filter((report) => report.id !== id));
                 noti.success('Report deleted successfully');
-                setReports(reports.filter((report) => report.id !== id));
                 return response;
             })
             .catch((error) => {

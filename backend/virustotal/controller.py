@@ -5,11 +5,13 @@ from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 
+
 import json
 import os
 
 from .services import VirusTotalService
 from .models import UrlReports, FileReports, Analyses, ScanHistory
+
 from .serializers import (
     UrlReportsSerializer,
     FileReportsSerializer,
@@ -87,6 +89,8 @@ class AnalysesViewSet(viewsets.ModelViewSet):
     queryset = Analyses.objects.all()
     serializer_class = AnalysesSerializer
     
+    
+
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
@@ -103,9 +107,8 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         if not analysis:
             return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        analysis_instance = Analyses.objects.create(**analysis)
-        data["scan_id"] = analysis_instance.id
-        data["user_id"] = request.user.id
+        data["analysis"] = analysis
+        data["user"] = request.user.id
         
         
         serializer = UrlReportsSerializer(data=data)
@@ -121,6 +124,25 @@ class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
     parser_classes = (MultiPartParser, FormParser)
+    
+    def create(self, request):
+        if not request.user.is_authenticated:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        data = request.data
+        analysis = data.get("analysis")
+        if not analysis:
+            return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        analysis_instance = Analyses.objects.create(**analysis)
+        data["analysis"] = analysis_instance.id
+        data["user"] = request.user.id
+        
+        serializer = FileReportsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['post'], url_path='scan-file')
     def get_file_report(self, request):
