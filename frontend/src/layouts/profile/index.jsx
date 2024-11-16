@@ -1,187 +1,158 @@
-
-// @mui material components
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
+import { Button, Divider, Grid, TextField } from "@mui/material";
+import axios from "axios";
+import React, { useEffect, useRef } from "react";
 
 // React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // React example components
-import ProfileInfoCard from "components/Cards/InfoCards/ProfileInfoCard";
-import DefaultProjectCard from "components/Cards/ProjectCards/DefaultProjectCard";
 import Footer from "components/Footer";
 import DashboardLayout from "components/LayoutContainers/DashboardLayout";
-import ProfilesList from "components/Lists/ProfilesList";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
-import PlatformSettings from "layouts/profile/components/PlatformSettings";
 
-// Data
-import profilesListData from "layouts/profile/data/profilesListData";
+import useNotification from "hooks/notifications/useNotification";
+import { useDispatch, useSelector } from "react-redux";
+import * as auth from "states/auth/slice";
 
-// Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import homeDecor2 from "assets/images/home-decor-2.jpg";
-import homeDecor3 from "assets/images/home-decor-3.jpg";
-import homeDecor4 from "assets/images/home-decor-4.jpeg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
 
 function Overview() {
+  const { accessToken, userInfo } = useSelector(state => state.auth);
+  const noti = useNotification();
+  const dispatch = useDispatch();
+  const usernameRef = useRef(null);
+  const emailRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  useEffect(() => {
+    const storedUserInfo = userInfo || {};
+    if (usernameRef.current) usernameRef.current.value = storedUserInfo.username || "";
+    if (emailRef.current) emailRef.current.value = storedUserInfo.email || "";
+    if (firstNameRef.current) firstNameRef.current.value = storedUserInfo.first_name || "";
+    if (lastNameRef.current) lastNameRef.current.value = storedUserInfo.last_name || "";
+    if (passwordRef.current) passwordRef.current.value = storedUserInfo.password || "";
+  }, []);
+
+  const handleSave = async () => {
+    const userData = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      first_name: firstNameRef.current.value,
+      last_name: lastNameRef.current.value,
+      password: passwordRef.current.value,
+    };
+
+    console.log('User Data being sent:', userData);
+
+    axios.put(
+      "http://localhost:8000/user/update/",
+      userData,
+      {
+        headers: {
+          Authorization: `Token ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    ).then(response => {
+      dispatch(auth.setCredentials({ userInfo: response.data, token: accessToken }));
+      noti.success('Profile updated successfully');
+    }).catch(error => {
+      noti.error('Failed to update profile');
+      console.error('Failed to update profile:', error);
+    });
+
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
+
       <MDBox mb={2} />
+
       <Header>
-        <MDBox mt={5} mb={3}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4}>
-              <PlatformSettings />
-            </Grid>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-              <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
-              <ProfileInfoCard
-                title="profile information"
-                description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-                info={{
-                  fullName: "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
-                }}
-                social={[
-                  {
-                    link: "https://www.facebook.com/CreativeTim/",
-                    icon: <FacebookIcon />,
-                    color: "facebook",
-                  },
-                  {
-                    link: "https://twitter.com/creativetim",
-                    icon: <TwitterIcon />,
-                    color: "twitter",
-                  },
-                  {
-                    link: "https://www.instagram.com/creativetimofficial/",
-                    icon: <InstagramIcon />,
-                    color: "instagram",
-                  },
-                ]}
-                action={{ route: "", tooltip: "Edit Profile" }}
-                shadow={false}
-              />
-              <Divider orientation="vertical" sx={{ mx: 0 }} />
-            </Grid>
-            <Grid item xs={12} xl={4}>
-              <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox pt={2} px={2} lineHeight={1.25}>
-          <MDTypography variant="h6" fontWeight="medium">
-            Projects
-          </MDTypography>
-          <MDBox mb={1}>
-            <MDTypography variant="button" color="text">
-              Architects design houses
+
+
+        <MDBox mt={5} mb={3} className="">
+          <MDBox p={2} sx={{ position: "relative", zIndex: 2 }} className="border-t border-slate-300">
+            <MDTypography variant="h6" mb={2}>
+              Edit Profile
             </MDTypography>
+            <form>
+              <div>
+                <TextField
+                  label="Username"
+                  variant="standard"
+                  name="username"
+                  inputRef={usernameRef}
+                  defaultValue={userInfo.username}
+                  fullWidth
+                  sx={{ padding: "10px" }}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Email"
+                  variant="standard"
+                  name="email"
+                  inputRef={emailRef}
+                  defaultValue={userInfo.email}
+                  fullWidth
+                  sx={{ padding: "10px" }}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="First Name"
+                  variant="standard"
+                  name="first_name"
+                  inputRef={firstNameRef}
+                  defaultValue={userInfo.first_name}
+                  fullWidth
+                  sx={{ padding: "10px" }}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Last Name"
+                  variant="standard"
+                  name="last_name"
+                  inputRef={lastNameRef}
+                  defaultValue={userInfo.last_name}
+                  fullWidth
+                  sx={{ padding: "10px" }}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Password"
+                  variant="standard"
+                  name="password"
+                  type="password"
+                  inputRef={passwordRef}
+                  defaultValue={userInfo.password}
+                  fullWidth
+                  sx={{ padding: "10px" }}
+                />
+              </div>
+              <div style={{ marginTop: "20px" }}>
+                <Button variant="contained" onClick={handleSave} className="text-white">
+                  Save
+                </Button>
+              </div>
+            </form>
           </MDBox>
         </MDBox>
-        <MDBox p={2}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor1}
-                label="project #2"
-                title="modern"
-                description="As Uber works through a huge amount of internal management turmoil."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team1, name: "Elena Morison" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team4, name: "Peterson" },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor2}
-                label="project #1"
-                title="scandinavian"
-                description="Music is something that everyone has their own specific opinion about."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team4, name: "Peterson" },
-                  { image: team1, name: "Elena Morison" },
-                  { image: team2, name: "Ryan Milly" },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor3}
-                label="project #3"
-                title="minimalist"
-                description="Different people have different taste, and various types of music."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team4, name: "Peterson" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team1, name: "Elena Morison" },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor4}
-                label="project #4"
-                title="gothic"
-                description="Why would anyone pick blue over pink? Pink is obviously a better color."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team4, name: "Peterson" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team1, name: "Elena Morison" },
-                ]}
-              />
-            </Grid>
-          </Grid>
-        </MDBox>
+
+
       </Header>
+
       <Footer />
+      {noti.renderNotifications}
     </DashboardLayout>
   );
 }

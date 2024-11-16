@@ -37,7 +37,7 @@ function Cover() {
   const handleSignup = async (event) => {
     event.preventDefault(); // Prevent form default submission behavior
 
-    axios.post("http://localhost:8000/user/signup/", {
+    axios.post(`${import.meta.env.VITE_APP_API_URL}/user/signup/`, {
       username: name,
       email: email,
       password: password,

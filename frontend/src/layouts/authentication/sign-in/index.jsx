@@ -51,7 +51,7 @@ function Basic() {
     event.preventDefault();
 
     axios.post(
-      "http://localhost:8000/user/login/",
+      `${import.meta.env.VITE_APP_API_URL}/user/login/`,
       { email, password },
       {
         headers: {
@@ -70,8 +70,6 @@ function Basic() {
       setErrorMessage(error.response?.data?.error || "An error occurred during login");
       setSuccessMessage("");
     });
-
-
 
   };
 
