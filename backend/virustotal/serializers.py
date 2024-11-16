@@ -13,8 +13,6 @@ class AnalysesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ScanHistorySerializer(serializers.ModelSerializer):
-    analysis = AnalysesSerializer()
-
     class Meta:
         model = ScanHistory
         fields = '__all__'

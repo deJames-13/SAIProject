@@ -38,11 +38,13 @@ class ScanHistory(SoftDeleteModel):
     message = models.TextField()
     scan_type = models.CharField(max_length=200)
     scan_date = models.DateTimeField()
+    scan_stats = models.JSONField()
+    scan_votes = models.JSONField()
     permalink = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     
+    
     # Relationship 
-    analysis = models.ForeignKey(Analyses, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self):
