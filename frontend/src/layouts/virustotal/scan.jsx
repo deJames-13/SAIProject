@@ -52,8 +52,7 @@ export default function Scan({ type = "url" }) {
   }
 
   React.useEffect(() => {
-
-    console.log(data)
+    // console.log(data)
   }, [data])
 
   return (

@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = [
     # 'material.admin',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -163,6 +164,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 
 }
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+ACCESS_CONTROL_ALLOW_ORIGIN = '*'
 
 
 MATERIAL_ADMIN_SITE = {

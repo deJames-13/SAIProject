@@ -37,14 +37,19 @@ export default function VirusTotal({ type = "url", active = "scan-url" }) {
       element: <Scan type="url" />,
     },
     'scan-url-report': {
-      label: 'View Reports',
+      label: 'View URL Reports',
       sublabel: 'View reports of scanned URLs and files',
-      element: <Reports type="type" />,
+      element: <Reports type="url" />,
     },
     'scan-file': {
       label: 'Scan File',
       sublabel: 'Scan a file for malware using VirusTotal API',
       element: <Scan type="file" />,
+    },
+    'scan-file-report': {
+      label: 'View File Reports',
+      sublabel: 'View reports of scanned URLs and files',
+      element: <Reports type="file" />,
     },
     'view-history': {
       label: 'View History',
@@ -58,7 +63,6 @@ export default function VirusTotal({ type = "url", active = "scan-url" }) {
   };
   const closeMenu = (tab) => () => {
     setMenu(null);
-    setActiveTab(tab);
     let navTo = `/threats/${tab}`;
     if (tab === 'scan-url-report') {
       navTo = '/threats/scan-url/report';
@@ -66,6 +70,7 @@ export default function VirusTotal({ type = "url", active = "scan-url" }) {
       navTo = '/threats/scan-file/report';
     }
     nav(navTo);
+    setActiveTab(tab);
 
   };
 
