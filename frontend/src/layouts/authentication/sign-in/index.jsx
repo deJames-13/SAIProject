@@ -1,8 +1,3 @@
-
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
@@ -23,13 +18,21 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
+
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import * as auth from "states/auth/slice";
+
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();  // Navigate hook for redirection after successful login
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -48,8 +51,7 @@ function Basic() {
     event.preventDefault();
 
     try {
-      // Send the login request to the backend
-      const response = await axios.post(
+      axios.post(
         "http://localhost:8000/user/login/",
         { email, password },
         {
@@ -57,14 +59,20 @@ function Basic() {
             "Content-Type": "application/json",
           },
         }
-      );
+      ).then((response) => {
+        dispatch(auth.setCredentials({
+          userInfo: response.data.user,
+          token: response.data.token
+        }));
+        setSuccessMessage("Login successful!");
+        setErrorMessage("");
+        navigate("/dashboard");
+      }).catch((error) => {
+        setErrorMessage(error.response?.data?.message || "An error occurred during login");
+        setSuccessMessage("");
+      });
 
 
-      localStorage.setItem("token", response.data.token);
-
-      setSuccessMessage("Login successful!");
-      setErrorMessage("");
-      navigate("/dashboard");
     } catch (error) {
 
       setErrorMessage(error.response?.data?.message || "An error occurred during login");

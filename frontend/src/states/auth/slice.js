@@ -1,7 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const userInfo = window.localStorage.getItem('userInfo');
-const accessToken = window.localStorage.getItem('accessToken');
+let userInfo = null;
+let accessToken = null;
+
+try {
+  const storedUserInfo = window.localStorage.getItem('userInfo');
+  if (storedUserInfo) {
+    userInfo = JSON.parse(storedUserInfo);
+  }
+} catch (error) {
+  console.error('Error parsing userInfo from localStorage:', error);
+}
+
+try {
+  accessToken = window.localStorage.getItem('accessToken');
+} catch (error) {
+  console.error('Error getting accessToken from localStorage:', error);
+}
+
 const initialState = {
   userInfo: userInfo ? JSON.parse(userInfo) : null,
   accessToken: accessToken || null,

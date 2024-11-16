@@ -1,5 +1,5 @@
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -19,6 +19,8 @@ import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import * as auth from "states/auth/slice";
 
 function Cover() {
   // State for form inputs
@@ -28,25 +30,29 @@ function Cover() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   // Function to handle form submission
   const handleSignup = async (event) => {
     event.preventDefault(); // Prevent form default submission behavior
 
-    try {
-      const response = await axios.post("http://localhost:8000/user/signup/", {
-        username: name,
-        email: email,
-        password: password,
-      });
-
-      // Handle successful response
+    axios.post("http://localhost:8000/user/signup/", {
+      username: name,
+      email: email,
+      password: password,
+    }).then((response) => {
+      dispatch(auth.setCredentials({
+        userInfo: response.data.user,
+        token: response.data.token
+      }));
       setSuccessMessage(response.data.message);
-      setErrorMessage(""); // Clear any previous errors
-    } catch (error) {
-      // Handle error response
+      setErrorMessage("");
+    }).catch((error) => {
       setErrorMessage(error.response?.data?.message || "An error occurred during signup");
-      setSuccessMessage(""); // Clear any success message
-    }
+      setSuccessMessage("");
+    });
+
   };
 
   return (

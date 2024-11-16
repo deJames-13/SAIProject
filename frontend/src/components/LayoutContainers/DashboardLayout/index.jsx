@@ -18,7 +18,7 @@ function DashboardLayout({ children }) {
 
   useEffect(() => {
 
-    if (!userInfo?.id && !accessToken) {
+    if (!userInfo?.id || !accessToken) {
       nav("/authentication/sign-in");
     }
     if (!(!userInfo?.id || !accessToken))
