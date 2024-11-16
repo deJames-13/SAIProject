@@ -1,33 +1,27 @@
 
-import { useEffect } from "react";
-
-// react-router-dom components
-import { NavLink, useLocation } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
-// @mui material components
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+
+
 import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import Link from "@mui/material/Link";
 import List from "@mui/material/List";
 
-// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
-
-// React example components
 import SidenavCollapse from "components/Sidenav/SidenavCollapse";
 
-// Custom styles for the Sidenav
+
+
 import axios from "axios";
 import SidenavRoot from "components/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "components/Sidenav/styles/sidenav";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-// React context
+
 import {
   setMiniSidenav,
   setTransparentSidenav,
@@ -36,12 +30,13 @@ import {
 } from "context";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
+  const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
+  const navigate = useNavigate();
   const collapseName = location.pathname.replace("/", "");
 
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
@@ -66,8 +61,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     }
   };
 
-  let textColor = "white";
 
+  let textColor = "white";
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
     textColor = "dark";
   } else if (whiteSidenav && darkMode) {
@@ -77,29 +72,19 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   useEffect(() => {
-    // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
       setTransparentSidenav(dispatch, window.innerWidth < 1200 ? false : transparentSidenav);
       setWhiteSidenav(dispatch, window.innerWidth < 1200 ? false : whiteSidenav);
     }
 
-    /** 
-     The event listener that's calling the handleMiniSidenav function when resizing the window.
-    */
     window.addEventListener("resize", handleMiniSidenav);
-
-    // Call the handleMiniSidenav function to set the state with the initial value.
     handleMiniSidenav();
-
-    // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
-  // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
-
     if (type === "collapse") {
       returnValue = href ? (
         <Link
@@ -149,11 +134,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         />
       );
     }
-
     return returnValue;
   });
 
-  return (
+  return (!userInfo?.id || !accessToken) ? '' : (
     <SidenavRoot
       {...rest}
       variant="permanent"

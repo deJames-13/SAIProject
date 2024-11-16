@@ -25,7 +25,7 @@ function DashboardLayout({ children }) {
       setLayout(dispatch, "dashboard");
   }, [pathname]);
 
-  return !userInfo?.id && !accessToken ? ' ' : (
+  return (!userInfo?.id || !accessToken) ? '' : (
     <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
