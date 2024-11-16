@@ -1,7 +1,25 @@
 import { apiSlice } from "../api";
 
-const token = localStorage.getItem('accessToken');
+function toFormData(obj) {
+    const formData = new FormData();
+    Object.keys(obj).forEach(key => {
+        if (obj[key] instanceof Array) {
+            obj[key].forEach(item => {
+                formData.append(key, item);
+            });
+        } 
+        else if (obj[key] instanceof Object) {
+            formData.append(key, JSON.stringify(obj[key]));
+        }
+        else {
+            formData.append(key, obj[key]);
+        }
+        
+    });
+    return formData;
+}
 
+const token = localStorage.getItem('accessToken');
 const baseUrl = '/virustotal';
 const headers = {
     'Content-Type': 'application/json',
@@ -11,6 +29,9 @@ const headers = {
 
 export const vtApi = apiSlice.injectEndpoints({
     endpoints: build => ({
+
+        // ##############################################################################
+        // SCANNING
         scanUrl: build.mutation({
             query: url => ({
                 url: `${baseUrl}/scan-url/`,
@@ -26,7 +47,7 @@ export const vtApi = apiSlice.injectEndpoints({
                 const formData = new FormData();
                 formData.append('file', file);
                 return {
-                    url: `${baseUrl}file/scan-file/`,
+                    url: `/file-reports/scan-file/`,
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -46,8 +67,9 @@ export const vtApi = apiSlice.injectEndpoints({
                 }),
             }),
         }),
-
-        getFileReport: build.mutation({
+        // ##############################################################################
+        // REPORTS
+        getFileData: build.mutation({
             query: ({id, type}) => ({
                 url: `${baseUrl}/get-file-report/`,
                 method: 'POST',
@@ -58,14 +80,19 @@ export const vtApi = apiSlice.injectEndpoints({
                 }),
             }),
         }),
-
-        getData: build.mutation({
+        getUrlData: build.mutation({
             query: (id) => ({
                 url: `${baseUrl}/get-analysis/?id=${id}`,
                 method: 'GET',
                 headers,
             }),
         }),
+        // ##############################################################################
+
+
+
+        // ##############################################################################
+        // URL REPORTS CRUD
         getUrlReports: build.mutation({
             query: () => ({
                 url: `/url-reports/`,
@@ -103,6 +130,76 @@ export const vtApi = apiSlice.injectEndpoints({
                 headers,
             }),
         }),
+        // ##############################################################################
+
+
+        // FILE REPORTS CRUD
+        // ##############################################################################
+        getFileReports: build.mutation({
+            query: () => ({
+                url: `/file-reports/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+        getFileReport: build.mutation({
+            query: (id) => ({
+                url: `/file-reports/${id}/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+        saveFileReport: build.mutation({
+            query: (report) => ({
+                url: `/file-reports/`,
+                method: 'POST',
+                body: JSON.stringify(report),
+                headers,
+                // headers: {
+                //     'Authorization': `Token ${token}`,
+                // },
+                // formData: true,
+            }),
+        }),
+        editFileReport: build.mutation({
+            query: (report) => ({
+                url: `/file-reports/${report.id}/`,
+                method: 'PUT',
+                body: JSON.stringify(report),
+                headers,
+                // headers: {
+                //     'Authorization': `Token ${token}`,
+                // },
+                // formData: true,
+            }),
+        }),
+        deleteFileReport: build.mutation({
+            query: (id) => ({
+                url: `/file-reports/${id}/`,
+                method: 'DELETE',
+                headers,
+            }),
+        }),
+        // ##############################################################################
+
+        // RESTORE
+        // ##############################################################################
+        restoreUrlReport: build.mutation({
+            query: (id) => ({
+                url: `/url-reports/${id}/restore/`,
+                method: 'POST',
+                headers,
+            }),
+        }),
+        restoreFileReport: build.mutation({
+            query: (id) => ({
+                url: `/file-reports/${id}/restore/`,
+                method: 'POST',
+                headers,
+            }),
+        }),
+        
+        
     }),
 });
 

@@ -5,7 +5,7 @@ from .controller import VirusTotalViewSet, UrlReportViewSet, FileUploadViewSet, 
 
 router = DefaultRouter()
 router.register(r'virustotal', VirusTotalViewSet, basename='virustotal')
-router.register(r'virustotalfile', FileUploadViewSet, basename='virustotalfile')
+router.register(r'file-reports', FileUploadViewSet, basename='file-reports')
 router.register(r'url-reports', UrlReportViewSet, basename='url-reports')
 router.register(r'scan-history', ScanHistoryViewSet, basename='scan-history')
 

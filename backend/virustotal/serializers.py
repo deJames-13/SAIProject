@@ -33,7 +33,7 @@ class UrlReportsSerializer(serializers.ModelSerializer):
         return url_report
 
 class FileReportsSerializer(serializers.ModelSerializer):
-    file = serializers.FileField()
+    # file = serializers.FileField()
     analysis = AnalysesSerializer()
 
     class Meta:

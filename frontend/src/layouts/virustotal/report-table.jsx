@@ -2,28 +2,44 @@ import { Icon } from '@mui/material';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import DataTable from 'components/Tables/DataTable';
+import useNotification from 'hooks/notifications/useNotification';
+import useFileReportAction from 'hooks/virustotal/useFileReportAction';
 import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
 import React from 'react';
 import Swal from 'sweetalert2';
+import ScanModal from './scan-modal';
+import ScanModalContent from './scan-modal-content';
 
-export default function ReportTable() {
+export default function ReportTable({ type = "url" }) {
     const [results, setResults] = React.useState([]);
+
     const {
-        reports,
-        setReports,
+        reports: urlReports,
+        setReports: setUrlReports,
         fetchUrlReports,
-        removeReport
+        removeReport: removeUrlReport
     } = useUrlReportAction();
 
+    const {
+        reports: fileReports,
+        setReports: setFileReports,
+        fetchFileReports,
+        removeReport: removeFileReport
+    } = useFileReportAction()
+
+    const removeReport = type === 'url' ? removeUrlReport : removeFileReport;
+    const fetchReports = type === 'url' ? fetchUrlReports : fetchFileReports;
+    const reports = type === 'url' ? urlReports : fileReports;
+
+
 
     React.useEffect(() => {
-        fetchUrlReports();
-    }, []);
+        fetchReports()
+    }, [type]);
 
     React.useEffect(() => {
-        if (reports?.results) {
-            setResults(reports.results);
-        }
+        if (reports?.results)
+            setResults(reports.results)
     }, [reports]);
 
 
@@ -32,11 +48,13 @@ export default function ReportTable() {
             <MDBox key={`info_` + idx} className='py-4'>
                 <div className='flex gap-4 items-start'>
                     <div className='font-bold'>Title:</div>
-                    <div>{report?.title}</div>
+                    {type === 'file' && <div className='break-words'>{report?.file_name}</div>}
+                    {type === 'url' && <div className='break-words'>{report?.title}</div>}
                 </div>
             </MDBox>
         )
     });
+
     const votes = (({ votes }, idx) => {
         return <>
             <div className="flex flex-wrap gap-2">
@@ -51,9 +69,6 @@ export default function ReportTable() {
             </div>
         </>
     })
-
-
-
     const data = !results?.length ? {} : {
         columns: [
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
@@ -70,10 +85,10 @@ export default function ReportTable() {
             timestamp: report?.timestamp,
             actions: (
                 <MDBox display="flex" alignItems="center" justifyContent="center" gap={2}>
-                    <MDButton color="primary">
-                        <Icon>visibility</Icon>
-                    </MDButton>
-
+                    <ScanModal
+                        topElement={<span className='font-bold uppercase'>View Scanned</span>}
+                        contentElement={<ScanModalContent report={report} idx={idx} type={type} />}
+                    />
                     <MDButton
                         color="error"
                         onClick={() => {
