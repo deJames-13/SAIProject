@@ -23,7 +23,7 @@ const headers = () => {
 const BASE_URL = import.meta.env.VITE_APP_API_URL + '/api';
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
-  credentials: 'include',
+  // credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
     if (token) {
