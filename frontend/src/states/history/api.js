@@ -19,9 +19,17 @@ export const historyApi = apiSlice.injectEndpoints({
             }),
         }),
 
-        get: build.query({
+        get: build.mutation({
             query: () => ({
                 url: `${baseUrl}/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
+        getById: build.mutation({
+            query: (id) => ({
+                url: `${baseUrl}/${id}/`,
                 method: 'GET',
                 headers,
             }),

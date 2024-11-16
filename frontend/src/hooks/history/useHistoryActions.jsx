@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import api from 'states/history/api';
 import { actions } from 'states/history/slice';
@@ -32,10 +33,24 @@ const historyVerbose = {
 
 export default function useHistoryActions() {
     const dispatch = useDispatch();
-    const { useSaveMutation, useGetQuery, useDeleteMutation } = api;
+    const { useSaveMutation, useGetMutation, useGetByIdMutation, use, useDeleteMutation } = api;
+    const [data, setData] = useState([]);
     const [save] = useSaveMutation();
-    const { data: historyData } = useGetQuery();
+    const [get] = useGetMutation();
+    const [getById] = useGetByIdMutation();
     const [deleteHistory] = useDeleteMutation();
+
+    const fetchHistories = async () => {
+        return get().unwrap().then((data) => {
+            setData(data);
+        });
+    }
+
+    const fetchHistoryById = async (id) => {
+        return getById(id).unwrap();
+    }
+
+
 
     const saveHistory = async (data) => {
         try {
@@ -55,15 +70,13 @@ export default function useHistoryActions() {
         }
     };
 
-    // Dispatch setHistory action to initialize the history state
-    if (historyData) {
-        dispatch(actions.setHistory(historyData));
-    }
 
     return {
+        data,
         saveHistory,
-        historyData,
         historyVerbose,
+        fetchHistories,
+        fetchHistoryById,
         deleteHistoryById,
     };
 }
