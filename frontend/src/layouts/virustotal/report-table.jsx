@@ -10,6 +10,72 @@ import Swal from 'sweetalert2';
 import ScanModal from './scan-modal';
 import ScanModalContent from './scan-modal-content';
 
+const DeleteAction = ({ removeReport = async () => { }, report, setResults, results }) => {
+    return (
+        <MDButton
+            color="error"
+            onClick={() => {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        removeReport(report?.id).then(() => {
+                            setResults(results.filter((item) => item.id !== report.id));
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            )
+                        })
+                    }
+                })
+            }}
+
+        >
+            <Icon>delete</Icon>
+        </MDButton>
+    )
+}
+
+const RestoreAction = ({ restoreReport = async () => { }, report, setResults, results }) => {
+    return (
+        <MDButton
+            color="success"
+            onClick={() => {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, restore it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        restoreReport(report?.id).then(() => {
+                            setResults(results.filter((item) => item.id !== report.id));
+                            Swal.fire(
+                                'Restored!',
+                                'Your file has been restored.',
+                                'success'
+                            )
+                        })
+                    }
+                })
+            }}
+
+        >
+            <Icon>restore</Icon>
+        </MDButton>
+    )
+}
+
 export default function ReportTable({ type = "url" }) {
     // reports - reports only
     // all - all reports including deleted
@@ -67,8 +133,9 @@ export default function ReportTable({ type = "url" }) {
             }
         }
         swapReport().then((res) => {
+            if (!res?.data) return;
             setReports(res.data);
-            setResults(res.data?.results);
+            setResults(res.data?.results || res.data);
         }).catch((err) => {
             console.error(err)
         });
@@ -102,6 +169,7 @@ export default function ReportTable({ type = "url" }) {
             </div>
         </>
     })
+
     const data = !results?.length ? {} : {
         columns: [
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
@@ -122,35 +190,10 @@ export default function ReportTable({ type = "url" }) {
                         topElement={<span className='font-bold uppercase'>View Scanned</span>}
                         contentElement={<ScanModalContent report={report} idx={idx} type={type} />}
                     />
-                    <MDButton
-                        color="error"
-                        onClick={() => {
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                text: "You won't be able to revert this!",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Yes, delete it!'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    removeReport(report?.id).then(() => {
-                                        setResults(results.filter((item) => item.id !== report.id));
-                                        Swal.fire(
-                                            'Deleted!',
-                                            'Your file has been deleted.',
-                                            'success'
-                                        )
-                                    })
-                                }
-                            })
-                        }}
-
-                    >
-                        <Icon>delete</Icon>
-                    </MDButton>
-
+                    {!report?.is_deleted ?
+                        <DeleteAction removeReport={removeReport} report={report} setResults={setResults} results={results} />
+                        : <RestoreAction restoreReport={restoreReport} report={report} setResults={setResults} results={results} />
+                    }
                 </MDBox>
             )
         }))

@@ -1,6 +1,7 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 
@@ -8,9 +9,16 @@ import json
 import os
 
 from .services import VirusTotalService
-from .models import UrlReports, FileReports, ScanHistory
+from .models import UrlReports, FileReports, Analyses, ScanHistory
 
-from .serializers import UrlReportsSerializer, FileReportsSerializer, ScanHistorySerializer
+from .serializers import (
+    UrlReportsSerializer,
+    FileReportsSerializer,
+    AnalysesSerializer,
+    ScanHistorySerializer,
+    UploadSerializer
+)
+
 
 class ScanHistoryViewSet(viewsets.ModelViewSet):
     queryset = ScanHistory.objects.all()
@@ -19,17 +27,13 @@ class ScanHistoryViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = ScanHistory.objects.all_with_deleted(page=page, per_page=per_page)
+        queryset = ScanHistory.objects.all_with_deleted()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = ScanHistory.objects.deleted_only(page=page, per_page=per_page)
+        queryset = ScanHistory.objects.deleted_only()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -49,6 +53,8 @@ class ScanHistoryViewSet(viewsets.ModelViewSet):
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
+    analysis = Analyses.objects.all()
+    analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
@@ -67,17 +73,13 @@ class UrlReportViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = UrlReports.objects.all_with_deleted(page=page, per_page=per_page)
+        queryset = UrlReports.objects.all_with_deleted()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = UrlReports.objects.deleted_only(page=page, per_page=per_page)
+        queryset = UrlReports.objects.deleted_only()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -98,6 +100,8 @@ class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
+    analysis = Analyses.objects.all()
+    analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
@@ -120,17 +124,13 @@ class FileUploadViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = FileReports.objects.all_with_deleted(page=page, per_page=per_page)
+        queryset = FileReports.objects.all_with_deleted()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        page = request.query_params.get('page', 1)
-        per_page = request.query_params.get('per_page', 10)
-        queryset = FileReports.objects.deleted_only(page=page, per_page=per_page)
+        queryset = FileReports.objects.deleted_only()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -168,6 +168,8 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
     permission_classes = [IsAuthenticated]
+
+
 
     @action(detail=False, methods=['post'], url_path='get-file-report')
     def get_file_report_by_id(self, request):
