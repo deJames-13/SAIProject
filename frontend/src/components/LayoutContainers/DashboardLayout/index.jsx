@@ -17,13 +17,12 @@ function DashboardLayout({ children }) {
   const nav = useNavigate();
 
   useEffect(() => {
-
     if (!userInfo?.id || !accessToken) {
       nav("/authentication/sign-in");
     }
     if (!(!userInfo?.id || !accessToken))
       setLayout(dispatch, "dashboard");
-  }, [pathname]);
+  }, [pathname, userInfo, accessToken]);
 
   return (!userInfo?.id || !accessToken) ? '' : (
     <MDBox

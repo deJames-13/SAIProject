@@ -28,6 +28,8 @@ import {
   setWhiteSidenav,
   useMaterialUIController,
 } from "context";
+import { useDispatch } from "react-redux";
+import * as auth from "states/auth/slice";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { userInfo, accessToken } = useSelector((state) => state.auth);
@@ -35,30 +37,25 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const navigate = useNavigate();
+  const redispatch = useDispatch();
   const collapseName = location.pathname.replace("/", "");
 
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    if (!accessToken) {
       console.error("No token found in localStorage");
       return;
     }
-
-    try {
-      const response = await axios.post("http://localhost:8000/user/logout/", {}, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      console.log(response.data.message);
-      localStorage.removeItem("token");
+    axios.post("http://localhost:8000/user/logout/", {}, {
+      headers: {
+        Authorization: `Token ${accessToken}`,
+      },
+    }).then((response) => {
+      redispatch(auth.logout());
       navigate("/authentication/sign-in");
-    } catch (error) {
+    }).catch((error) => {
       console.error("Logout failed:", error.response ? error.response.data : error);
-    }
+    });
   };
 
 
