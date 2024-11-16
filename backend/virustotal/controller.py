@@ -50,7 +50,6 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='scan-url')
     def get_url_report(self, request):
-        print(str(request.user))
         data = request.data
         url = data.get("url")
         if not url:
@@ -101,7 +100,6 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         
         data = request.data
         analysis = data.get("analysis")
-        data.pop("analysis")
         if not analysis:
             return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
         

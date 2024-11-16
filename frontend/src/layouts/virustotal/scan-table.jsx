@@ -69,20 +69,18 @@ export default function AnalysesTable({ analyses = null }) {
 
 
     const analysisPayload = () => ({
-        analysis: {
-            description: description.join(' '),
-            reputation,
-            times_submitted,
-            last_analysis_stats: {
-                harmless,
-                malicious,
-                suspicious,
-                undetected,
-                timeout,
-            },
-            votes: total_votes,
-            scan_id: id,
+        description: description.join(' '),
+        reputation,
+        times_submitted,
+        last_analysis_stats: {
+            harmless,
+            malicious,
+            suspicious,
+            undetected,
+            timeout,
         },
+        votes: total_votes,
+        scan_id: id,
     })
 
     const urlPayload = () => ({

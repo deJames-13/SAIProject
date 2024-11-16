@@ -1,31 +1,25 @@
 import { apiSlice } from "../api";
 
+const token = localStorage.getItem('accessToken');
 
 const baseUrl = '/virustotal';
-const headers = () => {
-    const token = localStorage.getItem('accessToken');
-    let h = {
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-    };
-    return h;
+const headers = {
+    'Content-Type': 'application/json',
+    'authorization': `Token ${token}`,
 }
 
 
 export const vtApi = apiSlice.injectEndpoints({
     endpoints: build => ({
         scanUrl: build.mutation({
-            query: url => {
-                console.log(headers());
-                return {
-                    url: `${baseUrl}/scan-url/`,
-                    method: 'POST',
-                    headers: headers(),
-                    body: JSON.stringify({
-                        url,
-                    }),
-                }
-            },
+            query: url => ({
+                url: `${baseUrl}/scan-url/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    url,
+                }),
+            }),
         }),
         scanFile: build.mutation({
             query: (file) => {
