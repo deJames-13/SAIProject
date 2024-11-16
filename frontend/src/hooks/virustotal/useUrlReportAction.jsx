@@ -85,7 +85,7 @@ export default function useUrlReportAction() {
             .then((response) => {
                 if (response.error)
                     throw new Error(response.error);
-                setReports(reports.results.filter((report) => report.id !== id));
+
                 noti.success('Report deleted successfully');
                 return response;
             })

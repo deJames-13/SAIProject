@@ -10,6 +10,7 @@ export default function ReportTable() {
     const [results, setResults] = React.useState([]);
     const {
         reports,
+        setReports,
         fetchUrlReports,
         removeReport
     } = useUrlReportAction();
@@ -87,7 +88,7 @@ export default function ReportTable() {
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     removeReport(report?.id).then(() => {
-
+                                        setResults(results.filter((item) => item.id !== report.id));
                                         Swal.fire(
                                             'Deleted!',
                                             'Your file has been deleted.',
