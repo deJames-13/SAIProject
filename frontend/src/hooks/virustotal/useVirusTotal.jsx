@@ -134,7 +134,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         });
     }
 
-    const handleGetData = (id) => {
+    const fetchUrlData = (id) => {
         setStatus("Scan finished. Getting data...");
         if (id) {
             return getData(id).unwrap().then(({ data }) => {
@@ -153,7 +153,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         }
     }
 
-    const handleScan = (id) => {
+    const handleUrlScan = (id) => {
         // 
         // let a = JSON.parse(localStorage.getItem('data'))
         // console.log(JSON.stringify(a.attributes.total_votes))
@@ -162,7 +162,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         scanUrl(url).unwrap().then(data => {
             const { id = null } = data
             setId(id);
-            handleGetData(id);
+            fetchUrlData(id);
         }).catch((error) => {
             console.log(error);
             noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
@@ -191,8 +191,8 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         setUrl,
         data,
         setData,
-        handleScan,
-        handleGetData,
+        handleUrlScan,
+        fetchUrlData,
         handleFileScan,
         handleHashScan,
         status,

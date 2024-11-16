@@ -29,7 +29,7 @@ export default function ScanFile({ onScan = () => { } }) {
   } = useVirusTotal();
 
 
-  const handleScan = () => {
+  const handleUrlScan = () => {
     handleHashScan(hash).then((data) => {
       onScan(data);
     });
@@ -74,7 +74,7 @@ export default function ScanFile({ onScan = () => { } }) {
             onChange={e => setHash(e.target.value)}
             className='flex-1'
           />
-          <MDButton color='secondary' variant='outlined' onClick={handleScan}>
+          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
             Scan Hash
           </MDButton>
           <MDBox>

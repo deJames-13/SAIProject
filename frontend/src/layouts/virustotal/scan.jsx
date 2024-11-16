@@ -14,7 +14,7 @@ export default function Scan({ type = "url" }) {
   const {
     url,
     setUrl,
-    handleScan,
+    handleUrlScan,
     data,
     setData,
     renderNotifications
@@ -40,7 +40,7 @@ export default function Scan({ type = "url" }) {
             value={url}
             onChange={e => setUrl(e.target.value)}
           />
-          <MDButton color='secondary' variant='outlined' onClick={handleScan}>
+          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
             Scan
           </MDButton>
         </MDBox>
