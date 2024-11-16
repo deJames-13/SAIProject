@@ -4,6 +4,7 @@ import React from 'react'
 export default function History() {
   return (
     <MDBox display="flex" >
+      test
     </MDBox>
   )
 }
