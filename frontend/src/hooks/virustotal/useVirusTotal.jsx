@@ -1,13 +1,24 @@
-import useNotification from 'hooks/notifications/useNotification';
 import { useEffect, useState } from 'react';
 
+import useHistoryActions from 'hooks/history/useHistoryActions';
+import useNotification from 'hooks/notifications/useNotification';
 
+import { useSelector } from 'react-redux';
 import vtApi from 'states/virustotal/api';
 import Swal from 'sweetalert2';
 
 
 const useVirusTotal = ({ type = 'url' } = {}) => {
+    const { userInfo } = useSelector(state => state.auth)
     const { showNotification, renderNotifications, ...noti } = useNotification();
+
+    const {
+        saveHistory,
+        historyData,
+        deleteHistoryById,
+        historyVerbose,
+    } = useHistoryActions();
+
     const {
         useGetDataMutation,
         useScanUrlMutation,
@@ -27,6 +38,18 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const [getFileReport] = useGetFileReportMutation();
     const [status, setStatus] = useState();
 
+    const saveDataToHistory = async (data, type) => {
+        saveHistory({
+            title: historyVerbose[type].title + data.title,
+            message: historyVerbose[type].message + data.id,
+            scan_type: type,
+            scan_date: new Date().toISOString(),
+            scan_stats: data.stats,
+            scan_votes: data.votes,
+            permalink: data.permalink,
+            user: userInfo.id
+        });
+    };
 
     const tryAgain = async (id) => {
         return Swal.fire({
@@ -48,9 +71,18 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
 
     const handleHashScan = (hash) => {
         setStatus("Scanning...");
-        scanHash(hash).unwrap().then(data => {
+        return scanHash(hash).unwrap().then((response) => {
+            const data = response.data
             setStatus("Fetching data...");
+            if (file) {
+                data.attributes.file_name = file.name
+                data.attributes.file_size = file.size
+                data.attributes.file_type = file.type
+            }
+            setData(data);
 
+            console.log(data)
+            return data;
         }).catch((error) => {
             console.log(error);
             noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
@@ -58,7 +90,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     }
 
     const fetchFileData = async (id, type = 'analysis') => {
-        console.clear()
+
         setStatus("Fetching data...");
         return getFileReport({ id, type }).unwrap().then(({ data, meta }) => {
             if (data.attributes.status === "completed") {
@@ -77,7 +109,14 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
                 }
                 setData(data);
                 setStatus("Data fetched successfully.");
-                console.clear()
+                saveDataToHistory({
+                    title: file?.name || data?.attributes?.meaningful_name,
+                    stats: data?.attributes?.last_analysis_stats,
+                    votes: data?.attributes?.total_votes,
+                    id: data?.id,
+                    permalink: `?type=${type}&id=${data.id}`,
+                }, type);
+
                 console.log(data)
             }
             return data
@@ -95,18 +134,27 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         });
     }
 
-    const handleGetData = (id) => {
+    const fetchUrlData = (id) => {
         setStatus("Scan finished. Getting data...");
         if (id) {
             return getData(id).unwrap().then(({ data }) => {
                 setData(data);
                 setStatus("Data fetched successfully.");
+                saveDataToHistory({
+                    title: data?.attributes?.url,
+                    stats: data?.attributes?.last_analysis_stats,
+                    votes: data?.attributes?.total_votes,
+                    id: data?.id,
+                    permalink: `?type=${type}&id=${data.id}`,
+                }, type);
+
+                console.log(data)
             });
         }
     }
 
-    const handleScan = (id) => {
-        // console.clear()
+    const handleUrlScan = (id) => {
+        // 
         // let a = JSON.parse(localStorage.getItem('data'))
         // console.log(JSON.stringify(a.attributes.total_votes))
         // setData(a);
@@ -114,7 +162,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         scanUrl(url).unwrap().then(data => {
             const { id = null } = data
             setId(id);
-            handleGetData(id);
+            fetchUrlData(id);
         }).catch((error) => {
             console.log(error);
             noti.error("Error: " + error?.data?.error, 'Please provide an appropriate URL and try again.');
@@ -132,7 +180,6 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     }, [status]);
 
     useEffect(() => {
-        console.log(type)
         if (type) {
             setData(null);
         }
@@ -144,8 +191,8 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
         setUrl,
         data,
         setData,
-        handleScan,
-        handleGetData,
+        handleUrlScan,
+        fetchUrlData,
         handleFileScan,
         handleHashScan,
         status,

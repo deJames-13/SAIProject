@@ -17,14 +17,17 @@ import MDTypography from "components/MDTypography";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";
 
 
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import History from "./history";
 import Reports from "./reports";
 import Scan from "./scan";
 
 
-export default function VirusTotal() {
+export default function VirusTotal({ type = "url", active = "scan-url" }) {
   const [menu, setMenu] = useState(null);
-  const [activeTab, setActiveTab] = useState('scan-url');
+  const [activeTab, setActiveTab] = useState(active);
+  const nav = useNavigate();
 
 
   const tabs = {
@@ -33,15 +36,15 @@ export default function VirusTotal() {
       sublabel: 'Scan a URL for malware using VirusTotal API',
       element: <Scan type="url" />,
     },
+    'scan-url-report': {
+      label: 'View Reports',
+      sublabel: 'View reports of scanned URLs and files',
+      element: <Reports type="type" />,
+    },
     'scan-file': {
       label: 'Scan File',
       sublabel: 'Scan a file for malware using VirusTotal API',
       element: <Scan type="file" />,
-    },
-    'view-reports': {
-      label: 'View Reports',
-      sublabel: 'View reports of scanned URLs and files',
-      element: <Reports />,
     },
     'view-history': {
       label: 'View History',
@@ -50,10 +53,20 @@ export default function VirusTotal() {
     },
   }
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
+  const openMenu = ({ currentTarget }) => {
+    setMenu(currentTarget);
+  };
   const closeMenu = (tab) => () => {
     setMenu(null);
     setActiveTab(tab);
+    let navTo = `/threats/${tab}`;
+    if (tab === 'scan-url-report') {
+      navTo = '/threats/scan-url/report';
+    } else if (tab === 'scan-file-report') {
+      navTo = '/threats/scan-file/report';
+    }
+    nav(navTo);
+
   };
 
   const renderMenu = (
@@ -80,6 +93,10 @@ export default function VirusTotal() {
       })}
     </Menu>
   );
+
+  useEffect(() => {
+    setActiveTab(active);
+  }, [active]);
 
   return (
     <DashboardLayout>

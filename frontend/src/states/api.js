@@ -11,6 +11,15 @@ import { useDispatch } from 'react-redux';
 import { logout, setCredentials } from "./auth/slice";
 import { startLoading, stopLoading } from "./misc/loading.slice";
 
+const headers = () => {
+  const token = localStorage.getItem('accessToken');
+  let h = {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`,
+  };
+  return h;
+}
+
 const BASE_URL = import.meta.env.VITE_APP_API_URL + '/api';
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
@@ -18,7 +27,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.accessToken;
     if (token) {
-      headers.set('authorization', `Bearer ${token}`);
+      headers.set('authorization', `Token ${token}`);
     }
     return headers;
   },
@@ -35,7 +44,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
       api.dispatch(setCredentials({ userInfo, token }));
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(logout());
+      // api.dispatch(logout());
     }
   }
   api.dispatch(stopLoading());

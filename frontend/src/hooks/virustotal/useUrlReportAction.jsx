@@ -85,8 +85,8 @@ export default function useUrlReportAction() {
             .then((response) => {
                 if (response.error)
                     throw new Error(response.error);
+
                 noti.success('Report deleted successfully');
-                setReports(reports.filter((report) => report.id !== id));
                 return response;
             })
             .catch((error) => {

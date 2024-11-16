@@ -1,8 +1,11 @@
 import { apiSlice } from "../api";
 
+const token = localStorage.getItem('accessToken');
+
 const baseUrl = '/virustotal';
 const headers = {
     'Content-Type': 'application/json',
+    'authorization': `Token ${token}`,
 }
 
 
@@ -26,6 +29,9 @@ export const vtApi = apiSlice.injectEndpoints({
                     url: `${baseUrl}file/scan-file/`,
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                    },
                     formData: true,
                 }
             },
