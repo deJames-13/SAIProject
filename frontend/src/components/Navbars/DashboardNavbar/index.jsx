@@ -14,29 +14,29 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
 
-// Material Dashboard 2 React example components
+// React example components
 import Breadcrumbs from "components/Breadcrumbs";
 import NotificationItem from "components/Items/NotificationItem";
 
 // Custom styles for DashboardNavbar
 import {
-    navbar,
-    navbarContainer,
-    navbarIconButton,
-    navbarMobileMenu,
-    navbarRow,
+  navbar,
+  navbarContainer,
+  navbarIconButton,
+  navbarMobileMenu,
+  navbarRow,
 } from "components/Navbars/DashboardNavbar/styles";
 
-// Material Dashboard 2 React context
+// React context
 import {
-    setMiniSidenav,
-    setOpenConfigurator,
-    setTransparentNavbar,
-    useMaterialUIController,
+  setMiniSidenav,
+  setOpenConfigurator,
+  setTransparentNavbar,
+  useMaterialUIController,
 } from "context";
 
 function DashboardNavbar({ absolute, light, isMini }) {

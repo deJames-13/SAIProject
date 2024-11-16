@@ -1,14 +1,14 @@
 
 /**
- * The base box-shadow styles for the Material Dashboard 2 React.
+ * The base box-shadow styles for the Threat Dashboard React.
  * You can add new box-shadow using this file.
- * You can customized the box-shadow for the entire Material Dashboard 2 React using thie file.
+ * You can customized the box-shadow for the entire Threat Dashboard React using thie file.
  */
 
-// Material Dashboard 2 React Base Styles
+// React Base Styles
 import colors from "assets/theme-dark/base/colors";
 
-// Material Dashboard 2 React Helper Functions
+// React Helper Functions
 import boxShadow from "assets/theme-dark/functions/boxShadow";
 
 const { black, dark, tabs, coloredShadows } = colors;

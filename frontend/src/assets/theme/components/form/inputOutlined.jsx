@@ -1,10 +1,10 @@
 
-// Material Dashboard 2 React Base Styles
+// React Base Styles
 import borders from "assets/theme/base/borders";
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import pxToRem from "assets/theme/functions/pxToRem";
 
 const { inputBorderColor, info, grey, transparent } = colors;

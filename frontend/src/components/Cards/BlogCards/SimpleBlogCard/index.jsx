@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MuiLink from "@mui/material/Link";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";

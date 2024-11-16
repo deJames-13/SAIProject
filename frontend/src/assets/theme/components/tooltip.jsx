@@ -2,12 +2,12 @@
 // @mui material components
 import Fade from "@mui/material/Fade";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import borders from "assets/theme/base/borders";
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import pxToRem from "assets/theme/functions/pxToRem";
 
 const { black, light } = colors;

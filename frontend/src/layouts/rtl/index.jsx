@@ -4,10 +4,10 @@ import { useEffect } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 
-// Material Dashboard 2 React example components
+// React example components
 import ComplexStatisticsCard from "components/Cards/StatisticsCards/ComplexStatisticsCard";
 import ReportsBarChart from "components/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "components/Charts/LineCharts/ReportsLineChart";
@@ -23,7 +23,7 @@ import reportsLineChartData from "layouts/rtl/data/reportsLineChartData";
 import OrdersOverview from "layouts/rtl/components/OrdersOverview";
 import Projects from "layouts/rtl/components/Projects";
 
-// Material Dashboard 2 React contexts
+// React contexts
 import { setDirection, useMaterialUIController } from "context";
 
 function RTL() {

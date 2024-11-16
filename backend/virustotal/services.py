@@ -14,6 +14,68 @@ class VirusTotalService:
         self.base_url = BASE_URL
         if not self.base_url:
             raise ValueError("BASE_URL is not set in settings")
+        
+    def validate_file(self, file_path):
+        if not os.path.exists(file_path):
+            return False
+        return True
+        
+    def scan_file(self, files):
+        scan_url = f"{self.base_url}/files"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        try:
+            response = requests.post(scan_url, files=files, headers=headers)
+            if response.status_code == 200:
+                response = response.json()
+                data = response.get("data")
+                return data
+            else:
+                print(f"An error occurred: {response.status_code} - {response.text}")
+                return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+    
+    def get_analyses(self, id, type = 'analysis'):
+        if (type == 'file'): 
+            return self.get_file_report(id)
+        analyses_url = f"{self.base_url}/analyses/{id}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(analyses_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+    
+    def get_file_report(self, scan_id):
+        report_url = f"{self.base_url}/files/{scan_id}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(report_url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+    
+    def scan_file_hash(self, file_hash):
+        scan_url = f"{self.base_url}/files/{file_hash}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(scan_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
 
     def scan_url(self, url):
         scan_url = f"{self.base_url}/urls"
@@ -42,6 +104,36 @@ class VirusTotalService:
             "x-apikey": self.api_key
         }
         response = requests.get(report_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+    
+        
+    def get_comments(self, scan_id):
+        url_id = scan_id.split("-")
+        if len(url_id) > 1:
+            scan_id = url_id[1]
+        comments_url = f"{self.base_url}/urls/{scan_id}/comments?relationships=author"
+        headers = {
+            "accept": "application/json",
+            "x-apikey": self.api_key
+        }
+        response = requests.get(comments_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+        
+    def get_comment_details(self, id):
+        comment_url = f"{self.base_url}/comments/id/{id}?relationships=author"
+        headers = {
+            "accept": "application/json",
+            "x-apikey": self.api_key
+        }
+        response = requests.get(comment_url, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:

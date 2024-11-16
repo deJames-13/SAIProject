@@ -2,7 +2,7 @@
 // @mui material components
 import { createTheme } from "@mui/material/styles";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import borders from "assets/theme/base/borders";
 import boxShadows from "assets/theme/base/boxShadows";
 import breakpoints from "assets/theme/base/breakpoints";
@@ -10,14 +10,14 @@ import colors from "assets/theme/base/colors";
 import globals from "assets/theme/base/globals";
 import typography from "assets/theme/base/typography";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import boxShadow from "assets/theme/functions/boxShadow";
 import hexToRgb from "assets/theme/functions/hexToRgb";
 import linearGradient from "assets/theme/functions/linearGradient";
 import pxToRem from "assets/theme/functions/pxToRem";
 import rgba from "assets/theme/functions/rgba";
 
-// Material Dashboard 2 React components base styles for @mui material components
+// React components base styles for @mui material components
 import appBar from "assets/theme/components/appBar";
 import avatar from "assets/theme/components/avatar";
 import breadcrumbs from "assets/theme/components/breadcrumbs";

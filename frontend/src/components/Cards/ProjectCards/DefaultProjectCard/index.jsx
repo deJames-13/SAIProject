@@ -10,7 +10,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Tooltip from "@mui/material/Tooltip";
 
-// Material Dashboard 2 React components
+// React components
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
