@@ -34,6 +34,20 @@ import PieChartComponent from "components/Charts/PieChartComponent";
 
 export const dashboardRoutes = [
   {
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
+  {
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
