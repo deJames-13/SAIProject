@@ -50,7 +50,7 @@ function Overview() {
     console.log('User Data being sent:', userData);
 
     axios.put(
-      "http://localhost:8000/user/update/",
+      `${import.meta.env.VITE_APP_API_URL}/user/update/`,
       userData,
       {
         headers: {
