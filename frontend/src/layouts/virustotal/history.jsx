@@ -7,6 +7,8 @@ import { useState } from 'react';
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import HistoryModalContent from './history-modal-content';
+import ScanModal from './scan-modal';
 
 const HistoryCard = ({ history }) => {
   return (
@@ -18,18 +20,31 @@ const HistoryCard = ({ history }) => {
           Date: {history?.timestamp.split('T')[0]} at {history?.timestamp.split('T')[1].split('.')[0]}
         </span>
       </div>
-      <div>
-        <MDButton color="info" size="small" variant="outlined" href={history?.permalink} className="mr-2">
-          <Icon className=''>
-            visibility
-          </Icon>
-        </MDButton>
-        <MDButton color="primary" size="small" variant="outlined" href={history?.permalink} className="mr-2">
+      <div className='flex flex-col'>
+        <ScanModal
+          topElement={<>
+            <h1 className='text-xl font-bold'>
+              {history?.title}
+            </h1>
+            <p className='text-sm font-normal'>
+              {history?.message}
+            </p>
+            <span className="text-xs font-light italic">
+              Date: {history?.timestamp.split('T')[0]} at {history?.timestamp.split('T')[1].split('.')[0]}
+            </span>
+          </>
+          }
+          contentElement={<HistoryModalContent history={history} />}
+          btnProps={{
+            className: 'mr-2 btn btn-ghost btn-sm btn-outline rounded-none'
+          }}
+        />
+        <MDButton className='mr-2 btn btn-ghost btn-sm btn-outline rounded-none' href={history?.permalink}>
           <Icon className=''>
             history
           </Icon>
         </MDButton>
-        <MDButton color="primary" size="small" variant="outlined" href={history?.permalink}>
+        <MDButton className='mr-2 btn btn-error btn-sm btn-outline rounded-none text-red-400 btn-outline' >
           <Icon className=''>
             delete
           </Icon>
