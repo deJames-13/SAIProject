@@ -3,8 +3,8 @@ from django.http import JsonResponse
 import time
 import base64
 
-API_KEY = "e9f836f35a0a70ecdda033ff07bebafb883523e67ded84b4dc5b09c0679c4147"
-# API_KEY = "740055316e08ffaacd0f0be424db58b20f56710b9f13ec6d8caf6bde68d74e0b"
+# API_KEY = "e9f836f35a0a70ecdda033ff07bebafb883523e67ded84b4dc5b09c0679c4147"
+API_KEY = "740055316e08ffaacd0f0be424db58b20f56710b9f13ec6d8caf6bde68d74e0b"
 # API_KEY = "181a3b9c39ded06c43bc007e8a4fd030783eb6ccd3b1e02f2a096bc13024f8b0"
 # API_KEY = "f6228c6a770207a82f103d57ddac0608409a48993b5243058d8eca96627f665d"
 BASE_URL = "https://www.virustotal.com/api/v3/urls"
