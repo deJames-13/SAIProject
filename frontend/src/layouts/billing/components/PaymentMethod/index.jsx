@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
@@ -14,7 +14,7 @@ import MDTypography from "components/MDTypography";
 import masterCardLogo from "assets/images/logos/mastercard.png";
 import visaLogo from "assets/images/logos/visa.png";
 
-// Material Dashboard 2 React context
+// React context
 import { useMaterialUIController } from "context";
 
 function PaymentMethod() {

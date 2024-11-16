@@ -1,16 +1,9 @@
 /**
 =========================================================
-* Material Dashboard 2  React - v2.2.0
+* Threat Dashboard  React - v2.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Unthread (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,15 +13,15 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import {
-    CategoryScale,
-    Chart as ChartJS,
-    Filler,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -36,17 +29,17 @@ import { Line } from "react-chartjs-2";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import gradientChartLine from "assets/theme/functions/gradientChartLine";
 
 // GradientLineChart configurations
 import configs from "components/Charts/LineCharts/GradientLineChart/configs";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import colors from "assets/theme/base/colors";
 
 ChartJS.register(
@@ -71,20 +64,20 @@ function GradientLineChart({ icon, title, description, height, chart }) {
 
     const chartDatasets = chart.datasets
       ? chart.datasets.map((dataset) => ({
-          ...dataset,
-          tension: 0,
-          pointRadius: 0,
-          borderWidth: 4,
-          borderColor: colors[dataset.color]
-            ? colors[dataset.color || "dark"].main
-            : colors.dark.main,
-          fill: true,
-          maxBarThickness: 6,
-          backgroundColor: gradientChartLine(
-            chartElement.ctx,
-            colors[dataset.color] ? colors[dataset.color || "dark"].main : colors.dark.main
-          ),
-        }))
+        ...dataset,
+        tension: 0,
+        pointRadius: 0,
+        borderWidth: 4,
+        borderColor: colors[dataset.color]
+          ? colors[dataset.color || "dark"].main
+          : colors.dark.main,
+        fill: true,
+        maxBarThickness: 6,
+        backgroundColor: gradientChartLine(
+          chartElement.ctx,
+          colors[dataset.color] ? colors[dataset.color || "dark"].main : colors.dark.main
+        ),
+      }))
       : [];
 
     setChartData(configs(chart.labels || [], chartDatasets));

@@ -1,16 +1,9 @@
 /**
 =========================================================
-* Material Dashboard 2  React - v2.2.0
+* Threat Dashboard  React - v2.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Unthread (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
 import { useMemo } from "react";
@@ -20,13 +13,13 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import {
-    Chart as ChartJS,
-    Filler,
-    Legend,
-    LineElement,
-    PointElement,
-    RadialLinearScale,
-    Tooltip,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
 
@@ -34,17 +27,17 @@ import { Radar } from "react-chartjs-2";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // RadarChart configurations
 import configs from "components/Charts/RadarChart/configs";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import colors from "assets/theme/base/colors";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import rgba from "assets/theme/functions/rgba";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -52,11 +45,11 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 function RadarChart({ icon, title, description, height, chart }) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
-        ...dataset,
-        backgroundColor: colors[dataset.color]
-          ? rgba(colors[dataset.color || "dark"].main, 0.2)
-          : rgba(colors.dark.main, 0.2),
-      }))
+      ...dataset,
+      backgroundColor: colors[dataset.color]
+        ? rgba(colors[dataset.color || "dark"].main, 0.2)
+        : rgba(colors.dark.main, 0.2),
+    }))
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);

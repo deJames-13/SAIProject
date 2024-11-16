@@ -1,8 +1,3 @@
-
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
@@ -13,15 +8,21 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
+import BasicLayout from "layouts/authentication/components/BasicLayout";
+
+
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import * as auth from "states/auth/slice";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,12 +30,14 @@ function Basic() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();  // Navigate hook for redirection after successful login
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   // Get the CSRF token from the cookie
-  const getCsrfToken = () => { 
+  const getCsrfToken = () => {
     const name = "csrftoken";
     const cookieValue = document.cookie
       .split('; ')
@@ -43,35 +46,40 @@ function Basic() {
     return cookieValue || '';
   };
 
-  
+
   const handleSignin = async (event) => {
     event.preventDefault();
-  
+
     try {
-      // Send the login request to the backend
-      const response = await axios.post(
-        "http://localhost:8000/user/login/", 
+      axios.post(
+        "http://localhost:8000/user/login/",
         { email, password },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
-      );
-  
-      
-      localStorage.setItem("token", response.data.token);
-  
-      setSuccessMessage("Login successful!");
-      setErrorMessage("");  
-      navigate("/dashboard");  
+      ).then((response) => {
+        dispatch(auth.setCredentials({
+          userInfo: response.data.user,
+          token: response.data.token
+        }));
+        setSuccessMessage("Login successful!");
+        setErrorMessage("");
+        navigate("/dashboard");
+      }).catch((error) => {
+        setErrorMessage(error.response?.data?.message || "An error occurred during login");
+        setSuccessMessage("");
+      });
+
+
     } catch (error) {
-      
+
       setErrorMessage(error.response?.data?.message || "An error occurred during login");
-      setSuccessMessage("");  
+      setSuccessMessage("");
     }
   };
-  
+
 
   return (
     <BasicLayout image={bgImage}>
@@ -91,7 +99,7 @@ function Basic() {
             Sign in
           </MDTypography>
           <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
               </MDTypography>
@@ -103,10 +111,9 @@ function Basic() {
             </Grid>
             <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-
                 <GoogleIcon color="inherit" />
               </MDTypography>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>

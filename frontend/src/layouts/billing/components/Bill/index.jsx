@@ -5,12 +5,12 @@ import PropTypes from "prop-types";
 // @mui material components
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React context
+// React context
 import { useMaterialUIController } from "context";
 
 function Bill({ name, company, email, vat, noGutter }) {

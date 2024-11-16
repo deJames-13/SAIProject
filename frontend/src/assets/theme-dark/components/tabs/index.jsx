@@ -1,10 +1,10 @@
 
-// Material Dashboard 2 React base styles
+// React base styles
 import borders from "assets/theme-dark/base/borders";
 import boxShadows from "assets/theme-dark/base/boxShadows";
 import colors from "assets/theme-dark/base/colors";
 
-// Material Dashboard 2 React helper functions
+// React helper functions
 import pxToRem from "assets/theme-dark/functions/pxToRem";
 
 const { background } = colors;
