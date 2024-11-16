@@ -46,7 +46,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       console.error("No token found in localStorage");
       return;
     }
-    axios.post("http://localhost:8000/user/logout/", {}, {
+    axios.post(`${import.meta.env.VITE_APP_API_URL}/user/logout/`, {}, {
       headers: {
         Authorization: `Token ${accessToken}`,
       },
