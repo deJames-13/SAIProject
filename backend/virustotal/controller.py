@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 
 import json
 import os
@@ -20,6 +21,7 @@ from .serializers import (
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = (UrlReportsSerializer)
+    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['post'], url_path='get-file-report')
     def get_file_report_by_id(self, request):
@@ -48,6 +50,7 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='scan-url')
     def get_url_report(self, request):
+        print(str(request.user))
         data = request.data
         url = data.get("url")
         if not url:
@@ -90,6 +93,7 @@ class UrlReportViewSet(viewsets.ModelViewSet):
     serializer_class = UrlReportsSerializer
     analysis = Analyses.objects.all()
     analysis_serializer = AnalysesSerializer
+    permission_classes = [IsAuthenticated]
     
     def create (self, request):
         if not request.user.is_authenticated:

@@ -1,22 +1,31 @@
 import { apiSlice } from "../api";
 
+
 const baseUrl = '/virustotal';
-const headers = {
-    'Content-Type': 'application/json',
+const headers = () => {
+    const token = localStorage.getItem('accessToken');
+    let h = {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+    };
+    return h;
 }
 
 
 export const vtApi = apiSlice.injectEndpoints({
     endpoints: build => ({
         scanUrl: build.mutation({
-            query: url => ({
-                url: `${baseUrl}/scan-url/`,
-                method: 'POST',
-                headers,
-                body: JSON.stringify({
-                    url,
-                }),
-            }),
+            query: url => {
+                console.log(headers());
+                return {
+                    url: `${baseUrl}/scan-url/`,
+                    method: 'POST',
+                    headers: headers(),
+                    body: JSON.stringify({
+                        url,
+                    }),
+                }
+            },
         }),
         scanFile: build.mutation({
             query: (file) => {
@@ -26,6 +35,9 @@ export const vtApi = apiSlice.injectEndpoints({
                     url: `${baseUrl}file/scan-file/`,
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                    },
                     formData: true,
                 }
             },
