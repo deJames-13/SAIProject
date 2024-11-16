@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(default=False)  
@@ -23,11 +24,23 @@ class SoftDeleteManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
 
-    def all_with_deleted(self):
-        return super().get_queryset()
+    def all_with_deleted(self, page=1, per_page=10):
+        queryset = super().get_queryset()
+        return self.paginate_queryset(queryset, page, per_page)
 
-    def deleted_only(self):
-        return super().get_queryset().filter(is_deleted=True)
+    def deleted_only(self, page=1, per_page=10):
+        queryset = super().get_queryset().filter(is_deleted=True)
+        return self.paginate_queryset(queryset, page, per_page)
+
+    def paginate_queryset(self, queryset, page, per_page):
+        paginator = Paginator(queryset, per_page)
+        try:
+            paginated_queryset = paginator.page(page)
+        except PageNotAnInteger:
+            paginated_queryset = paginator.page(1)
+        except EmptyPage:
+            paginated_queryset = paginator.page(paginator.num_pages)
+        return paginated_queryset
 
 class Analyses(SoftDeleteModel):
     id = models.AutoField(primary_key=True, editable=False, auto_created=True)

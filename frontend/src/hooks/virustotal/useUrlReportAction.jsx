@@ -12,6 +12,9 @@ export default function useUrlReportAction() {
         useSaveUrlReportMutation,
         useEditUrlReportMutation,
         useDeleteUrlReportMutation,
+        useGetDeletedUrlReportsMutation,
+        useGetAllUrlReportsMutation,
+        useRestoreUrlReportMutation,
     } = vtApi
 
     const [getUrlReports] = useGetUrlReportsMutation();
@@ -19,6 +22,9 @@ export default function useUrlReportAction() {
     const [saveUrlReport] = useSaveUrlReportMutation();
     const [editUrlReport] = useEditUrlReportMutation();
     const [deleteUrlReport] = useDeleteUrlReportMutation();
+    const [getAllUrlReports] = useGetAllUrlReportsMutation();
+    const [getDeletedUrlReports] = useGetDeletedUrlReportsMutation();
+    const [restoreUrlReport] = useRestoreUrlReportMutation();
 
     const fetchUrlReports = async () => {
         return getUrlReports()
@@ -38,6 +44,30 @@ export default function useUrlReportAction() {
                 setReport(response.data);
                 if (response.error)
                     throw new Error(response.error);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const fetchDeletedUrlReports = async () => {
+        return getDeletedUrlReports()
+            .then((response) => {
+                setReports(response.data);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const fetchAllUrlReports = async () => {
+        return getAllUrlReports()
+            .then((response) => {
+                setReports(response.data);
                 return response;
             })
             .catch((error) => {
@@ -88,16 +118,34 @@ export default function useUrlReportAction() {
             });
     };
 
+    const restoreReport = async (id) => {
+        return restoreUrlReport(id)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
     return {
         reports,
+        setReports,
         report,
         url,
         setUrl,
         fetchUrlReports,
         fetchUrlReport,
+        fetchDeletedUrlReports,
+        fetchAllUrlReports,
         createUrlReport,
         updateReport,
         removeReport,
+        restoreReport,
     }
 
 

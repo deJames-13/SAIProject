@@ -33,12 +33,24 @@ const historyVerbose = {
 
 export default function useHistoryActions() {
     const dispatch = useDispatch();
-    const { useSaveMutation, useGetMutation, useGetByIdMutation, use, useDeleteMutation } = api;
+    const {
+        useSaveMutation,
+        useGetMutation,
+        useGetByIdMutation,
+        useDeleteMutation,
+        useGetDeletedMutation,
+        useGetAllMutation,
+        useRestoreMutation,
+
+    } = api;
     const [data, setData] = useState([]);
     const [save] = useSaveMutation();
     const [get] = useGetMutation();
     const [getById] = useGetByIdMutation();
     const [deleteHistory] = useDeleteMutation();
+    const [getDeleted] = useGetDeletedMutation();
+    const [getAll] = useGetAllMutation();
+    const [restore] = useRestoreMutation();
 
     const fetchHistories = async () => {
         return get().unwrap().then((data) => {
@@ -50,7 +62,17 @@ export default function useHistoryActions() {
         return getById(id).unwrap();
     }
 
+    const fetchDeletedHistories = async () => {
+        return getDeleted().unwrap().then((data) => {
+            setData(data);
+        });
+    }
 
+    const fetchAllHistories = async () => {
+        return getAll().unwrap().then((data) => {
+            setData(data);
+        });
+    }
 
     const saveHistory = async (data) => {
         return save(data).unwrap().then((data) => {
@@ -64,13 +86,22 @@ export default function useHistoryActions() {
         });
     };
 
+    const restoreHistoryById = async (id) => {
+        return restore(id).unwrap().then((data) => {
+            dispatch(actions.restore(data));
+        });
+    }
+
 
     return {
         data,
         saveHistory,
         historyVerbose,
         fetchHistories,
+        fetchDeletedHistories,
+        fetchAllHistories,
         fetchHistoryById,
         deleteHistoryById,
+        restoreHistoryById,
     };
 }

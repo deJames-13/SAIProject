@@ -35,10 +35,35 @@ export const historyApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        getDeleted: build.mutation({
+            query: () => ({
+                url: `${baseUrl}/deleted-only/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
+        getAll: build.mutation({
+            query: () => ({
+                url: `${baseUrl}/all-with-deleted/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
         delete: build.mutation({
             query: (id) => ({
                 url: `${baseUrl}/${id}/`,
                 method: 'DELETE',
+                headers,
+                body: JSON.stringify({id}),
+            }),
+        }),
+
+        restore: build.mutation({
+            query: (id) => ({
+                url: `${baseUrl}/restore/`,
+                method: 'POST',
                 headers,
                 body: JSON.stringify({id}),
             }),
