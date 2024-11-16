@@ -19,8 +19,8 @@ try {
 }
 
 const initialState = {
-  userInfo: userInfo ? JSON.parse(userInfo) : null,
-  accessToken: accessToken || null,
+  userInfo,
+  accessToken,
 };
 
 export const authSlice = createSlice({

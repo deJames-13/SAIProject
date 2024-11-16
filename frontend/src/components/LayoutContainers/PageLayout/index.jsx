@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 // react-router-dom components
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -12,16 +12,23 @@ import MDBox from "components/MDBox";
 
 // React context
 import { setLayout, useMaterialUIController } from "context";
+import { useSelector } from "react-redux";
 
 function PageLayout({ background, children }) {
+  const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
+  const nav = useNavigate();
 
   useEffect(() => {
-    setLayout(dispatch, "page");
+    if (userInfo?.id) {
+      nav("/dashboard");
+    } else {
+      setLayout(dispatch, "page");
+    }
   }, [pathname]);
 
-  return (
+  return userInfo?.id ? '' : (
     <MDBox
       width="100vw"
       height="100%"
