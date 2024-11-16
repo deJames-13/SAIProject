@@ -51,7 +51,7 @@ function Basic() {
     event.preventDefault();
 
     axios.post(
-      "http://localhost:8000/user/login/",
+      `${import.meta.env.VITE_APP_API_URL}/user/login/`,
       { email, password },
       {
         headers: {

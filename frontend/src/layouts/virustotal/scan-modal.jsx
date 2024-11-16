@@ -19,6 +19,7 @@ export default function ScanModal({
     topElement,
     contentElement,
     actionElement,
+    btnProps
 }) {
     const descriptionElementRef = React.useRef(null);
     const [open, setOpen] = React.useState(false);
@@ -42,7 +43,7 @@ export default function ScanModal({
 
     return (
         <React.Fragment>
-            <MDButton color="primary" onClick={handleClickOpen}><Icon>visibility</Icon></MDButton>
+            <MDButton onClick={handleClickOpen} {...btnProps}><Icon>visibility</Icon></MDButton>
 
             <Dialog
                 open={open}
@@ -52,6 +53,7 @@ export default function ScanModal({
                 aria-labelledby="scroll-dialog-title"
                 aria-describedby="scroll-dialog-description"
                 maxWidth="md"
+                maxHeight="md"
                 fullWidth={true}
             >
                 <DialogTitle id="scroll-dialog-title">
