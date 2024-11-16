@@ -103,22 +103,22 @@ function Header({ children }) {
                   }
                   onClick={() => nav('/dashboard')}
                 />
-                <Tab
+                {/* <Tab
                   label="Message"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       email
                     </Icon>
                   }
-                />
-                <Tab
+                /> */}
+                {/* <Tab
                   label="Settings"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       settings
                     </Icon>
                   }
-                />
+                /> */}
               </Tabs>
             </AppBar>
           </Grid>
