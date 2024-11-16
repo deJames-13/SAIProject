@@ -50,34 +50,29 @@ function Basic() {
   const handleSignin = async (event) => {
     event.preventDefault();
 
-    try {
-      axios.post(
-        "http://localhost:8000/user/login/",
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((response) => {
-        dispatch(auth.setCredentials({
-          userInfo: response.data.user,
-          token: response.data.token
-        }));
-        setSuccessMessage("Login successful!");
-        setErrorMessage("");
-        navigate("/dashboard");
-      }).catch((error) => {
-        setErrorMessage(error.response?.data?.message || "An error occurred during login");
-        setSuccessMessage("");
-      });
-
-
-    } catch (error) {
-
-      setErrorMessage(error.response?.data?.message || "An error occurred during login");
+    axios.post(
+      "http://localhost:8000/user/login/",
+      { email, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((response) => {
+      dispatch(auth.setCredentials({
+        userInfo: response.data.user,
+        token: response.data.token
+      }));
+      setSuccessMessage("Login successful!");
+      setErrorMessage("");
+      navigate("/dashboard");
+    }).catch((error) => {
+      setErrorMessage(error.response?.data?.error || "An error occurred during login");
       setSuccessMessage("");
-    }
+    });
+
+
+
   };
 
 
@@ -136,7 +131,7 @@ function Basic() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </MDBox>
-            <MDBox display="flex" alignItems="center" ml={-1}>
+            <MDBox display="flex" alignItems="center" ml={-1} className="hidden">
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
                 variant="button"

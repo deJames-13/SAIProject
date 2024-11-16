@@ -2,13 +2,16 @@ from rest_framework import viewsets, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser, JSONParser
+from rest_framework.permissions import IsAuthenticated
+
 
 import json
 import os
 
 from .services import VirusTotalService
 from .models import UrlReports, FileReports, Analyses, ScanHistory
+
 from .serializers import (
     UrlReportsSerializer,
     FileReportsSerializer,
@@ -17,9 +20,17 @@ from .serializers import (
     UploadSerializer
 )
 
+
+class ScanHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ScanHistory.objects.all()
+    serializer_class = ScanHistorySerializer
+    permission_classes = [IsAuthenticated]
+    
+
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = (UrlReportsSerializer)
+    permission_classes = [IsAuthenticated]
     
     @action(detail=False, methods=['post'], url_path='get-file-report')
     def get_file_report_by_id(self, request):
@@ -81,29 +92,23 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class AnalysesViewSet(viewsets.ModelViewSet):
-    queryset = Analyses.objects.all()
-    serializer_class = AnalysesSerializer
-    
+
+
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
     analysis = Analyses.objects.all()
     analysis_serializer = AnalysesSerializer
+    permission_classes = [IsAuthenticated]
     
     def create (self, request):
         if not request.user.is_authenticated:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        data = request.data
-        analysis = data.get("analysis")
-        data.pop("analysis")
-        if not analysis:
+        data = request.data.copy()
+        data["user"] = request.user.id
+        if not data["analysis"]:
             return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        analysis_instance = Analyses.objects.create(**analysis)
-        data["scan_id"] = analysis_instance.id
-        data["user_id"] = request.user.id
         
         
         serializer = UrlReportsSerializer(data=data)
@@ -112,13 +117,35 @@ class UrlReportViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-    
 
+
+    
 class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    analysis = Analyses.objects.all()
+    analysis_serializer = AnalysesSerializer
+    permission_classes = [IsAuthenticated]
+
+    
+    def create(self, request):
+        if not request.user.is_authenticated:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        data = request.data.copy()
+        data["user"] = request.user.id
+        if not data["analysis"]:
+            return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if type(data["analysis"]) == str:
+            data["analysis"] = dict(json.loads(data["analysis"]))
+
+        serializer = FileReportsSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['post'], url_path='scan-file')
     def get_file_report(self, request):
@@ -138,4 +165,6 @@ class FileUploadViewSet(viewsets.ModelViewSet):
             return Response({"error": "Failed to scan file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(result, status=status.HTTP_200_OK)
+    
+    
     

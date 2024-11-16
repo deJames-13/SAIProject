@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = [
     # 'material.admin',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -153,16 +154,20 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAdminUser',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 
 }
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+ACCESS_CONTROL_ALLOW_ORIGIN = '*'
 
 
 MATERIAL_ADMIN_SITE = {
