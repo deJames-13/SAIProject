@@ -19,13 +19,17 @@ const HistoryCard = ({ history }) => {
         </span>
       </div>
       <div>
-        <MDButton color="info" variant="outlined" href={history?.permalink} className="mr-2">
-          Preview Stats
+        <MDButton color="info" size="small" variant="outlined" href={history?.permalink} className="mr-2">
+          <Icon className=''>
+            visibility
+          </Icon>
         </MDButton>
-        <MDButton color="primary" variant="outlined" href={history?.permalink} className="mr-2">
-          Review Scanned
+        <MDButton color="primary" size="small" variant="outlined" href={history?.permalink} className="mr-2">
+          <Icon className=''>
+            history
+          </Icon>
         </MDButton>
-        <MDButton color="primary" variant="outlined" href={history?.permalink}>
+        <MDButton color="primary" size="small" variant="outlined" href={history?.permalink}>
           <Icon className=''>
             delete
           </Icon>
