@@ -2,8 +2,9 @@ import { TextField } from '@mui/material';
 
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
-import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import AnalysesTable from './scan-table';
+
+import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 
 import React from 'react';
 import ScanFile from './scan-file';
@@ -18,6 +19,7 @@ export default function Scan({ type = "url" }) {
     setData,
     renderNotifications
   } = useVirusTotal({ type });
+
 
 
   const inputUrlComponent = () => {
@@ -50,7 +52,7 @@ export default function Scan({ type = "url" }) {
   }
 
   React.useEffect(() => {
-    console.clear()
+
     console.log(data)
   }, [data])
 

@@ -30,7 +30,9 @@ export default function ScanFile({ onScan = () => { } }) {
 
 
   const handleScan = () => {
-    handleHashScan(hash);
+    handleHashScan(hash).then((data) => {
+      onScan(data);
+    });
   };
 
   const handleFileUpload = (e) => {
@@ -45,7 +47,6 @@ export default function ScanFile({ onScan = () => { } }) {
     }
 
     handleFileScan(file).then((data) => {
-      console.log(data)
       onScan(data);
     });
 

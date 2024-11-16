@@ -16,12 +16,6 @@ class ScanHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ScanHistory
         fields = '__all__'
-
-    def create(self, validated_data):
-        analysis_data = validated_data.pop('analysis')
-        analysis = Analyses.objects.create(**analysis_data)
-        scan_history = ScanHistory.objects.create(analysis=analysis, user=user, **validated_data)
-        return scan_history
     
 
 class UrlReportsSerializer(serializers.ModelSerializer):

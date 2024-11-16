@@ -20,6 +20,13 @@ from .serializers import (
     UploadSerializer
 )
 
+
+class ScanHistoryViewSet(viewsets.ModelViewSet):
+    queryset = ScanHistory.objects.all()
+    serializer_class = ScanHistorySerializer
+    permission_classes = [IsAuthenticated]
+    
+
 class VirusTotalViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = (UrlReportsSerializer)
@@ -85,12 +92,6 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class AnalysesViewSet(viewsets.ModelViewSet):
-    queryset = Analyses.objects.all()
-    serializer_class = AnalysesSerializer
-    
-    
-
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
@@ -113,8 +114,6 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-    
-
 class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
@@ -156,4 +155,6 @@ class FileUploadViewSet(viewsets.ModelViewSet):
             return Response({"error": "Failed to scan file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(result, status=status.HTTP_200_OK)
+    
+    
     
