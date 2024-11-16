@@ -5,12 +5,29 @@ from django.utils import timezone
 class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(default=False)  
     deleted_at = models.DateTimeField(null=True, blank=True) 
+
     class Meta:
         abstract = True 
-        
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save()
+
 class SoftDeleteManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
+
+    def all_with_deleted(self):
+        return super().get_queryset()
+
+    def deleted_only(self):
+        return super().get_queryset().filter(is_deleted=True)
 
 class Analyses(SoftDeleteModel):
     id = models.AutoField(primary_key=True, editable=False, auto_created=True)
@@ -22,12 +39,7 @@ class Analyses(SoftDeleteModel):
     last_analysis_stats = models.JSONField()
     
     objects = SoftDeleteManager()
-    def delete(self, using=None, keep_parents=False):
-        self.is_deleted = True
-        self.deleted_at = timezone.now()
-        self.save()
 
-    
     def __str__(self):
         return self.scan_id
 
@@ -43,9 +55,9 @@ class ScanHistory(SoftDeleteModel):
     permalink = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     
-    
     # Relationship 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    objects = SoftDeleteManager()
     
     def __str__(self):
         return self.title
@@ -56,7 +68,6 @@ class ScanHistory(SoftDeleteModel):
             models.Index(fields=['title']), 
             models.Index(fields=['timestamp']), 
         ]
-    
 
 # Saved Urls model by user
 class UrlReports(SoftDeleteModel):
@@ -70,11 +81,7 @@ class UrlReports(SoftDeleteModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     objects = SoftDeleteManager()
-    def delete(self, using=None, keep_parents=False):
-        self.is_deleted = True
-        self.deleted_at = timezone.now()
-        self.save()
-        
+
     def __str__(self):
         return self.title
     
@@ -97,11 +104,7 @@ class FileReports(SoftDeleteModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     objects = SoftDeleteManager()
-    def delete(self, using=None, keep_parents=False):
-        self.is_deleted = True
-        self.deleted_at = timezone.now()
-        self.save()
-    
+
     def __str__(self):
         return self.file_name
     
