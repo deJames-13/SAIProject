@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-// Material Dashboard 2 React components
+// React components
 import MDTypography from "components/MDTypography";
 
 // Custom styles for MDProgress
