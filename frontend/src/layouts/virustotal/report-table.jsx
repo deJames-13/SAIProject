@@ -37,10 +37,16 @@ export default function ReportTable({ type = "url" }) {
         fetchReports()
     }, [type]);
 
+
     React.useEffect(() => {
         if (reports?.results)
             setResults(reports.results)
     }, [reports]);
+
+    // React.useEffect(() => {
+    //     console.log(reports);
+    // }, [reports]);
+
 
 
     const info = ((report, idx) => {
