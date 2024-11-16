@@ -53,21 +53,15 @@ export default function useHistoryActions() {
 
 
     const saveHistory = async (data) => {
-        try {
-            const savedData = await save(data).unwrap();
-            dispatch(actions.save(savedData));
-        } catch (error) {
-            console.error('Failed to save history:', error);
-        }
+        return save(data).unwrap().then((data) => {
+            dispatch(actions.add(data));
+        });
     };
 
     const deleteHistoryById = async (id) => {
-        try {
-            await deleteHistory(id).unwrap();
-            dispatch(actions.delete(id));
-        } catch (error) {
-            console.error('Failed to delete history:', error);
-        }
+        return deleteHistory(id).unwrap().then((data) => {
+            dispatch(actions.delete(data));
+        });
     };
 
 
