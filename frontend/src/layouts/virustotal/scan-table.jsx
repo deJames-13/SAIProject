@@ -5,7 +5,10 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { CircularProgress } from '@mui/material';
 
 import MDButton from 'components/MDButton';
+import useNotification from 'hooks/notifications/useNotification';
+import useFileReportAction from 'hooks/virustotal/useFileReportAction';
 import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
+
 import React from 'react';
 
 
@@ -24,6 +27,16 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
+    const noti = useNotification();
+    const {
+        createUrlReport,
+    } = useUrlReportAction();
+
+    const {
+        createFileReport,
+    } = useFileReportAction();
+
+
     if (!analyses) return " " || (<>
         <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
             <span>
@@ -31,11 +44,21 @@ export default function AnalysesTable({ analyses = null }) {
             </span>
         </h4>
     </>);
+
     const {
         id = null,
         status = 'ok',
-        type = null,
+        type,
         attributes: {
+            sha1 = '',
+            sha256 = '',
+            md5 = '',
+            ssdeep = '',
+            tlsh = '',
+            type_description: file_type = '',
+            meaningful_name: file_name = '',
+            size: file_size = 0,
+            tags = [],
             url = '',
             categories = {},
             last_analysis_date: date = '',
@@ -60,34 +83,60 @@ export default function AnalysesTable({ analyses = null }) {
     } = analyses
 
 
-    const { createReport, renderNotifications } = useUrlReportAction();
+    const analysisPayload = () => ({
+        description: description.join(' '),
+        reputation,
+        times_submitted,
+        last_analysis_stats: {
+            harmless,
+            malicious,
+            suspicious,
+            undetected,
+            timeout,
+        },
+        votes: total_votes,
+        scan_id: id,
+    })
 
-    const handleSave = () => {
+    const urlPayload = () => ({
+        title,
+        url: url,
+        analysis: analysisPayload(),
+    })
 
-        const payload = {
-            url: url + '1',
-            title,
-            description: description.join(' '),
-            reputation,
-            times_submitted,
-            last_analysis_stats: {
-                harmless,
-                malicious,
-                suspicious,
-                undetected,
-                timeout,
-            },
-            votes: total_votes,
-            scan_id: id,
+    const filePayload = () => ({
+        file_name,
+        file_type,
+        hashes: {
+            sha256: id,
+            sha1,
+            md5,
+            ssdeep,
+            tlsh,
+        },
+        analysis: analysisPayload(),
+    })
+
+    const handleSave = async () => {
+        try {
+            const payload = type === 'url' ? urlPayload() : filePayload();
+            if (type === 'url')
+                await createUrlReport(payload);
+            if (type === 'file')
+                await createFileReport(payload)
+            noti.success('Report saved successfully');
+        } catch (error) {
+            noti.error('Failed to save report');
         }
-        createReport(payload)
 
 
     };
+
     const formatDate = (timestamp) => {
         const date = new Date(timestamp * 1000);
         return date.toLocaleString();
     };
+
 
     return !id ? '' : (
         <>
@@ -107,35 +156,85 @@ export default function AnalysesTable({ analyses = null }) {
                     Comments
                 </MDButton>
             </div>
+            <div className="flex gap-4 items-center">
+                <p className=''>
+                    Type:
+                </p>
+                <h4 className='font-semibold m-0'>
+                    {type.toUpperCase()}
+                </h4>
+            </div>
             <div className="grid md:grid-cols-2 overflow-clip overflow-y-auto gap-2">
-                <div className=''>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            Title:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {title}
-                        </h4>
+                {type == 'url' &&
+                    <>
+                        <div className=''>
+                            <>
+                                <div className="flex gap-4 items-center">
+                                    <p className=''>
+                                        Title:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {title}
+                                    </h4>
+                                </div>
+                                <div className="flex gap-4 items-start">
+                                    <p className=''>
+                                        Description:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {description.join(' ')}
+                                    </h4>
+                                </div>
+                                <div className="flex gap-4 items-center">
+                                    <p className=''>
+                                        URL:
+                                    </p>
+                                    <h4 className='font-semibold m-0'>
+                                        {url}
+                                    </h4>
+                                </div>
+                            </>
+                        </div>
+                    </>
+                }
+                {type == 'file' && <>
+                    <div className=''>
+                        <>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    File Name:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_name}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-start">
+                                <p className=''>
+                                    File Type:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_type}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    Size:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {file_size}
+                                </h4>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <p className=''>
+                                    Tags:
+                                </p>
+                                <h4 className='font-semibold m-0'>
+                                    {tags.join(', ')}
+                                </h4>
+                            </div>
+                        </>
                     </div>
-                    <div className="flex gap-4 items-start">
-                        <p className=''>
-                            Description:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {description.join(' ')}
-                        </h4>
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <p className=''>
-                            URL:
-                        </p>
-                        <h4 className='font-semibold m-0'>
-                            {url}
-                        </h4>
-                    </div>
-
-
-                </div>
+                </>}
                 <div className=''>
                     <div className="flex gap-4 items-center">
                         <p className=''>
@@ -150,7 +249,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Last Submitted:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {formatDate(last_submission_date * 1000).toLocaleString()}
+                            {formatDate(last_submission_date).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -158,7 +257,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Last Analysis:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {formatDate(last_submission_date * 1000).toLocaleString()}
+                            {formatDate(last_submission_date).toLocaleString()}
                         </h4>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -170,7 +269,6 @@ export default function AnalysesTable({ analyses = null }) {
                         </h4>
                     </div>
                 </div>
-
                 <div>
                     <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
                         {
@@ -194,7 +292,7 @@ export default function AnalysesTable({ analyses = null }) {
                             Date:
                         </p>
                         <h4 className='font-semibold m-0'>
-                            {formatDate(date * 1000).toLocaleString()}
+                            {formatDate(date).toLocaleString()}
                         </h4>
                     </div>
 
@@ -299,7 +397,7 @@ export default function AnalysesTable({ analyses = null }) {
                         })}
                     </div>
                 </div>
-                {renderNotifications}
+                {noti.renderNotifications}
             </div>
         </>
     )

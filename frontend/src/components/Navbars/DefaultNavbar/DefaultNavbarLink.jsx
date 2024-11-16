@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
@@ -46,10 +46,10 @@ function DefaultNavbarLink({ icon, name, route, light }) {
 
 // Typechecking props for the DefaultNavbarLink
 DefaultNavbarLink.propTypes = {
-  icon: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  route: PropTypes.string.isRequired,
-  light: PropTypes.bool.isRequired,
+  icon: PropTypes.string,
+  name: PropTypes.string,
+  route: PropTypes.string,
+  light: PropTypes.bool,
 };
 
 export default DefaultNavbarLink;

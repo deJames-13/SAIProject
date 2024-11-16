@@ -8,18 +8,18 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 import { ThemeProvider } from "@mui/material/styles";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 
-// Material Dashboard 2 React example components
+// React example components
 import Configurator from "components/Configurator";
 import Sidenav from "components/Sidenav";
 
-// Material Dashboard 2 React themes
+// React themes
 import theme from "assets/theme";
 import themeRTL from "assets/theme/theme-rtl";
 
-// Material Dashboard 2 React Dark Mode themes
+// React Dark Mode themes
 import themeDark from "assets/theme-dark";
 import themeDarkRTL from "assets/theme-dark/theme-rtl";
 
@@ -28,10 +28,10 @@ import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import rtlPlugin from "stylis-plugin-rtl";
 
-// Material Dashboard 2 React routes
+// React routes
 import routes from "routes";
 
-// Material Dashboard 2 React contexts
+// React contexts
 import { setMiniSidenav, setOpenConfigurator, useMaterialUIController } from "context";
 
 // Images
@@ -140,7 +140,7 @@ export default function App() {
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Material Dashboard 2"
+              brandName="Threat Dashboard"
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}

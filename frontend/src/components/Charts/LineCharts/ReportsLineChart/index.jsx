@@ -1,16 +1,9 @@
 /**
 =========================================================
-* Material Dashboard 2  React - v2.2.0
+* Threat Dashboard  React - v2.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Unthread (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
 import { useMemo } from "react";
@@ -20,15 +13,15 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import {
-    CategoryScale,
-    Chart as ChartJS,
-    Filler,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -37,7 +30,7 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 

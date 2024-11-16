@@ -20,7 +20,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function ScanFile() {
+export default function ScanFile({ onScan = () => { } }) {
   const [hash, setHash] = React.useState('');
   const {
     renderNotifications,
@@ -29,8 +29,10 @@ export default function ScanFile() {
   } = useVirusTotal();
 
 
-  const handleScan = () => {
-    handleHashScan(hash);
+  const handleUrlScan = () => {
+    handleHashScan(hash).then((data) => {
+      onScan(data);
+    });
   };
 
   const handleFileUpload = (e) => {
@@ -44,7 +46,9 @@ export default function ScanFile() {
       })
     }
 
-    handleFileScan(file);
+    handleFileScan(file).then((data) => {
+      onScan(data);
+    });
 
 
 
@@ -70,7 +74,7 @@ export default function ScanFile() {
             onChange={e => setHash(e.target.value)}
             className='flex-1'
           />
-          <MDButton color='secondary' variant='outlined' onClick={handleScan}>
+          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
             Scan Hash
           </MDButton>
           <MDBox>

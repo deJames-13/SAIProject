@@ -4,18 +4,13 @@
   you can customize the states for the different components here.
 */
 
+import PropTypes from "prop-types";
 import { createContext, useContext, useMemo, useReducer } from "react";
 
-// prop-types is a library for typechecking of props
-import PropTypes from "prop-types";
-
-// Material Dashboard 2 React main context
 const MaterialUI = createContext();
 
-// Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
 
-// Material Dashboard 2 React reducer
 function reducer(state, action) {
   switch (action.type) {
     case "MINI_SIDENAV": {
@@ -54,7 +49,7 @@ function reducer(state, action) {
   }
 }
 
-// Material Dashboard 2 React context provider
+// React context provider
 function MaterialUIControllerProvider({ children }) {
   const initialState = {
     miniSidenav: false,
@@ -76,7 +71,7 @@ function MaterialUIControllerProvider({ children }) {
   return <MaterialUI.Provider value={value}>{children}</MaterialUI.Provider>;
 }
 
-// Material Dashboard 2 React custom hook for using context
+// React custom hook for using context
 function useMaterialUIController() {
   const context = useContext(MaterialUI);
 
@@ -89,7 +84,6 @@ function useMaterialUIController() {
   return context;
 }
 
-// Typechecking props for the MaterialUIControllerProvider
 MaterialUIControllerProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

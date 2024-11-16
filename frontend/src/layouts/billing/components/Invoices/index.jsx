@@ -2,7 +2,7 @@
 // @mui material components
 import Card from "@mui/material/Card";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";

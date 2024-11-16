@@ -2,11 +2,11 @@
 import MDBox from 'components/MDBox';
 import ReportTable from './report-table';
 
-export default function Reports() {
+export default function Reports({ type = 'url' }) {
   return (
     <MDBox display="flex">
 
-      <ReportTable />
+      <ReportTable type={type} />
 
     </MDBox>
   )

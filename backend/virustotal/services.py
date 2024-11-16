@@ -15,17 +15,10 @@ class VirusTotalService:
         if not self.base_url:
             raise ValueError("BASE_URL is not set in settings")
         
-        
     def validate_file(self, file_path):
         if not os.path.exists(file_path):
             return False
         return True
-        
-    def delete_file_from_server(self, file_path):
-        try:
-            os.remove(file_path)
-        except Exception as e:
-            print(f"An error occurred: {e}")
         
     def scan_file(self, files):
         scan_url = f"{self.base_url}/files"
@@ -43,6 +36,33 @@ class VirusTotalService:
                 return None
         except Exception as e:
             print(f"An error occurred: {e}")
+            return None
+    
+    def get_analyses(self, id, type = 'analysis'):
+        if (type == 'file'): 
+            return self.get_file_report(id)
+        analyses_url = f"{self.base_url}/analyses/{id}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(analyses_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
+            return None
+    
+    def get_file_report(self, scan_id):
+        report_url = f"{self.base_url}/files/{scan_id}"
+        headers = {
+            "x-apikey": self.api_key
+        }
+        response = requests.get(report_url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        else:
+            print(f"An error occurred: {response.status_code} - {response.text}")
             return None
     
     def scan_file_hash(self, file_hash):

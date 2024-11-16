@@ -3,16 +3,9 @@
   "version": "2.2.0",
   "private": true,
   "type": "module",
-  "author": "Unthread",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 by Unthread",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
-  },
+  "author": "VIPYR",
+  "license": "See license in #/license",
+  "description": "React version of Threat Dashboard by VIPYR",
   "dependencies": {
     "@emotion/cache": "11.10.8",
     "@emotion/react": "11.10.8",
@@ -69,7 +62,7 @@
     "postcss": "^8.4.20",
     "prettier": "2.8.8",
     "tailwindcss": "^3.4.14",
-    "vite": "^5.3.4",
+    "vite": "^5.4.11",
     "vite-tsconfig-paths": "^5.0.1"
   },
   "overrides": {

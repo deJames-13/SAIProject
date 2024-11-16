@@ -8,11 +8,11 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React example components
+// React example components
 import ProfileInfoCard from "components/Cards/InfoCards/ProfileInfoCard";
 import DefaultProjectCard from "components/Cards/ProjectCards/DefaultProjectCard";
 import Footer from "components/Footer";

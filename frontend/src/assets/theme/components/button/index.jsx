@@ -1,5 +1,5 @@
 
-// Material Dashboard 2 React Button Styles
+// React Button Styles
 import contained from "assets/theme/components/button/contained";
 import outlined from "assets/theme/components/button/outlined";
 import root from "assets/theme/components/button/root";

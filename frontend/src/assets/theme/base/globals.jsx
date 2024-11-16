@@ -1,5 +1,5 @@
 
-// Material Dashboard 2 React Base Styles
+// React Base Styles
 import colors from "assets/theme/base/colors";
 
 const { info, dark } = colors;
