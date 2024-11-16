@@ -182,20 +182,60 @@ export const vtApi = apiSlice.injectEndpoints({
         }),
         // ##############################################################################
 
+        // DELETED
+        // ##############################################################################
+        getDeletedUrlReports: build.mutation({
+            query: () => ({
+                url: `/url-reports/deleted-only/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
+        getDeletedFileReports: build.mutation({
+            query: () => ({
+                url: `/file-reports/deleted-only/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+        // ##############################################################################
+
+        // ALL WITH DELETED
+        // ##############################################################################
+        getAllUrlReports: build.mutation({
+            query: () => ({
+                url: `/url-reports/all-with-deleted/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
+        getAllFileReports: build.mutation({
+            query: () => ({
+                url: `/file-reports/all-with-deleted/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
+
         // RESTORE
         // ##############################################################################
         restoreUrlReport: build.mutation({
             query: (id) => ({
-                url: `/url-reports/${id}/restore/`,
+                url: `/url-reports/restore/`,
                 method: 'POST',
                 headers,
+                body: JSON.stringify({id})
             }),
         }),
         restoreFileReport: build.mutation({
             query: (id) => ({
-                url: `/file-reports/${id}/restore/`,
+                url: `/file-reports/restore/`,
                 method: 'POST',
                 headers,
+                body: JSON.stringify({id})
             }),
         }),
         

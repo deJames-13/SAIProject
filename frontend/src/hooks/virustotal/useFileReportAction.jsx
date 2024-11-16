@@ -12,6 +12,9 @@ export default function useFileReportAction() {
         useSaveFileReportMutation,
         useEditFileReportMutation,
         useDeleteFileReportMutation,
+        useGetDeletedFileReportsMutation,
+        useGetAllFileReportsMutation,
+        useRestoreFileReportMutation
     } = vtApi
 
     const [getFileReports] = useGetFileReportsMutation();
@@ -19,6 +22,10 @@ export default function useFileReportAction() {
     const [saveFileReport] = useSaveFileReportMutation();
     const [editFileReport] = useEditFileReportMutation();
     const [deleteFileReport] = useDeleteFileReportMutation();
+    const [getAllFileReports] = useGetAllFileReportsMutation();
+    const [getDeletedFileReports] = useGetDeletedFileReportsMutation();
+    const [restoreFileReport] = useRestoreFileReportMutation();
+
 
     const fetchFileReports = async () => {
         return getFileReports()
@@ -38,6 +45,30 @@ export default function useFileReportAction() {
                 setReport(response.data);
                 if (response.error)
                     throw new Error(response.error);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const fetchDeletedFileReports = async () => {
+        return getDeletedFileReports()
+            .then((response) => {
+                setReports(response.data);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const fetchAllFileReports = async () => {
+        return getAllFileReports()
+            .then((response) => {
+                setReports(response.data);
                 return response;
             })
             .catch((error) => {
@@ -91,14 +122,31 @@ export default function useFileReportAction() {
             });
     }
 
+    const restoreReport = async (id) => {
+        return restoreFileReport(id)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
     return {
         reports,
-        report,
         setReports,
+        report,
         fetchFileReports,
         fetchFileReport,
+        fetchDeletedFileReports,
+        fetchAllFileReports,
         createFileReport,
         updateReport,
         removeReport,
+        restoreReport,
     }
 }

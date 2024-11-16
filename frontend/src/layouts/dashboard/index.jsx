@@ -1,16 +1,16 @@
-import React from "react";
-import { Grid, Container } from "@mui/material";
-import MDBox from "components/MDBox";
+import { Container, Grid } from "@mui/material";
 import ComplexStatisticsCard from "components/Cards/StatisticsCards/ComplexStatisticsCard";
-import DashboardLayout from "components/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "components/Navbars/DashboardNavbar";
-import Footer from "components/Footer";
-import PieChartComponent from "components/Charts/PieChartComponent";
 import BarChartComponent from "components/Charts/BarChartComponent";
 import LineChartComponent from "components/Charts/LineChartComponent";
+import PieChartComponent from "components/Charts/PieChartComponent";
+import Footer from "components/Footer";
+import DashboardLayout from "components/LayoutContainers/DashboardLayout";
+import MDBox from "components/MDBox";
+import DashboardNavbar from "components/Navbars/DashboardNavbar";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import Projects from "layouts/dashboard/components/Projects";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import React from "react";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -22,6 +22,8 @@ function Dashboard() {
       <MDBox py={3}>
         {/* Status Boxes */}
         <Grid container spacing={3}>
+
+          {/* URL SCANS COUNT */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -37,6 +39,8 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+
+          {/* FILE SCANS COUNT */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -51,6 +55,8 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+
+          {/* SAVE REPORTS */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -66,6 +72,8 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+
+          {/* MALICIOUS DETECTED COUNT */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -117,25 +125,25 @@ function Dashboard() {
         </MDBox>
 
         <MDBox mt={4.5}>
-  <Grid container spacing={3} justifyContent="center" alignItems="center">
-    {/* Pie Chart */}
-    <Grid item xs={12} md={6} lg={4}>
-      <MDBox mb={3} display="flex" justifyContent="center">
-        <PieChartComponent
-          color="dark"
-          title="VirusTotal Status"
-          description="Distribution of VirusTotal statuses"
-          date="Updated 1 hour ago"
-        />
-      </MDBox>
-    </Grid>
-  </Grid>
-</MDBox>
+          <Grid container spacing={3} justifyContent="center" alignItems="center">
+            {/* Pie Chart */}
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3} display="flex" justifyContent="center">
+                <PieChartComponent
+                  color="dark"
+                  title="VirusTotal Status"
+                  description="Distribution of VirusTotal statuses"
+                  date="Updated 1 hour ago"
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
 
 
 
         {/* Progress Overview */}
-        <MDBox>
+        {/* <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <Projects />
@@ -144,7 +152,7 @@ function Dashboard() {
               <OrdersOverview />
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
 
       <Footer />
