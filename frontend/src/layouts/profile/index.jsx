@@ -1,12 +1,6 @@
-
-// @mui material components
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Grid, Divider, TextField, Button } from "@mui/material";
 
 // React components
 import MDBox from "components/MDBox";
@@ -38,6 +32,62 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 function Overview() {
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    // Fetch user data from localStorage or an API
+    const storedUserInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
+    setUserData(storedUserInfo);
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+  };
+
+  const handleSave = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    console.log('User Data being sent:', userData);
+    
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/user/update/", // Backend endpoint for updating user
+        {
+          username: userData.username, 
+          email: userData.email, 
+          first_name: userData.first_name, 
+          last_name: userData.last_name,   
+          password: userData.password      
+        },
+        {
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      
+      // Update the localStorage with the updated user data
+      localStorage.setItem('userInfo', JSON.stringify(response.data)); // Save updated user data to localStorage
+      
+      // Handle success
+      alert("Profile updated successfully!");
+      // Update state with the latest user data (optional, if needed for immediate UI updates)
+      setUserData(response.data);
+
+    } catch (error) {
+      console.error("Error updating profile:", error.response?.data || error.message);
+      alert("Error updating profile!");
+    }
+  };
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -48,41 +98,79 @@ function Overview() {
             <Grid item xs={12} md={6} xl={4}>
               <PlatformSettings />
             </Grid>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
+            <Grid item xs={12} md={6} xl={4}>
               <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
-              <ProfileInfoCard
-                title="profile information"
-                description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-                info={{
-                  fullName: "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
-                }}
-                social={[
-                  {
-                    link: "https://www.facebook.com/CreativeTim/",
-                    icon: <FacebookIcon />,
-                    color: "facebook",
-                  },
-                  {
-                    link: "https://twitter.com/creativetim",
-                    icon: <TwitterIcon />,
-                    color: "twitter",
-                  },
-                  {
-                    link: "https://www.instagram.com/creativetimofficial/",
-                    icon: <InstagramIcon />,
-                    color: "instagram",
-                  },
-                ]}
-                action={{ route: "", tooltip: "Edit Profile" }}
-                shadow={false}
-              />
-              <Divider orientation="vertical" sx={{ mx: 0 }} />
+              <MDBox p={2} sx={{ position: "relative", zIndex: 2, mt: -55  }}>
+                <MDTypography variant="h6" mb={2}>
+                  Edit Profile
+                </MDTypography>
+                <form>
+                  <div>
+                    <TextField
+                      label="Username"
+                      variant="outlined"
+                      name="username"
+                      value={userData.username}
+                      onChange={handleInputChange}
+                      fullWidth
+                      sx={{ padding: "10px" }}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Email"
+                      variant="outlined"
+                      name="email"
+                      value={userData.email}
+                      onChange={handleInputChange}
+                      fullWidth
+                      sx={{ padding: "10px" }}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="First Name"
+                      variant="outlined"
+                      name="first_name"
+                      value={userData.first_name}
+                      onChange={handleInputChange}
+                      fullWidth
+                      sx={{ padding: "10px" }}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Last Name"
+                      variant="outlined"
+                      name="last_name"
+                      value={userData.last_name}
+                      onChange={handleInputChange}
+                      fullWidth
+                      sx={{ padding: "10px" }}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      label="Password"
+                      variant="outlined"
+                      name="password"
+                      type="password"
+                      value={userData.password}
+                      onChange={handleInputChange}
+                      fullWidth
+                      sx={{ padding: "10px" }}
+                    />
+                  </div>
+                  <div style={{ marginTop: "20px" }}>
+                    <Button variant="contained" color="primary" onClick={handleSave}>
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              </MDBox>
             </Grid>
             <Grid item xs={12} xl={4}>
-              <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
+              <ProfilesList title="Conversations" profiles={profilesListData} shadow={false} />
             </Grid>
           </Grid>
         </MDBox>
@@ -96,7 +184,7 @@ function Overview() {
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox p={2}>
+        <MDBox p={2} sx={{ position: "relative", zIndex: 1 }}>
           <Grid container spacing={6}>
             <Grid item xs={12} md={6} xl={3}>
               <DefaultProjectCard

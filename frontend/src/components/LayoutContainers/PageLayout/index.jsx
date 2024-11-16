@@ -20,13 +20,14 @@ function PageLayout({ background, children }) {
   const { pathname } = useLocation();
   const nav = useNavigate();
 
+
   useEffect(() => {
-    if (userInfo?.id) {
+    if (userInfo?.id && accessToken) {
       nav("/dashboard");
     } else {
       setLayout(dispatch, "page");
     }
-  }, [pathname]);
+  }, [userInfo, pathname])
 
   return userInfo?.id ? '' : (
     <MDBox
