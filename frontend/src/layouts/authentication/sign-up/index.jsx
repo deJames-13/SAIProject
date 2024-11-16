@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
@@ -17,8 +17,8 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
 
 function Cover() {
   // State for form inputs

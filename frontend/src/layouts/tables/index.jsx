@@ -3,11 +3,11 @@
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React example components
+// React example components
 import Footer from "components/Footer";
 import DashboardLayout from "components/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";

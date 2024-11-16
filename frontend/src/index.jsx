@@ -11,7 +11,7 @@ import React from "react";
 import store from 'states/store';
 import App from "./App";
 
-// Material Dashboard 2 React Context Provider
+// React Context Provider
 
 const container = document.getElementById("root");
 const root = createRoot(container);

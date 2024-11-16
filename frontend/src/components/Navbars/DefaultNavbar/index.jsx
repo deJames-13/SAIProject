@@ -11,19 +11,19 @@ import PropTypes from "prop-types";
 import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React example components
+// React example components
 import DefaultNavbarLink from "components/Navbars/DefaultNavbar/DefaultNavbarLink";
 import DefaultNavbarMobile from "components/Navbars/DefaultNavbar/DefaultNavbarMobile";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
-// Material Dashboard 2 React context
+// React context
 import { useMaterialUIController } from "context";
 
 function DefaultNavbar({ transparent, light, action }) {
@@ -96,7 +96,7 @@ function DefaultNavbar({ transparent, light, action }) {
           pl={{ xs: 0, lg: 1 }}
         >
           <MDTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
-            Material Dashboard 2
+            Threat Dashboard
           </MDTypography>
         </MDBox>
         <MDBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>

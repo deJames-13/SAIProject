@@ -7,11 +7,11 @@ import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
 import Link from "@mui/material/Link";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import typography from "assets/theme/base/typography";
 
 function Footer({ light }) {
@@ -43,7 +43,7 @@ function Footer({ light }) {
               </Icon>
             </MDBox>
             by
-            <Link href="https://www.creative-tim.com/" target="_blank">
+            <Link href="#/" target="_blank">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
                 &nbsp;VIPYR&nbsp;
               </MDTypography>
@@ -68,7 +68,7 @@ function Footer({ light }) {
             })}
           >
             <MDBox component="li" pr={2} lineHeight={1}>
-              <Link href="https://www.creative-tim.com/" target="_blank">
+              <Link href="#/" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -79,7 +79,7 @@ function Footer({ light }) {
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link href="https://www.creative-tim.com/presentation" target="_blank">
+              <Link href="#/presentation" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -90,7 +90,7 @@ function Footer({ light }) {
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link href="https://www.creative-tim.com/blog" target="_blank">
+              <Link href="#/blog" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -101,7 +101,7 @@ function Footer({ light }) {
               </Link>
             </MDBox>
             <MDBox component="li" pl={2} lineHeight={1}>
-              <Link href="https://www.creative-tim.com/license" target="_blank">
+              <Link href="#/license" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"

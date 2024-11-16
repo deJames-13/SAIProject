@@ -13,15 +13,15 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import axios from "axios";
+import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -34,7 +34,7 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   // Get the CSRF token from the cookie
-  const getCsrfToken = () => { 
+  const getCsrfToken = () => {
     const name = "csrftoken";
     const cookieValue = document.cookie
       .split('; ')
@@ -43,14 +43,14 @@ function Basic() {
     return cookieValue || '';
   };
 
-  
+
   const handleSignin = async (event) => {
     event.preventDefault();
-  
+
     try {
       // Send the login request to the backend
       const response = await axios.post(
-        "http://localhost:8000/user/login/", 
+        "http://localhost:8000/user/login/",
         { email, password },
         {
           headers: {
@@ -58,20 +58,20 @@ function Basic() {
           },
         }
       );
-  
-      
+
+
       localStorage.setItem("token", response.data.token);
-  
+
       setSuccessMessage("Login successful!");
-      setErrorMessage("");  
-      navigate("/dashboard");  
+      setErrorMessage("");
+      navigate("/dashboard");
     } catch (error) {
-      
+
       setErrorMessage(error.response?.data?.message || "An error occurred during login");
-      setSuccessMessage("");  
+      setSuccessMessage("");
     }
   };
-  
+
 
   return (
     <BasicLayout image={bgImage}>

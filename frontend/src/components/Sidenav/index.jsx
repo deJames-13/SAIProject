@@ -13,21 +13,21 @@ import Icon from "@mui/material/Icon";
 import Link from "@mui/material/Link";
 import List from "@mui/material/List";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React example components
+// React example components
 import SidenavCollapse from "components/Sidenav/SidenavCollapse";
 
 // Custom styles for the Sidenav
+import axios from "axios";
 import SidenavRoot from "components/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "components/Sidenav/styles/sidenav";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-// Material Dashboard 2 React context
+// React context
 import {
   setMiniSidenav,
   setTransparentSidenav,
@@ -40,32 +40,32 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
-  
-  const navigate = useNavigate();  
+
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-  
+
     if (!token) {
       console.error("No token found in localStorage");
       return;
     }
-  
+
     try {
       const response = await axios.post("http://localhost:8000/user/logout/", {}, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
-  
-      console.log(response.data.message);  
-      localStorage.removeItem("token");  
-      navigate("/authentication/sign-in");  
+
+      console.log(response.data.message);
+      localStorage.removeItem("token");
+      navigate("/authentication/sign-in");
     } catch (error) {
       console.error("Logout failed:", error.response ? error.response.data : error);
     }
   };
-  
+
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -200,7 +200,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           variant="gradient"
           color={sidenavColor}
           fullWidth
-          onClick={handleLogout} 
+          onClick={handleLogout}
         >
           <Icon sx={{ fontWeight: "bold" }}>logout</Icon>
           Log Out

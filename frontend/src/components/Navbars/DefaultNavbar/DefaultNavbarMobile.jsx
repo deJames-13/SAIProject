@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 // @mui material components
 import Menu from "@mui/material/Menu";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 
-// Material Dashboard 2 React example components
+// React example components
 import DefaultNavbarLink from "components/Navbars/DefaultNavbar/DefaultNavbarLink";
 
 function DefaultNavbarMobile({ open, close }) {

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 

@@ -14,7 +14,7 @@
   11. The `component` key is used to store the component of its route.
 */
 
-// Material Dashboard 2 React layouts
+// React layouts
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Dashboard from "layouts/dashboard";

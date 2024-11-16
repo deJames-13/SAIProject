@@ -9,14 +9,14 @@ import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Custom styles for the MDSnackbar
 import MDSnackbarIconRoot from "components/MDSnackbar/MDSnackbarIconRoot";
 
-// Material Dashboard 2 React context
+// React context
 import { useMaterialUIController } from "context";
 
 function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...rest }) {

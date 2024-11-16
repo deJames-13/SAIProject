@@ -4,15 +4,8 @@
   "private": true,
   "type": "module",
   "author": "VIPYR",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 by VIPYR",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/material-dashboard-react.git"
-  },
+  "license": "See license in #/license",
+  "description": "React version of Threat Dashboard by VIPYR",
   "dependencies": {
     "@emotion/cache": "11.10.8",
     "@emotion/react": "11.10.8",
