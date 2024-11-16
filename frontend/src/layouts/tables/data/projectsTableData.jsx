@@ -4,7 +4,7 @@
 // @mui material components
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDProgress from "components/MDProgress";

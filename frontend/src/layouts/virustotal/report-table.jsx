@@ -13,6 +13,7 @@ export default function ReportTable() {
         removeReport
     } = useUrlReportAction();
 
+
     React.useEffect(() => {
         fetchUrlReports();
     }, []);
@@ -52,7 +53,8 @@ export default function ReportTable() {
     })
 
 
-    const data = {
+
+    const data = !reports?.length ? {} : {
         columns: [
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
             { Header: "Votes", accessor: "votes", width: "20%", align: "left" },
@@ -107,15 +109,19 @@ export default function ReportTable() {
     }
     return <>
         {
-            reports.length === 0 &&
-            <MDBox display="flex" justifyContent="center" alignItems="center" height="100%" width="100%">
-                <h1 className='font-bold uppercase'>No reports found</h1>
-            </MDBox>
-        }
-        {reports.length > 0 &&
-            <DataTable
-                table={data}
-            />
+            !reports?.length ?
+                <MDBox display="flex" justifyContent="center" alignItems="center" height="100%" width="100%">
+                    <h1 className='font-bold uppercase'>No reports found</h1>
+                </MDBox> :
+
+                <>
+                    {
+                        reports.length > 0 &&
+                        <DataTable
+                            table={data}
+                        />
+                    }
+                </>
         }
     </>
 }

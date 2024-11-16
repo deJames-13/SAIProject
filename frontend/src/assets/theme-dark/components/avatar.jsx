@@ -1,5 +1,5 @@
 
-// Material Dashboard 2 React base styles
+// React base styles
 import borders from "assets/theme-dark/base/borders";
 
 const { borderRadius } = borders;

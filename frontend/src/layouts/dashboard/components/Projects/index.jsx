@@ -7,11 +7,11 @@ import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React examples
+// React examples
 import DataTable from "components/Tables/DataTable";
 
 // Data

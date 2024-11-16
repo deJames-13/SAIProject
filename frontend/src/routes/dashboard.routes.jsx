@@ -14,7 +14,7 @@
   11. The `component` key is used to store the component of its route.
 */
 
-// Material Dashboard 2 React layouts
+// React layouts
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Dashboard from "layouts/dashboard";
@@ -28,11 +28,25 @@ import VirusTotal from "layouts/virustotal";
 import Icon from "@mui/material/Icon";
 
 // Import chart components
-import PieChartComponent from "components/Charts/PieChartComponent";
 import BarChartComponent from "components/Charts/BarChartComponent";
 import LineChartComponent from "components/Charts/LineChartComponent";
+import PieChartComponent from "components/Charts/PieChartComponent";
 
 export const dashboardRoutes = [
+  {
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -49,14 +63,6 @@ export const dashboardRoutes = [
     route: "/threats",
     component: <VirusTotal />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Tables",
-  //   key: "tables",
-  //   icon: <Icon fontSize="small">table_view</Icon>,
-  //   route: "/tables",
-  //   component: <Tables />,
-  // },
   {
     type: "collapse",
     name: "Notifications",
@@ -64,30 +70,6 @@ export const dashboardRoutes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
   },
   {
     type: "collapse",
@@ -112,5 +94,13 @@ export const dashboardRoutes = [
     icon: <Icon>show_chart</Icon>,
     route: "/charts/line",
     component: <LineChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/profile",
+    component: <Profile />,
   },
 ];
