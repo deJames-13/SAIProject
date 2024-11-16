@@ -20,11 +20,11 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     } = useHistoryActions();
 
     const {
-        useGetDataMutation,
+        useGetUrlDataMutation,
         useScanUrlMutation,
         useScanFileMutation,
         useScanHashMutation,
-        useGetFileReportMutation,
+        useGetFileDataMutation,
     } = vtApi;
 
     const [url, setUrl] = useState('');
@@ -32,10 +32,10 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const [id, setId] = useState('');
     const [data, setData] = useState(null);
     const [scanUrl] = useScanUrlMutation();
-    const [getData] = useGetDataMutation();
+    const [getUrlData] = useGetUrlDataMutation();
     const [scanFile] = useScanFileMutation();
     const [scanHash] = useScanHashMutation();
-    const [getFileReport] = useGetFileReportMutation();
+    const [getFileData] = useGetFileDataMutation();
     const [status, setStatus] = useState();
 
     const saveDataToHistory = async (data, type) => {
@@ -92,7 +92,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const fetchFileData = async (id, type = 'analysis') => {
 
         setStatus("Fetching data...");
-        return getFileReport({ id, type }).unwrap().then(({ data, meta }) => {
+        return getFileData({ id, type }).unwrap().then(({ data, meta }) => {
             if (data.attributes.status === "completed") {
                 let itemLinkId = meta.file_info.sha256
                 return fetchFileData(itemLinkId, 'file');
@@ -137,7 +137,7 @@ const useVirusTotal = ({ type = 'url' } = {}) => {
     const fetchUrlData = (id) => {
         setStatus("Scan finished. Getting data...");
         if (id) {
-            return getData(id).unwrap().then(({ data }) => {
+            return getUrlData(id).unwrap().then(({ data }) => {
                 setData(data);
                 setStatus("Data fetched successfully.");
                 saveDataToHistory({

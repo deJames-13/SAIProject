@@ -15,7 +15,7 @@ class SoftDeleteManager(models.Manager):
 class Analyses(SoftDeleteModel):
     id = models.AutoField(primary_key=True, editable=False, auto_created=True)
     scan_id = models.TextField()
-    description = models.TextField(default="")
+    description = models.TextField(default="", blank=True)
     reputation = models.TextField()
     votes = models.JSONField()
     times_submitted = models.IntegerField()

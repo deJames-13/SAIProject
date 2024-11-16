@@ -2,7 +2,7 @@ from rest_framework import viewsets, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -92,6 +92,8 @@ class VirusTotalViewSet(viewsets.ModelViewSet):
         return Response(result, status=status.HTTP_200_OK)
 
 
+
+
 class UrlReportViewSet(viewsets.ModelViewSet):
     queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
@@ -102,10 +104,12 @@ class UrlReportViewSet(viewsets.ModelViewSet):
     def create (self, request):
         if not request.user.is_authenticated:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
-        data = request.data
+        data = request.data.copy()
         data["user"] = request.user.id
         if not data["analysis"]:
             return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
         
         serializer = UrlReportsSerializer(data=data)
         if serializer.is_valid():
@@ -113,24 +117,30 @@ class UrlReportViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+
     
 class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
     analysis = Analyses.objects.all()
     analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
+
     
     def create(self, request):
         if not request.user.is_authenticated:
             return Response({"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED)
         
-        data = request.data
+        data = request.data.copy()
         data["user"] = request.user.id
         if not data["analysis"]:
             return Response({"error": "Analysis is required"}, status=status.HTTP_400_BAD_REQUEST)
         
+        if type(data["analysis"]) == str:
+            data["analysis"] = dict(json.loads(data["analysis"]))
+
         serializer = FileReportsSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

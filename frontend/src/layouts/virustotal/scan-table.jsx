@@ -5,7 +5,10 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { CircularProgress } from '@mui/material';
 
 import MDButton from 'components/MDButton';
+import useNotification from 'hooks/notifications/useNotification';
+import useFileReportAction from 'hooks/virustotal/useFileReportAction';
 import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
+
 import React from 'react';
 
 
@@ -24,7 +27,14 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
-    const { createReport, renderNotifications } = useUrlReportAction();
+    const noti = useNotification();
+    const {
+        createUrlReport,
+    } = useUrlReportAction();
+
+    const {
+        createFileReport,
+    } = useFileReportAction();
 
 
     if (!analyses) return " " || (<>
@@ -40,6 +50,11 @@ export default function AnalysesTable({ analyses = null }) {
         status = 'ok',
         type,
         attributes: {
+            sha1 = '',
+            sha256 = '',
+            md5 = '',
+            ssdeep = '',
+            tlsh = '',
             type_description: file_type = '',
             meaningful_name: file_name = '',
             size: file_size = 0,
@@ -92,14 +107,27 @@ export default function AnalysesTable({ analyses = null }) {
     const filePayload = () => ({
         file_name,
         file_type,
-        hashes,
+        hashes: {
+            sha256: id,
+            sha1,
+            md5,
+            ssdeep,
+            tlsh,
+        },
         analysis: analysisPayload(),
     })
 
-    const handleSave = () => {
-        const payload = type === 'url' ? urlPayload() : filePayload();
-        if (type === 'url')
-            createReport(payload);
+    const handleSave = async () => {
+        try {
+            const payload = type === 'url' ? urlPayload() : filePayload();
+            if (type === 'url')
+                await createUrlReport(payload);
+            if (type === 'file')
+                await createFileReport(payload)
+            noti.success('Report saved successfully');
+        } catch (error) {
+            noti.error('Failed to save report');
+        }
 
 
     };
@@ -108,6 +136,7 @@ export default function AnalysesTable({ analyses = null }) {
         const date = new Date(timestamp * 1000);
         return date.toLocaleString();
     };
+
 
     return !id ? '' : (
         <>
@@ -368,7 +397,7 @@ export default function AnalysesTable({ analyses = null }) {
                         })}
                     </div>
                 </div>
-                {renderNotifications}
+                {noti.renderNotifications}
             </div>
         </>
     )
