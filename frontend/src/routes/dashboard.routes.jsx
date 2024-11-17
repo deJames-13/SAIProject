@@ -14,7 +14,7 @@
   11. The `component` key is used to store the component of its route.
 */
 
-// Material Dashboard 2 React layouts
+// React layouts
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Dashboard from "layouts/dashboard";
@@ -28,11 +28,25 @@ import VirusTotal from "layouts/virustotal";
 import Icon from "@mui/material/Icon";
 
 // Import chart components
-import PieChartComponent from "components/Charts/PieChartComponent";
 import BarChartComponent from "components/Charts/BarChartComponent";
 import LineChartComponent from "components/Charts/LineChartComponent";
+import PieChartComponent from "components/Charts/PieChartComponent";
 
 export const dashboardRoutes = [
+  {
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    name: "Sign Up",
+    key: "sign-up",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -43,51 +57,39 @@ export const dashboardRoutes = [
   },
   {
     type: "collapse",
-    name: "Threat Intelligence",
-    key: "threats",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/threats",
-    component: <VirusTotal />,
+    name: "Scan Url",
+    key: "scan-url",
+    icon: <Icon fontSize="small">code</Icon>,
+    route: "/threats/scan-url",
+    component: <VirusTotal type="url" active='scan-url' />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Tables",
-  //   key: "tables",
-  //   icon: <Icon fontSize="small">table_view</Icon>,
-  //   route: "/tables",
-  //   component: <Tables />,
-  // },
   {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    name: "Scan File",
+    key: "scan-url-report",
+    route: "/threats/scan-url/report",
+    component: <VirusTotal type="url-report" active='scan-url-report' />,
   },
   {
     type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
+    name: "Scan File",
+    key: "scan-file",
+    icon: <Icon fontSize="small">folder</Icon>,
+    route: "/threats/scan-file",
+    component: <VirusTotal type="file" active='scan-file' />,
+  },
+  {
+    name: "Scan File",
+    key: "scan-file-report",
+    route: "/threats/scan-file/report",
+    component: <VirusTotal type="file-report" active='scan-file-report' />,
   },
   {
     type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
+    name: "View History",
+    key: "history",
+    icon: <Icon fontSize="small">history</Icon>,
+    route: "/threats/view-history",
+    component: <VirusTotal type="history" active='view-history' />,
   },
   {
     type: "collapse",
@@ -112,5 +114,13 @@ export const dashboardRoutes = [
     icon: <Icon>show_chart</Icon>,
     route: "/charts/line",
     component: <LineChartComponent />,
+  },
+  {
+    type: "collapse",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/profile",
+    component: <Profile />,
   },
 ];

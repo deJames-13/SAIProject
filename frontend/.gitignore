@@ -11,6 +11,8 @@
 /build
 
 # misc
+__pycache__
+__pytest_cache__
 .DS_Store
 .env.local
 .env.development.local
@@ -29,3 +31,4 @@ commit.sh
 venv
 *.lock
 
+.vercel

@@ -1,28 +1,33 @@
 
-import { useEffect } from "react";
-
-// react-router-dom components
-import { useLocation } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
-import PropTypes from "prop-types";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React context
 import { setLayout, useMaterialUIController } from "context";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+
+
+
 
 function DashboardLayout({ children }) {
+  const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const { pathname } = useLocation();
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (!userInfo?.id || !accessToken) {
+      nav("/authentication/sign-in");
+    }
+  }, [userInfo])
 
   useEffect(() => {
     setLayout(dispatch, "dashboard");
   }, [pathname]);
+  ;
 
-  return (
+  return (!userInfo?.id || !accessToken) ? '' : (
     <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,

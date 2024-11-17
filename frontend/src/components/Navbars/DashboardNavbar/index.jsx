@@ -14,30 +14,32 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
 
-// Material Dashboard 2 React example components
+// React example components
 import Breadcrumbs from "components/Breadcrumbs";
 import NotificationItem from "components/Items/NotificationItem";
 
 // Custom styles for DashboardNavbar
 import {
-    navbar,
-    navbarContainer,
-    navbarIconButton,
-    navbarMobileMenu,
-    navbarRow,
+  navbar,
+  navbarContainer,
+  navbarIconButton,
+  navbarMobileMenu,
+  navbarRow,
 } from "components/Navbars/DashboardNavbar/styles";
 
-// Material Dashboard 2 React context
+// React context
+import MDTypography from "components/MDTypography";
 import {
-    setMiniSidenav,
-    setOpenConfigurator,
-    setTransparentNavbar,
-    useMaterialUIController,
+  setMiniSidenav,
+  setOpenConfigurator,
+  setTransparentNavbar,
+  useMaterialUIController,
 } from "context";
+import { useSelector } from "react-redux";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -45,30 +47,22 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const { userInfo } = useSelector(state => state.auth);
 
   useEffect(() => {
-    // Setting the navbar type
     if (fixedNavbar) {
       setNavbarType("sticky");
     } else {
       setNavbarType("static");
     }
 
-    // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
-
-    /** 
-     The event listener that's calling the handleTransparentNavbar function when 
-     scrolling the window.
-    */
     window.addEventListener("scroll", handleTransparentNavbar);
 
-    // Call the handleTransparentNavbar function to set the state with the initial value.
     handleTransparentNavbar();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
@@ -120,12 +114,15 @@ function DashboardNavbar({ absolute, light, isMini }) {
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
         {isMini ? null : (
-          <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
+          <MDBox sx={(theme) => navbarRow(theme, { isMini })} >
+            {/* <MDBox pr={1}>
               <MDInput label="Search here" />
-            </MDBox>
-            <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
+            </MDBox> */}
+            <MDBox color={light ? "white" : "inherit"} className="flex">
+              <Link to="/profile" className="flex items-center">
+                <span className="font-bold text-xs">
+                  @{userInfo?.username || "user"}
+                </span>
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
                   <Icon sx={iconsStyle}>account_circle</Icon>
                 </IconButton>

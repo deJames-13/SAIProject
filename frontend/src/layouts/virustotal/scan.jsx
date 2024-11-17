@@ -2,24 +2,28 @@ import { TextField } from '@mui/material';
 
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
-import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import AnalysesTable from './scan-table';
 
+import useVirusTotal from 'hooks/virustotal/useVirusTotal';
+
 import React from 'react';
+import ScanFile from './scan-file';
 
 
-export default function Scan() {
+export default function Scan({ type = "url" }) {
   const {
     url,
     setUrl,
-    handleScan,
+    handleUrlScan,
     data,
+    setData,
     renderNotifications
-  } = useVirusTotal();
+  } = useVirusTotal({ type });
 
 
-  return (
-    <>
+
+  const inputUrlComponent = () => {
+    return (
       <MDBox>
         <MDBox style={{
           width: '100%',
@@ -36,7 +40,7 @@ export default function Scan() {
             value={url}
             onChange={e => setUrl(e.target.value)}
           />
-          <MDButton color='secondary' variant='outlined' onClick={handleScan}>
+          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
             Scan
           </MDButton>
         </MDBox>
@@ -44,6 +48,17 @@ export default function Scan() {
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
         </p>
       </MDBox>
+    )
+  }
+
+  React.useEffect(() => {
+    // console.log(data)
+  }, [data])
+
+  return (
+    <>
+      {type === "url" && inputUrlComponent()}
+      {type === "file" && <ScanFile onScan={setData} />}
 
       <div className="divider"></div>
 
@@ -53,7 +68,6 @@ export default function Scan() {
         gap: '1rem',
         padding: '1rem',
       }}>
-
         <AnalysesTable analyses={data} />
         {renderNotifications}
       </MDBox>

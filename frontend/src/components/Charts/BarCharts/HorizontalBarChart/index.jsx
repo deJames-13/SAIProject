@@ -1,16 +1,9 @@
 /**
 =========================================================
-* Material Dashboard 2  React - v2.2.0
+* Threat Dashboard  React - v2.2.0
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Unthread (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
 import { useMemo } from "react";
@@ -20,13 +13,13 @@ import PropTypes from "prop-types";
 
 // react-chartjs-2 components
 import {
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    Title,
-    Tooltip,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
@@ -34,14 +27,14 @@ import { Bar } from "react-chartjs-2";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // HorizontalBarChart configurations
 import configs from "components/Charts/BarCharts/HorizontalBarChart/configs";
 
-// Material Dashboard 2 React base styles
+// React base styles
 import colors from "assets/theme/base/colors";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -49,16 +42,16 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 function HorizontalBarChart({ icon, title, description, height, chart }) {
   const chartDatasets = chart.datasets
     ? chart.datasets.map((dataset) => ({
-        ...dataset,
-        weight: 5,
-        borderWidth: 0,
-        borderRadius: 4,
-        backgroundColor: colors[dataset.color]
-          ? colors[dataset.color || "dark"].main
-          : colors.dark.main,
-        fill: false,
-        maxBarThickness: 35,
-      }))
+      ...dataset,
+      weight: 5,
+      borderWidth: 0,
+      borderRadius: 4,
+      backgroundColor: colors[dataset.color]
+        ? colors[dataset.color || "dark"].main
+        : colors.dark.main,
+      fill: false,
+      maxBarThickness: 35,
+    }))
     : [];
 
   const { data, options } = configs(chart.labels || [], chartDatasets);

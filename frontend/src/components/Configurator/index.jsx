@@ -15,7 +15,7 @@ import Switch from "@mui/material/Switch";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 
-// Material Dashboard 2 React components
+// React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
@@ -23,7 +23,7 @@ import MDTypography from "components/MDTypography";
 // Custom styles for the Configurator
 import ConfiguratorRoot from "components/Configurator/ConfiguratorRoot";
 
-// Material Dashboard 2 React context
+// React context
 import {
   setDarkMode,
   setFixedNavbar,
@@ -275,7 +275,7 @@ function Configurator() {
         {/* <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}
-            href="https://www.creative-tim.com/learning-lab/react/quick-start/material-dashboard/"
+            href="#/learning-lab/react/quick-start/material-dashboard/"
             target="_blank"
             rel="noreferrer"
             color={darkMode ? "light" : "dark"}
@@ -316,7 +316,7 @@ function Configurator() {
             </MDBox>
             <MDButton
               component={Link}
-              href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard-react"
+              href="https://www.facebook.com/sharer/sharer.php?u=#/product/material-dashboard-react"
               target="_blank"
               rel="noreferrer"
               color="dark"

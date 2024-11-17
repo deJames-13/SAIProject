@@ -1,10 +1,10 @@
 
-// Material Dashboard 2 React Base Styles
+// React Base Styles
 import borders from "assets/theme-dark/base/borders";
 import colors from "assets/theme-dark/base/colors";
 import typography from "assets/theme-dark/base/typography";
 
-// Material Dashboard 2 React Helper Functions
+// React Helper Functions
 import rgba from "assets/theme-dark/functions/rgba";
 
 const { info, inputBorderColor, dark, grey, white } = colors;

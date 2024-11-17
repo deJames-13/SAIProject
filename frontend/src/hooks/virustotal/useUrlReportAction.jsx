@@ -1,9 +1,7 @@
-import useNotification from 'hooks/notifications/useNotification';
 import React from 'react';
 import vtApi from 'states/virustotal/api';
 
 export default function useUrlReportAction() {
-    const noti = useNotification();
     const [reports, setReports] = React.useState([]);
     const [report, setReport] = React.useState(null);
     const [url, setUrl] = React.useState('');
@@ -14,6 +12,9 @@ export default function useUrlReportAction() {
         useSaveUrlReportMutation,
         useEditUrlReportMutation,
         useDeleteUrlReportMutation,
+        useGetDeletedUrlReportsMutation,
+        useGetAllUrlReportsMutation,
+        useRestoreUrlReportMutation,
     } = vtApi
 
     const [getUrlReports] = useGetUrlReportsMutation();
@@ -21,17 +22,18 @@ export default function useUrlReportAction() {
     const [saveUrlReport] = useSaveUrlReportMutation();
     const [editUrlReport] = useEditUrlReportMutation();
     const [deleteUrlReport] = useDeleteUrlReportMutation();
+    const [getAllUrlReports] = useGetAllUrlReportsMutation();
+    const [getDeletedUrlReports] = useGetDeletedUrlReportsMutation();
+    const [restoreUrlReport] = useRestoreUrlReportMutation();
 
     const fetchUrlReports = async () => {
         return getUrlReports()
             .then((response) => {
                 setReports(response.data);
-                noti.success('Reports fetched successfully');
                 return response;
             })
             .catch((error) => {
                 console.error(error);
-                noti.error('Failed to fetch reports');
                 return error;
             });
     };
@@ -50,18 +52,40 @@ export default function useUrlReportAction() {
             });
     }
 
-    const createReport = async (report) => {
+    const fetchDeletedUrlReports = async () => {
+        return getDeletedUrlReports()
+            .then((response) => {
+                setReports(response.data);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const fetchAllUrlReports = async () => {
+        return getAllUrlReports()
+            .then((response) => {
+                setReports(response.data);
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const createUrlReport = async (report) => {
         return saveUrlReport(report)
             .then((response) => {
                 setReport(response.data);
 
                 if (response.error) {
-                    noti.error(Object.values(response.error?.data || {}).map((item) => item.join('\n')).join(' '));
                     throw new Error(response.error);
                 }
 
 
-                noti.success('Report created successfully');
                 return response;
             })
     }
@@ -85,8 +109,7 @@ export default function useUrlReportAction() {
             .then((response) => {
                 if (response.error)
                     throw new Error(response.error);
-                noti.success('Report deleted successfully');
-                setReports(reports.filter((report) => report.id !== id));
+
                 return response;
             })
             .catch((error) => {
@@ -95,17 +118,34 @@ export default function useUrlReportAction() {
             });
     };
 
+    const restoreReport = async (id) => {
+        return restoreUrlReport(id)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
     return {
         reports,
+        setReports,
         report,
         url,
         setUrl,
         fetchUrlReports,
         fetchUrlReport,
-        createReport,
+        fetchDeletedUrlReports,
+        fetchAllUrlReports,
+        createUrlReport,
         updateReport,
         removeReport,
-        renderNotifications: noti.renderNotifications,
+        restoreReport,
     }
 
 

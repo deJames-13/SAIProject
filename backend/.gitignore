@@ -28,7 +28,14 @@ yarn.lock
 .pytest_cache
 commit.sh
 .env
+.env.staging
+.env.production
 venv
 *.lock
 *.sqlite3
 
+.vercel
+# UNCOMMENT for Vercel
+certificates
+.pem
+.crt
