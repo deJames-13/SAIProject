@@ -75,9 +75,9 @@ function Header({ children }) {
         }}
       >
         <Grid container spacing={3} alignItems="center">
-          <Grid item>
+          {/* <Grid item>
             <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
-          </Grid>
+          </Grid> */}
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
