@@ -1,36 +1,74 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+    CartesianGrid,
+} from "recharts";
 
-const VirusChart = () => {
-  const [data, setData] = useState([]);
+const VirusStatsChart = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    // Fetch data from the Django API
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/charts/api/virustotal-stats/")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((jsonData) => {
+                // Directly set the data received from the backend
+                setData(jsonData);
+                setLoading(false);
+            })
+            .catch((error) => {
+                setError(error.message);
+                setLoading(false);
+            });
+    }, []);
 
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/charts/fetch-data/")
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
-  return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Virus Detection Analysis</h2> {/* Add header title */}
-    <ResponsiveContainer width="400%" height={500}>
-      <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="url" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="harmless" fill="#82ca9d" />
-        <Bar dataKey="malicious" fill="#ff4d4f" />
-      </BarChart>
-    </ResponsiveContainer>
-    </div>
-  );
+    const chartStyle = location.pathname === "/charts/bar" ? { marginLeft: "300px" } : {};
+
+    return (
+        <div style={chartStyle}>
+            {/* Title Section */}
+            <h2
+                style={{
+                    marginBottom: "20px",
+                    color: "#333",
+                    fontSize: "24px",
+                }}
+            >
+                Distribution of VirusTotal Statuses
+            </h2>
+
+            {/* Chart Section */}
+            <ResponsiveContainer width="101%" height={400}>
+                <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="url" tick={{ fontSize: 10 }} angle={-360} textAnchor="end" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="harmless" fill="#82ca9d" />
+                    <Bar dataKey="malicious" fill="#ff4d4f" />
+                    <Bar dataKey="suspicious" fill="#ffcc00" />
+                    <Bar dataKey="undetected" fill="#8884d8" />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
 };
 
-export default VirusChart;
+export default VirusStatsChart;
