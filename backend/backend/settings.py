@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'djongo',
 ]
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -90,10 +91,34 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+    
+    # DJANGO DJONGO MONGO DB ENGINE - not working on latest django
+    # 'default': {
+    #    'ENGINE': 'djongo',
+    #    'NAME': 'vipyrdb',
+    #    'ENFORCE_SCHEMA': False,
+    #    'CLIENT': {
+    #        'host': 'mongodb://localhost:27017',
+    #    }
+    # },
+    
+    # POSTGRESS
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': getEnv('DATABASE_NAME'),
+        'USER': getEnv('DATABASE_USER'),
+        'PASSWORD': getEnv('DATABASE_PASSWORD'),
+        'HOST': getEnv('DATABASE_HOST'),
+        'PORT': getEnv('DATABASE_PORT'),
+        # 'OPTIONS': {
+        #     'sslmode': 'require',
+        #     'sslrootcert': getEnv('DATABASE_SSLROOTCERT'),
+        # },
+    },
 }
 
 
@@ -101,6 +126,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -147,9 +173,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Cors
-CORS_ORIGIN_ALLOW_ALL = getEnv('CORS_ORIGIN_ALLOW_ALL', False)
-CORS_ALLOW_CREDENTIALS = getEnv('CORS_ALLOW_CREDENTIALS', True)
-CORS_ALLOW_ALL_ORIGINS = getEnv('CORS_ALLOW_ALL_ORIGINS', False)
+CORS_ORIGIN_ALLOW_ALL = bool(getEnv('CORS_ORIGIN_ALLOW_ALL', False))
+CORS_ALLOW_CREDENTIALS = bool(getEnv('CORS_ALLOW_CREDENTIALS', False))
+CORS_ALLOW_ALL_ORIGINS = bool(getEnv('CORS_ALLOW_ALL_ORIGINS', False))
 # ACCESS_CONTROL_ALLOW_ORIGIN = getEnv('ACCESS_CONTROL_ALLOW_ORIGIN', '*')
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",

@@ -35,3 +35,6 @@ venv
 *.sqlite3
 
 .vercel
+.crt
+certificates
+.pem
