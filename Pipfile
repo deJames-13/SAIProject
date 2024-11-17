@@ -18,6 +18,7 @@ requests = "*"
 asgiref = "*"
 psycopg2 = "*"
 sqlparse = "*"
+django-redis = "*"
 
 [dev-packages]
 

@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from decouple import config
 
 
 getEnv = os.getenv
@@ -23,7 +22,7 @@ SECRET_KEY =  getEnv('SECRET_KEY')
 DEBUG = getEnv('DEBUG')
 VIRUSTOTAL_API = getEnv('VIRUSTOTAL_API')
 VIRUSTOTAL_URL = getEnv('VIRUSTOTAL_URL')
-VIRUSTOTAL_API_KEY = config('VIRUSTOTAL_API_KEY')
+VIRUSTOTAL_API_KEY = getEnv('VIRUSTOTAL_API_KEY')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -50,7 +49,7 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'virustotal',
-    'charts',
+    # 'charts',
 
 ]
 
@@ -102,9 +101,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    # POSTGRESS
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': getEnv('DATABASE_NAME'),
+    #     'USER': getEnv('DATABASE_USER'),
+    #     'PASSWORD': getEnv('DATABASE_PASSWORD'),
+    #     'HOST': getEnv('DATABASE_HOST'),
+    #     'PORT': getEnv('DATABASE_PORT'),
+    #     # 'OPTIONS': {
+    #     #     'sslmode': 'require',
+    #     #     'sslrootcert': getEnv('DATABASE_SSLROOTCERT'),
+    #     # },
     # },
     
     # DJANGO DJONGO MONGO DB ENGINE - not working on latest django
@@ -117,19 +129,6 @@ DATABASES = {
     #    }
     # },
     
-    # POSTGRESS
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': getEnv('DATABASE_NAME'),
-        'USER': getEnv('DATABASE_USER'),
-        'PASSWORD': getEnv('DATABASE_PASSWORD'),
-        'HOST': getEnv('DATABASE_HOST'),
-        'PORT': getEnv('DATABASE_PORT'),
-        # 'OPTIONS': {
-        #     'sslmode': 'require',
-        #     'sslrootcert': getEnv('DATABASE_SSLROOTCERT'),
-        # },
-    },
 }
 
 

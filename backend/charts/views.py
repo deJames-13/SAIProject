@@ -2,10 +2,10 @@ import requests
 from django.http import JsonResponse
 import time
 import base64
-from decouple import config  # Import config to read from .env
+from django.conf import settings
 
 
-API_KEY = config('VIRUSTOTAL_API_KEY')
+API_KEY = settings.VIRUSTOTAL_API_KEY
 
 BASE_URL = "https://www.virustotal.com/api/v3/urls"
 
