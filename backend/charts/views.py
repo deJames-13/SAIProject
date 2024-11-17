@@ -2,9 +2,8 @@ import requests
 import hashlib
 import random
 from django.http import JsonResponse
-from decouple import config
-
-API_KEY = config('VIRUSTOTAL_API_KEY')
+from django.conf import settings
+API_KEY = settings.VIRUSTOTAL_API_KEY
 BASE_URL = "https://www.virustotal.com/api/v3/urls"
 
 # URLs to be checked
