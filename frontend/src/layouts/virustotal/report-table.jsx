@@ -1,4 +1,5 @@
-import { Icon } from '@mui/material';
+import { Checkbox, Icon } from '@mui/material';
+import select from 'assets/theme/components/form/select';
 import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import DataTable from 'components/Tables/DataTable';
@@ -6,6 +7,7 @@ import useNotification from 'hooks/notifications/useNotification';
 import useFileReportAction from 'hooks/virustotal/useFileReportAction';
 import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
 import React from 'react';
+import { parse } from 'stylis';
 import Swal from 'sweetalert2';
 import ScanModal from './scan-modal';
 import ScanModalContent from './scan-modal-content';
@@ -82,6 +84,7 @@ export default function ReportTable({ type = "url" }) {
     // deleted - deleted reports only
     const [state, setState] = React.useState('reports');
     const [results, setResults] = React.useState([]);
+    const [selected, setSelected] = React.useState([]);
 
     const {
         reports: urlReports,
@@ -91,7 +94,8 @@ export default function ReportTable({ type = "url" }) {
         fetchAllUrlReports,
         removeReport: removeUrlReport,
         restoreReport: restoreUrlReport,
-
+        removeReports: removeUrlReports,
+        restoreReports: restoreUrlReports,
     } = useUrlReportAction();
 
     const {
@@ -102,6 +106,8 @@ export default function ReportTable({ type = "url" }) {
         fetchAllFileReports,
         removeReport: removeFileReport,
         restoreReport: restoreFileReport,
+        removeReports: removeFileReports,
+        restoreReports: restoreFileReports,
     } = useFileReportAction()
 
     const fetchDeleted = type === 'url' ? fetchDeletedUrlReports : fetchDeletedFileReports;
@@ -111,6 +117,8 @@ export default function ReportTable({ type = "url" }) {
     const restoreReport = type === 'url' ? restoreUrlReport : restoreFileReport;
     const reports = type === 'url' ? urlReports : fileReports;
     const setReports = type === 'url' ? setUrlReports : setFileReports;
+    const removeReports = type === 'url' ? removeUrlReports : removeFileReports;
+    const restoreReports = type === 'url' ? restoreUrlReports : restoreFileReports;
 
     React.useEffect(() => {
         fetchReports()
@@ -121,7 +129,12 @@ export default function ReportTable({ type = "url" }) {
             setResults(reports.results)
     }, [reports]);
 
+    // React.useEffect(() => {
+    //     console.log(selected)
+    // }, [selected]);
+
     const handleStateChange = (state) => async () => {
+        setSelected([]);
         const swapReport = async () => {
             setState(state);
             if (state === 'reports') {
@@ -141,7 +154,74 @@ export default function ReportTable({ type = "url" }) {
         });
 
 
+
     }
+
+    const handleSelect = (e) => {
+        const id = parseInt(e.target.value);
+        const isChecked = e.target.checked;
+        if (isChecked) {
+            setSelected([...selected, id]);
+        } else {
+            setSelected(selected.filter((item) => item !== id));
+        }
+    }
+
+    const handleMultiDelete = () => {
+        return removeReports(selected).then(() => {
+            setResults(results.filter((item) => !selected.includes(parseInt(item.id))));
+            setSelected([]);
+            Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+            )
+        });
+    }
+    const onMultiDelete = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleMultiDelete()
+            }
+        })
+    }
+
+    const handleMultiRestore = () => {
+        return restoreReports(selected).then(() => {
+            setResults(results.filter((item) => !selected.includes(parseInt(item.id))));
+            setSelected([]);
+            Swal.fire(
+                'Restored!',
+                'Your file has been restored.',
+                'success'
+            )
+        });
+    }
+
+    const onMultiRestore = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, restore it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleMultiRestore()
+            }
+        })
+    }
+
 
     const info = ((report, idx) => {
         return (
@@ -172,6 +252,8 @@ export default function ReportTable({ type = "url" }) {
 
     const data = !results?.length ? {} : {
         columns: [
+            // checkboxes for mass delete and restore
+            { Header: "", accessor: "select", align: "center" },
             { Header: "ID", accessor: "id", width: "10%", align: "center" },
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
             { Header: "Votes", accessor: "votes", width: "20%", align: "left" },
@@ -181,6 +263,7 @@ export default function ReportTable({ type = "url" }) {
 
         ],
         rows: results.map((report, idx) => ({
+            select: <Checkbox value={report.id} checked={selected.includes(report.id)} onChange={(e) => handleSelect(e)} />,
             id: report?.id,
             info: report?.file_name || report?.title,
             votes: votes(report?.analysis, idx),
@@ -204,6 +287,28 @@ export default function ReportTable({ type = "url" }) {
         {/* Tabs */}
         <MDBox className="w-full">
             <MDBox className="flex gap-2 w-full justify-end items-center">
+                <div className="flex gap-2 mr-auto">
+                    {
+                        selected.length > 0 && state !== 'reports' && <>
+                            <MDButton
+                                onClick={onMultiRestore}
+                                className='hidden md:block bg-green-500 text-white'
+                            >
+                                Restore All
+                            </MDButton>
+                        </>
+                    }
+                    {
+                        selected.length > 0 && state !== 'deleted' && <>
+                            <MDButton
+                                onClick={onMultiDelete}
+                                className='hidden md:block bg-red-500 text-white hover:bg-red-400'
+                            >
+                                Delete All
+                            </MDButton>
+                        </>
+                    }
+                </div>
                 <MDButton
                     color={state === 'reports' ? 'primary' : 'light'}
                     onClick={handleStateChange('reports')}
@@ -223,6 +328,7 @@ export default function ReportTable({ type = "url" }) {
                     All
                 </MDButton>
             </MDBox>
+
             {
                 !results?.length ?
                     <MDBox display="flex" justifyContent="center" alignItems="center" height="100%" width="100%">
@@ -245,7 +351,6 @@ export default function ReportTable({ type = "url" }) {
                         }
                     </>
             }
-        </MDBox>
+        </MDBox >
     </>
 }
-true

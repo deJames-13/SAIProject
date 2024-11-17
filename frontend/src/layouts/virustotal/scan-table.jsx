@@ -59,8 +59,8 @@ export default function AnalysesTable({ analyses = null }) {
             md5 = '',
             ssdeep = '',
             tlsh = '',
-            type_description: file_type = '',
-            meaningful_name: file_name = '',
+            type_description: file_type = 'No file type',
+            meaningful_name: file_name = 'No file name',
             size: file_size = 0,
             tags = [],
             url = '',
@@ -78,7 +78,7 @@ export default function AnalysesTable({ analyses = null }) {
             last_submission_date = '',
             times_submitted = 0,
             total_votes = {},
-            title = '',
+            title = 'No title',
             html_meta: {
                 description = [],
             } = {},
@@ -103,14 +103,14 @@ export default function AnalysesTable({ analyses = null }) {
     })
 
     const urlPayload = () => ({
-        title,
+        title: title || 'No title',
         url: url,
         analysis: analysisPayload(),
     })
 
     const filePayload = () => ({
-        file_name,
-        file_type,
+        file_name: file_name || 'No name',
+        file_type: file_type || 'No type',
         hashes: {
             sha256: id,
             sha1,

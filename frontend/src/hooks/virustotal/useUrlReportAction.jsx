@@ -15,6 +15,8 @@ export default function useUrlReportAction() {
         useGetDeletedUrlReportsMutation,
         useGetAllUrlReportsMutation,
         useRestoreUrlReportMutation,
+        useDeleteUrlReportsMutation,
+        useRestoreUrlReportsMutation,
     } = vtApi
 
     const [getUrlReports] = useGetUrlReportsMutation();
@@ -25,6 +27,8 @@ export default function useUrlReportAction() {
     const [getAllUrlReports] = useGetAllUrlReportsMutation();
     const [getDeletedUrlReports] = useGetDeletedUrlReportsMutation();
     const [restoreUrlReport] = useRestoreUrlReportMutation();
+    const [deleteUrlReports] = useDeleteUrlReportsMutation();
+    const [restoreUrlReports] = useRestoreUrlReportsMutation();
 
     const fetchUrlReports = async () => {
         return getUrlReports()
@@ -132,6 +136,34 @@ export default function useUrlReportAction() {
             });
     }
 
+    const removeReports = async (ids) => {
+        return deleteUrlReports(ids)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const restoreReports = async (ids) => {
+        return restoreUrlReports(ids)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
     return {
         reports,
         setReports,
@@ -146,6 +178,8 @@ export default function useUrlReportAction() {
         updateReport,
         removeReport,
         restoreReport,
+        removeReports,
+        restoreReports,
     }
 
 
