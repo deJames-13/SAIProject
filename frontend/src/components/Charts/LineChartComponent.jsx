@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
 
 const LineChartComponent = () => {
@@ -17,7 +17,7 @@ const LineChartComponent = () => {
 
   // Fetch data from the Django API
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/charts/api/virustotal-detection-types/")
+    fetch(`${import.meta.env.VITE_APP_API_URL}/charts/api/virustotal-detection-types/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

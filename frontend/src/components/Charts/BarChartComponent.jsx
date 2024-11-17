@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import {
-    BarChart,
     Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
+    BarChart,
+    CartesianGrid,
     Legend,
     ResponsiveContainer,
-    CartesianGrid,
+    Tooltip,
+    XAxis,
+    YAxis,
 } from "recharts";
 
 const VirusStatsChart = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     // Fetch data from the Django API
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/charts/api/virustotal-stats/")
+        fetch(`${import.meta.env.VITE_APP_API_URL}/charts/api/virustotal-stats/`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);

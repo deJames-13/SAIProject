@@ -15,7 +15,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: `${import.meta.env.VITE_APP_API_URL}`,
         changeOrigin: true,
       },
     },
