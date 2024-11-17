@@ -57,6 +57,12 @@ class UrlReportViewSet(viewsets.ModelViewSet):
     analysis = Analyses.objects.all()
     analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
+    
+    def is_instance(self, url):
+        instance = UrlReports.objects.filter(url=url)
+        if not instance:
+            return null
+        return instance
 
     def create(self, request):
         if not request.user.is_authenticated:
@@ -145,6 +151,8 @@ class FileUploadViewSet(viewsets.ModelViewSet):
 
         if type(data["analysis"]) == str:
             data["analysis"] = dict(json.loads(data["analysis"]))
+        
+        
 
         serializer = FileReportsSerializer(data=data)
         if serializer.is_valid():
