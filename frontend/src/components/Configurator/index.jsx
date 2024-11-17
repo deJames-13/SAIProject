@@ -33,6 +33,7 @@ import {
   setWhiteSidenav,
   useMaterialUIController,
 } from "context";
+import HelpModal from "layouts/virustotal/help";
 
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();
@@ -271,7 +272,7 @@ function Configurator() {
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
         <Divider />
-
+        <HelpModal />
         {/* <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}

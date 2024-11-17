@@ -7,6 +7,7 @@ import AnalysesTable from './scan-table';
 import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 
 import React from 'react';
+import HelpModal from './help';
 import ScanFile from './scan-file';
 
 
@@ -42,6 +43,10 @@ export default function Scan({ type = "url" }) {
           <MDButton color='secondary' variant='outlined' onClick={handleUrlScan} className='w-full md:w-fit'>
             Scan
           </MDButton>
+          <div className="w-full md:w-fit">
+            <HelpModal />
+          </div>
+
         </MDBox>
         <p className='italic ml-4 text-sm'>
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
