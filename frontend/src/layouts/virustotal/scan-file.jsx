@@ -6,6 +6,7 @@ import MDBox from 'components/MDBox';
 import MDButton from 'components/MDButton';
 import useVirusTotal from 'hooks/virustotal/useVirusTotal';
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const VisuallyHiddenInput = styled('input')({
@@ -21,7 +22,12 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function ScanFile({ onScan = () => { } }) {
+  // get id=hash from the url using the useLocation hook
+  const loc = useLocation();
+  const id = new URLSearchParams(loc.search).get('id');
+
   const [hash, setHash] = React.useState('');
+
   const {
     renderNotifications,
     handleFileScan,
@@ -55,10 +61,17 @@ export default function ScanFile({ onScan = () => { } }) {
 
   };
 
+  React.useEffect(() => {
+    if (id) {
+      setHash(id);
+      handleHashScan(id).then((data) => {
+        onScan(data);
+      });
+    }
+  }, [id]);
 
   return (
     <div className=''>
-
       <MDBox>
         <MDBox className="flex gap-4 flex-col md:flex-row">
           <TextField

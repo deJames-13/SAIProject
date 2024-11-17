@@ -172,6 +172,7 @@ export default function ReportTable({ type = "url" }) {
 
     const data = !results?.length ? {} : {
         columns: [
+            { Header: "ID", accessor: "id", width: "10%", align: "center" },
             { Header: "Info", accessor: "info", width: "25%", align: "left" },
             { Header: "Votes", accessor: "votes", width: "20%", align: "left" },
             { Header: "Submissions", accessor: "submissions", align: "center" },
@@ -180,10 +181,11 @@ export default function ReportTable({ type = "url" }) {
 
         ],
         rows: results.map((report, idx) => ({
-            info: info(report, idx),
+            id: report?.id,
+            info: report?.file_name || report?.title,
             votes: votes(report?.analysis, idx),
             submissions: report?.analysis?.times_submitted,
-            timestamp: report?.timestamp,
+            timestamp: <span>{report?.timestamp}</span>,
             actions: (
                 <MDBox display="flex" alignItems="center" justifyContent="center" gap={2}>
                     <ScanModal
