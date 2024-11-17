@@ -60,11 +60,7 @@ export default function ScanFile({ onScan = () => { } }) {
     <div className=''>
 
       <MDBox>
-        <MDBox style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-        }}>
+        <MDBox className="flex gap-4 flex-col md:flex-row">
           <TextField
             id="outlined-basic" label="Enter File Hash" variant="outlined"
             style={{
@@ -77,9 +73,9 @@ export default function ScanFile({ onScan = () => { } }) {
           <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
             Scan Hash
           </MDButton>
-          <MDBox>
+          <MDBox className="w-full md:w-fit">
             <Button
-              className="text-white"
+              className="text-white w-full"
               component="label"
               role={undefined}
               variant="contained"
@@ -94,7 +90,7 @@ export default function ScanFile({ onScan = () => { } }) {
             </Button>
           </MDBox>
         </MDBox>
-        <p className='italic ml-4'>
+        <p className='italic ml-4 text-sm'>
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
         </p>
       </MDBox>

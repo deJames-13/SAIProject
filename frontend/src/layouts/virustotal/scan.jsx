@@ -21,16 +21,15 @@ export default function Scan({ type = "url" }) {
   } = useVirusTotal({ type });
 
 
+  React.useEffect(() => {
+    // console.log(data)
+  }, [data])
+
 
   const inputUrlComponent = () => {
     return (
       <MDBox>
-        <MDBox style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-        }}>
+        <MDBox className="w-full flex flex-col md:flex-row items-center gap-4">
           <TextField
             id="outlined-basic" label="Enter URL" variant="outlined"
             style={{
@@ -40,20 +39,16 @@ export default function Scan({ type = "url" }) {
             value={url}
             onChange={e => setUrl(e.target.value)}
           />
-          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan}>
+          <MDButton color='secondary' variant='outlined' onClick={handleUrlScan} className='w-full md:w-fit'>
             Scan
           </MDButton>
         </MDBox>
-        <p className='italic ml-4'>
+        <p className='italic ml-4 text-sm'>
           By submitting data above, you agree to our Terms of Service and Privacy Notice, and consent to sharing your submission with the security community.
         </p>
       </MDBox>
     )
   }
-
-  React.useEffect(() => {
-    // console.log(data)
-  }, [data])
 
   return (
     <>
