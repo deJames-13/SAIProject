@@ -274,6 +274,16 @@ export const vtApi = apiSlice.injectEndpoints({
             }),
         }),
 
+        // STATUS BOX DATA
+        // ##############################################################################
+        getMetaData: build.mutation({
+            query: () => ({
+                url: `${baseUrl}/bentobox-data/`,
+                method: 'GET',
+                headers,
+            }),
+        }),
+
         
         
     }),

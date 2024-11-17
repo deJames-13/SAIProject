@@ -1,28 +1,34 @@
 from django.shortcuts import render
-from rest_framework import views
+from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Sum
 
 from virustotal.models import UrlReports, FileReports, Analyses
 
-class MetaDataViewSet(views.APIView):
+class MetaDataViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['get'], url_path='bentobox-data')
     def bentobox_data(self, request):
-        # Count the number of reports
-        scanned_url_count = UrlReports.objects.count()
-        scanned_files_count = FileReports.objects.count()
+        user = request.user
+
+        # Count the number of reports for the authenticated user
+        scanned_url_count = UrlReports.objects.filter(user=user).count()
+        scanned_files_count = FileReports.objects.filter(user=user).count()
         total_scans = scanned_url_count + scanned_files_count
 
-        # Aggregate analysis stats
-        analysis_stats = Analyses.objects.aggregate(
-            harmless=models.Sum('last_analysis_stats__harmless'),
-            malicious=models.Sum('last_analysis_stats__malicious'),
-            suspicious=models.Sum('last_analysis_stats__suspicious'),
-            undetected=models.Sum('last_analysis_stats__undetected'),
-            timeout=models.Sum('last_analysis_stats__timeout')
+        # Aggregate analysis stats for the authenticated user
+        analysis_stats = Analyses.objects.filter(
+            urlreports__user=user
+        ).aggregate(
+            harmless=Sum('last_analysis_stats__harmless'),
+            malicious=Sum('last_analysis_stats__malicious'),
+            suspicious=Sum('last_analysis_stats__suspicious'),
+            undetected=Sum('last_analysis_stats__undetected'),
+            timeout=Sum('last_analysis_stats__timeout')
         )
 
         data = {

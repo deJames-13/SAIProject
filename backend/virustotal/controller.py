@@ -1,40 +1,32 @@
-from rest_framework import viewsets, views
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import IsAuthenticated
-
-import json
-import os
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.utils import timezone
+from django.db.models import Sum
 
 from .services import VirusTotalService
 from .models import UrlReports, FileReports, Analyses, ScanHistory
-
-from .serializers import (
-    UrlReportsSerializer,
-    FileReportsSerializer,
-    AnalysesSerializer,
-    ScanHistorySerializer,
-    UploadSerializer
-)
+from .serializers import UrlReportsSerializer, FileReportsSerializer, ScanHistorySerializer
 
 
 class ScanHistoryViewSet(viewsets.ModelViewSet):
-    queryset = ScanHistory.objects.all()
     serializer_class = ScanHistorySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return ScanHistory.objects.filter(user=self.request.user)
+
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        queryset = ScanHistory.objects.all_with_deleted()
+        queryset = ScanHistory.objects.all_with_deleted().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        queryset = ScanHistory.objects.deleted_only()
+        queryset = ScanHistory.objects.deleted_only().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -44,7 +36,7 @@ class ScanHistoryViewSet(viewsets.ModelViewSet):
         if not id:
             return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instance = ScanHistory.objects.all_with_deleted().get(id=id)
+            instance = ScanHistory.objects.all_with_deleted().filter(user=request.user).get(id=id)
             instance.restore()
             return Response({"message": "ScanHistory restored successfully"}, status=status.HTTP_200_OK)
         except ScanHistory.DoesNotExist:
@@ -52,17 +44,11 @@ class ScanHistoryViewSet(viewsets.ModelViewSet):
 
 
 class UrlReportViewSet(viewsets.ModelViewSet):
-    queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
-    analysis = Analyses.objects.all()
-    analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
-    
-    def is_instance(self, url):
-        instance = UrlReports.objects.filter(url=url)
-        if not instance:
-            return null
-        return instance
+
+    def get_queryset(self):
+        return UrlReports.objects.filter(user=self.request.user)
 
     def create(self, request):
         if not request.user.is_authenticated:
@@ -80,16 +66,15 @@ class UrlReportViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        queryset = UrlReports.objects.all_with_deleted()
+        queryset = UrlReports.objects.all_with_deleted().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        queryset = UrlReports.objects.deleted_only()
+        queryset = UrlReports.objects.deleted_only().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
 
     @action(detail=False, methods=['post'], url_path='restore')
     def restore(self, request):
@@ -97,12 +82,12 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         if not id:
             return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instance = UrlReports.objects.all_with_deleted().get(id=id)
+            instance = UrlReports.objects.all_with_deleted().filter(user=request.user).get(id=id)
             instance.restore()
             return Response({"message": "UrlReports restored successfully"}, status=status.HTTP_200_OK)
         except UrlReports.DoesNotExist:
             return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
     @action(detail=False, methods=['post'], url_path='multi-delete')
     def multi_delete(self, request):
         data = request.data
@@ -110,13 +95,12 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         if not ids:
             return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instances = UrlReports.objects.filter(id__in=ids)
+            instances = UrlReports.objects.filter(id__in=ids, user=request.user)
             instances.update(is_deleted=True, deleted_at=timezone.now())
             return Response({"message": "UrlReports deleted successfully"}, status=status.HTTP_200_OK)
-        
         except UrlReports.DoesNotExist:
             return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
     @action(detail=False, methods=['post'], url_path='multi-restore')
     def multi_restore(self, request):
         data = request.data
@@ -124,21 +108,20 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         if not ids:
             return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instances = UrlReports.objects.all_with_deleted().filter(id__in=ids)
+            instances = UrlReports.objects.all_with_deleted().filter(id__in=ids, user=request.user)
             instances.update(is_deleted=False, deleted_at=None)
             return Response({"message": "UrlReports restored successfully"}, status=status.HTTP_200_OK)
         except UrlReports.DoesNotExist:
             return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-
 class FileUploadViewSet(viewsets.ModelViewSet):
-    queryset = FileReports.objects.all()
     serializer_class = FileReportsSerializer
     parser_classes = (MultiPartParser, FormParser, JSONParser)
-    analysis = Analyses.objects.all()
-    analysis_serializer = AnalysesSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return FileReports.objects.filter(user=self.request.user)
 
     def create(self, request):
         if not request.user.is_authenticated:
@@ -151,8 +134,6 @@ class FileUploadViewSet(viewsets.ModelViewSet):
 
         if type(data["analysis"]) == str:
             data["analysis"] = dict(json.loads(data["analysis"]))
-        
-        
 
         serializer = FileReportsSerializer(data=data)
         if serializer.is_valid():
@@ -162,13 +143,13 @@ class FileUploadViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='all-with-deleted')
     def list_all_with_deleted(self, request):
-        queryset = FileReports.objects.all_with_deleted()
+        queryset = FileReports.objects.all_with_deleted().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='deleted-only')
     def list_deleted_only(self, request):
-        queryset = FileReports.objects.deleted_only()
+        queryset = FileReports.objects.deleted_only().filter(user=request.user)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -195,12 +176,12 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         if not id:
             return Response({"error": "ID is required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instance = FileReports.objects.all_with_deleted().get(id=id)
+            instance = FileReports.objects.all_with_deleted().filter(user=request.user).get(id=id)
             instance.restore()
             return Response({"message": "FileReports restored successfully"}, status=status.HTTP_200_OK)
         except FileReports.DoesNotExist:
             return Response({"error": "FileReports not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
     @action(detail=False, methods=['post'], url_path='multi-delete')
     def multi_delete(self, request):
         data = request.data
@@ -208,13 +189,12 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         if not ids:
             return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instances = FileReports.objects.filter(id__in=ids)
+            instances = FileReports.objects.filter(id__in=ids, user=request.user)
             instances.update(is_deleted=True, deleted_at=timezone.now())
             return Response({"message": "FileReports deleted successfully"}, status=status.HTTP_200_OK)
-        
         except FileReports.DoesNotExist:
             return Response({"error": "FileReports not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
     @action(detail=False, methods=['post'], url_path='multi-restore')
     def multi_restore(self, request):
         data = request.data
@@ -222,7 +202,7 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         if not ids:
             return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            instances = FileReports.objects.all_with_deleted().filter(id__in=ids)
+            instances = FileReports.objects.all_with_deleted().filter(id__in=ids, user=request.user)
             instances.update(is_deleted=False, deleted_at=None)
             return Response({"message": "FileReports restored successfully"}, status=status.HTTP_200_OK)
         except FileReports.DoesNotExist:
@@ -230,11 +210,51 @@ class FileUploadViewSet(viewsets.ModelViewSet):
 
 
 class VirusTotalViewSet(viewsets.ModelViewSet):
-    queryset = UrlReports.objects.all()
     serializer_class = UrlReportsSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return UrlReports.objects.filter(user=self.request.user)
+    
+    @action(detail=False, methods=['get'], url_path='bentobox-data')
+    def bentobox_data(self, request):
+        user = request.user
+        scanned_url_count = UrlReports.objects.filter(user=user).count()
+        scanned_files_count = FileReports.objects.filter(user=user).count()
+        total_scans = scanned_url_count + scanned_files_count
+        
+        analysis_stats = {
+            "harmless": 0,
+            "malicious": 0,
+            "suspicious": 0,
+            "undetected": 0,
+            "timeout": 0
+        }
+        # Aggregate analysis stats for URL reports
+        url_analysis_stats = Analyses.objects.filter(
+            id__in=UrlReports.objects.filter(user=user).values_list('analysis_id', flat=True)
+        ).values_list('last_analysis_stats', flat=True)
+        for stats in url_analysis_stats:
+            for key in analysis_stats.keys():
+                analysis_stats[key] += stats.get(key, 0)  # Default to 0 if the key doesn't exist
 
+        # Aggregate analysis stats for file reports
+        file_analysis_stats = Analyses.objects.filter(
+            id__in=FileReports.objects.filter(user=user).values_list('analysis_id', flat=True)
+        ).values_list('last_analysis_stats', flat=True)
+        for stats in file_analysis_stats:
+            for key in analysis_stats.keys():
+                analysis_stats[key] += stats.get(key, 0)  # Default to 0 if the key doesn't exist
+
+
+
+        data = {
+            "scanned_url": scanned_url_count,
+            "scanned_files": scanned_files_count,
+            "total_scans": total_scans,
+            "stats": analysis_stats
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], url_path='get-file-report')
     def get_file_report_by_id(self, request):
