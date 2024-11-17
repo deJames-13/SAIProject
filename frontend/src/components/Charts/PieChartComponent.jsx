@@ -1,51 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const PieChartComponent = () => {
-  const [pieData, setPieData] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Fetch pie chart data from the Django backend
-    axios.get('http://127.0.0.1:8000/api/charts/pie-data/')
-      .then(response => {
-        setPieData(response.data); // Update state with the data from the backend
+    axios
+      .get("http://127.0.0.1:8000/charts/fetch-stats/")
+      .then((response) => {
+        const statsData = response.data;
+
+        // Prepare data for Pie chart (cut URL and use detections count)
+        const pieData = statsData.map((item) => ({
+          name: item.url.split("/")[2], // Extract domain from URL
+          value: item.detections, // Use detections as the value
+        }));
+
+        setData(pieData);
       })
-      .catch(error => {
-        console.error("Error fetching pie chart data:", error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   }, []);
 
-  // Define the colors for the pie chart segments
-  const COLORS = ['#ff7300', '#00C49F', '#FFBB28'];
+  const COLORS = [
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+    "#FF8042",
+    "#AA00FF",
+    "#FF5722",
+    "#795548",
+    "#607D8B",
+    "#FF4500",
+    "#32CD32",
+  ]; // Add more colors for a unique color per slice
 
   return (
-    <div>
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-    <div style={{ width: '80%', maxWidth: '500px' }}>
-      <h2>Scan Categories Distribution</h2>
-      {pieData.length > 0 ? (
-        <PieChart width={400} height={400}>
+    <div style={{ textAlign: "center" }}>
+      <h2>URL Detection Statistics</h2> {/* Add header title */}
+      <ResponsiveContainer width="800%" height={600}> {/* Adjust height */}
+        <PieChart>
           <Pie
-            data={pieData}
-            dataKey="scans"
-            nameKey="category"
-            outerRadius={150}
-            fill="#8884d8"
-            label
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={180} // Increase outer radius
+            label={(entry) => `${entry.name} (${entry.value})`}
+            labelLine={false} // Turn off label lines
           >
-            {pieData.map((entry, index) => (
+            {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />
-          <Legend />
         </PieChart>
-      ) : (
-        <p>Loading data...</p> // Display a loading message if data hasn't loaded yet
-      )}
-    </div>
-    </div>
+      </ResponsiveContainer>
     </div>
   );
 };
