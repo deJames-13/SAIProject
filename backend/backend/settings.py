@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
+from decouple import config
+
 
 getEnv = os.getenv
 
@@ -21,7 +23,7 @@ SECRET_KEY =  getEnv('SECRET_KEY')
 DEBUG = getEnv('DEBUG')
 VIRUSTOTAL_API = getEnv('VIRUSTOTAL_API')
 VIRUSTOTAL_URL = getEnv('VIRUSTOTAL_URL')
-
+VIRUSTOTAL_API_KEY = config('VIRUSTOTAL_API_KEY')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -51,6 +53,16 @@ LOCAL_APPS = [
     'charts',
 
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Adjust this as needed
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 
 INSTALLED_APPS =  THIRD_PARTY_APPS + DJANGO_APPS + LOCAL_APPS;
