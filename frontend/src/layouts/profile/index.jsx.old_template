@@ -61,7 +61,7 @@ function Overview() {
 
     try {
       const response = await axios.put(
-        "http://localhost:8000/user/update/", // Backend endpoint for updating user
+        `${import.meta.env.VITE_APP_API_URL}/user/update/`, // Backend endpoint for updating user
         userData,
         {
           headers: {

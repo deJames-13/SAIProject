@@ -30,7 +30,6 @@ import Icon from "@mui/material/Icon";
 // Import chart components
 import BarChartComponent from "components/Charts/BarChartComponent";
 import LineChartComponent from "components/Charts/LineChartComponent";
-import PieChartComponent from "components/Charts/PieChartComponent";
 
 export const dashboardRoutes = [
   {
@@ -90,14 +89,6 @@ export const dashboardRoutes = [
     icon: <Icon fontSize="small">history</Icon>,
     route: "/threats/view-history",
     component: <VirusTotal type="history" active='view-history' />,
-  },
-  {
-    type: "collapse",
-    name: "Pie Chart",
-    key: "pie-chart",
-    icon: <Icon>pie_chart</Icon>,
-    route: "/charts/pie",
-    component: <PieChartComponent />,
   },
   {
     type: "collapse",

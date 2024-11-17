@@ -10,7 +10,7 @@ import os
 
 # Create your views here.
 
-class MetaDataView(views.APIView):
+class MetaDataViewSet(views.APIView):
     
     def bentobox_data(self, request):
         data = {
@@ -19,4 +19,19 @@ class MetaDataView(views.APIView):
             "total_scans": 30,
             "malicious": 5,
         }
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class ChartDataViewSet(vies.APIView):
+    
+    # VirusTOTAL Report Stats Pie Chart
+    def reports_data(self, request):
+        data: [
+            {
+                'malicous': 5,
+                'undetected': 10,
+                'suspicious': 2,
+                'unknown': 3,
+            }
+        ]
         return Response(data, status=status.HTTP_200_OK)

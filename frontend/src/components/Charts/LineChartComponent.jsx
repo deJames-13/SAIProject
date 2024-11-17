@@ -1,62 +1,80 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const LineChartComponent = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch data from the Django API
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/charts/fetch-url-report/")
+    fetch("http://127.0.0.1:8000/charts/api/virustotal-detection-types/")
       .then((response) => {
-        if (response.data) {
-          const urlData = response.data;
-
-          const lineData = urlData.map((item) => {
-            let undetectedCount = 0;
-            let timeoutCount = 0;
-
-            // Ensure last_analysis_results is not undefined or null before accessing it
-            const analysisResults = item.last_analysis_results || {};
-
-            // Loop through each engine's results and classify the status
-            Object.values(analysisResults).forEach((engine) => {
-              if (engine.result === "undetected") {
-                undetectedCount += 1; // Count undetected results
-              } else if (engine.result === "timeout") {
-                timeoutCount += 1; // Count timeout results
-              }
-            });
-
-            return {
-              url: item.url,
-              undetected: undetectedCount || 0, // Default to 0 if undefined
-              timeout: timeoutCount || 0, // Default to 0 if undefined
-            };
-          });
-
-          setData(lineData);
-        } else {
-          console.error("No data returned from API");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
+      })
+      .then((jsonData) => {
+        setData(jsonData); // Set the data from the response
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        setError(error.message);
+        setLoading(false);
       });
   }, []);
 
+  // Loading or error state
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  const chartStyle = location.pathname === "/charts/line" ? { marginLeft: "300px" } : {};
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>URL Analysis: Undetected and Timeout</h2>
-      <ResponsiveContainer width="400%" height={500}>
-        <LineChart data={data}>
+    <div style={chartStyle}>
+      {/* Title Section */}
+      <h2
+        style={{
+          marginBottom: "20px",
+          color: "#333",
+          fontSize: "24px",
+        }}
+      >
+        VirusTotal Detection Types
+      </h2>
+
+      {/* Chart Section */}
+      <ResponsiveContainer width="101%" height={400}>
+        <LineChart
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="url" angle={-45} textAnchor="end" />
+          <XAxis
+            dataKey="url"
+            tick={{ fontSize: 10 }}
+            angle={-360}
+            textAnchor="end"
+            interval={0} // Ensure all URLs show up
+          />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="undetected" stroke="#3b82f6" dot={false} name="Undetected" />
-          <Line type="monotone" dataKey="timeout" stroke="#e11d48" dot={false} name="Timeouts" />
+
+          {/* Lines for each detection type */}
+          <Line type="monotone" dataKey="phishing" stroke="#FF69B4" />
+          <Line type="monotone" dataKey="malware" stroke="#FF4D4F" />
+          <Line type="monotone" dataKey="spam" stroke="#FFD700" />
+          <Line type="monotone" dataKey="clean" stroke="#82CA9D" />
         </LineChart>
       </ResponsiveContainer>
     </div>
