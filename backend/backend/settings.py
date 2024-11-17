@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+
 getEnv = os.getenv
 
 SECRET_KEY =  getEnv('SECRET_KEY')
@@ -61,6 +62,7 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+    
 }
 
 

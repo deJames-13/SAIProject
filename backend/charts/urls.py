@@ -8,12 +8,20 @@
 
 # ]
 
+# from django.urls import path
+# from . import views
+
+# urlpatterns = [
+#     path('fetch-data/', views.fetch_virustotal_data, name='fetch_data'),
+#     path('fetch-stats/', views.fetch_virustotal_stats, name='fetch_stats'),
+#     path('fetch-url-report/', views.fetch_url_report, name='fetch-url-report'),
+# ]
+
+
 from django.urls import path
-from . import views
+from .views import fetch_virustotal_stats, fetch_virustotal_detection_types
 
 urlpatterns = [
-    path('fetch-data/', views.fetch_virustotal_data, name='fetch_data'),
-    path('fetch-stats/', views.fetch_virustotal_stats, name='fetch_stats'),
-    path('fetch-url-report/', views.fetch_url_report, name='fetch-url-report'),
+    path('api/virustotal-stats/', fetch_virustotal_stats, name='fetch_virustotal_stats'),
+    path('api/virustotal-detection-types/', fetch_virustotal_detection_types, name='fetch_virustotal_detection_types'),
 ]
-

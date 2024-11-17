@@ -1,15 +1,13 @@
 import requests
+import hashlib
+import random
 from django.http import JsonResponse
-import time
-import base64
-from django.conf import settings
+from decouple import config
 
-
-API_KEY = settings.VIRUSTOTAL_API_KEY
-
+API_KEY = config('VIRUSTOTAL_API_KEY')
 BASE_URL = "https://www.virustotal.com/api/v3/urls"
 
-# Define the URLs to be checked
+# URLs to be checked
 urls = [
     "https://www.webanalyzer.net/en/www/17ebook.co",
     "https://www.goldskysecurity.com/the-history-and-impact-of-the-iloveyou-virus/",
@@ -17,161 +15,147 @@ urls = [
     "https://putlockervideos.com/",
     "https://tubemp4.is/",
     "https://www.chess.com/",
-    "https://www.friv.com/?gad_source=1&gclid=Cj0KCQiA_9u5BhCUARIsABbMSPsFcgfY_u13J2SVkDZG6HEWzNCXGzoOF4jduVD_m5VB8J05dYqEHsIaAr6eEALw_wcB",
-    "https://www.w3.org/QA/Tips/noClickHere",
-    "https://www.kaspersky.com/blog/cybersecurity-history-iloveyou/45001/"
-
 ]
 
-def wait_for_analysis(analysis_id, headers, max_wait_time=120, wait_interval=5):
-    analysis_url = f"https://www.virustotal.com/api/v3/analyses/{analysis_id}"
-    start_time = time.time()
-
-    while True:
-        # Fetch the analysis status
-        analysis_response = requests.get(analysis_url, headers=headers)
-        
-        if analysis_response.status_code == 200:
-            analysis_data = analysis_response.json()
-            
-            # Log the response to check the status
-            print(f"Analysis response for {analysis_id}: {analysis_data}")
-            
-            # Check if the analysis has completed
-            status = analysis_data.get('data', {}).get('attributes', {}).get('status', '')
-            if status == 'completed':
-                return analysis_data
-            else:
-                # Wait for the next check
-                if time.time() - start_time >= max_wait_time:
-                    return None  # Timeout after max_wait_time
-                time.sleep(wait_interval)  # Wait before checking again
-        else:
-            # Log the error in case of failure
-            print(f"Failed to fetch analysis for {analysis_id}: {analysis_response.status_code}")
-            return None  # If the request failed
-
-
-def fetch_virustotal_data(request):
-    stats = []
-
-    headers = {"x-apikey": API_KEY}
-    for url in urls:
-        # Step 1: Submit the URL for analysis
-        response = requests.post(BASE_URL, headers=headers, data={"url": url})
-        if response.status_code == 200:
-            result = response.json()
-
-            # Check if an analysis ID is provided
-            if 'data' in result and 'id' in result['data']:
-                analysis_id = result['data']['id']
-                time.sleep(2)  # Optional: Wait for the analysis to complete
-
-                # Step 2: Fetch the analysis results using the analysis ID
-                analysis_url = f"https://www.virustotal.com/api/v3/analyses/{analysis_id}"
-                analysis_response = requests.get(analysis_url, headers=headers)
-                if analysis_response.status_code == 200:
-                    analysis_result = analysis_response.json()
-
-                    # Check if 'attributes' and 'stats' are present
-                    if 'data' in analysis_result and 'attributes' in analysis_result['data']:
-                        votes = analysis_result['data']['attributes']['stats']
-                        stats.append({
-                            'url': url,
-                            'harmless': votes.get('harmless', 0),
-                            'malicious': votes.get('malicious', 0)
-                        })
-                    else:
-                        stats.append({'url': url, 'error': 'Unexpected data structure in analysis result'})
-                else:
-                    stats.append({'url': url, 'error': 'Failed to fetch analysis results'})
-            else:
-                stats.append({'url': url, 'error': 'No analysis ID found'})
-        else:
-            stats.append({'url': url, 'error': response.status_code})
-
-    return JsonResponse(stats, safe=False)
-
 def fetch_virustotal_stats(request):
-    stats_data = []
-
-    headers = {"x-apikey": API_KEY}
-    for url in urls:
-        response = requests.post(BASE_URL, headers=headers, data={"url": url})
-        if response.status_code == 200:
-            result = response.json()
-
-            if 'data' in result and 'id' in result['data']:
-                analysis_id = result['data']['id']
-                time.sleep(2)
-
-                analysis_url = f"https://www.virustotal.com/api/v3/analyses/{analysis_id}"
-                analysis_response = requests.get(analysis_url, headers=headers)
-                if analysis_response.status_code == 200:
-                    analysis_result = analysis_response.json()
-
-                    if 'data' in analysis_result and 'attributes' in analysis_result['data']:
-                        detections = analysis_result['data']['attributes'].get('stats', {}).get('malicious', 0)
-                        stats_data.append({
-                            'url': url,
-                            'detections': detections,
-                        })
-                    else:
-                        stats_data.append({'url': url, 'error': 'Unexpected data structure'})
-                else:
-                    stats_data.append({'url': url, 'error': 'Failed to fetch analysis results'})
-            else:
-                stats_data.append({'url': url, 'error': 'No analysis ID found'})
-        else:
-            stats_data.append({'url': url, 'error': response.status_code})
-
-    return JsonResponse(stats_data, safe=False)
-
-
-def fetch_virustotal_url_report(url):
-    # Encode the URL in base64 as required by VirusTotal API
-    encoded_url = base64.urlsafe_b64encode(url.encode()).decode().strip("=")
-    
-    # Set the headers with the API key
     headers = {
         "x-apikey": API_KEY
     }
+    detections = []
 
-    # Send a GET request to fetch the report
-    response = requests.get(f"{BASE_URL}/{encoded_url}", headers=headers)
-    
-    if response.status_code == 200:
-        data = response.json()
-        
-        # Extract relevant data
-        url_data = data.get('data', {})
-        attributes = url_data.get('attributes', {})
-        
-        # Extract status and reputation info
-        last_analysis_stats = attributes.get('last_analysis_stats', {})
-        last_analysis_results = attributes.get('last_analysis_results', {})
-        
-        # Check if the URL has been analyzed before
-        analyzed = last_analysis_stats.get('malicious', 0) > 0 or last_analysis_stats.get('suspicious', 0) > 0
-
-        # Return the gathered data
+    # Function to generate random fake data
+    def generate_fake_data():
         return {
-            "url": url,
-            "status": "Analyzed" if analyzed else "Not analyzed",
-            "reputation": last_analysis_stats,
-            "last_analysis_results": last_analysis_results
-        }
-    else:
-        return {
-            "error": f"Failed to fetch URL report: {response.status_code}"
+            "harmless": random.randint(40, 60),  # Random harmless between 40 and 60
+            "malicious": random.randint(0, 5),   # Random malicious between 0 and 5
+            "suspicious": random.randint(0, 3),  # Random suspicious between 0 and 3
+            "undetected": random.randint(30, 50) # Random undetected between 30 and 50
         }
 
-def fetch_url_report(request):
-    url_reports = []
-    
     for url in urls:
-        # Fetch the URL report
-        report = fetch_virustotal_url_report(url)
-        url_reports.append(report)
-    
-    return JsonResponse(url_reports, safe=False)
+        try:
+            # Step 1: Submit the URL for analysis (POST request)
+            response = requests.post(BASE_URL, headers=headers, data={"url": url})
+            if response.status_code == 429:
+                # If we hit the 429 error, use randomly generated fake data
+                fake_data = generate_fake_data()
+                detections.append({
+                    "url": url,
+                    "harmless": fake_data["harmless"],
+                    "malicious": fake_data["malicious"],
+                    "suspicious": fake_data["suspicious"],
+                    "undetected": fake_data["undetected"],
+                    "error": "Rate limited by VirusTotal. Using default random data."
+                })
+                continue  # Skip further requests for this URL
+            
+            # If status code isn't 429, continue as normal
+            if response.status_code != 200:
+                detections.append({
+                    "url": url,
+                    "error": f"Failed to submit URL. Status code: {response.status_code}"
+                })
+                continue
+
+            # Step 2: Get the URL ID (SHA-256 hash of the URL)
+            url_id = hashlib.sha256(url.encode()).hexdigest()
+
+            # Step 3: Fetch the analysis results using the URL ID (GET request)
+            analysis_response = requests.get(f"{BASE_URL}/{url_id}", headers=headers)
+            if analysis_response.status_code == 200:
+                data = analysis_response.json()
+                stats = data.get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
+                detections.append({
+                    "url": url,
+                    "harmless": stats.get("harmless", 0),
+                    "malicious": stats.get("malicious", 0),
+                    "suspicious": stats.get("suspicious", 0),
+                    "undetected": stats.get("undetected", 0)
+                })
+            else:
+                detections.append({
+                    "url": url,
+                    "error": f"Failed to fetch analysis results. Status code: {analysis_response.status_code}"
+                })
+        except Exception as e:
+            detections.append({
+                "url": url,
+                "error": str(e)
+            })
+
+    return JsonResponse(detections, safe=False)
+
+def fetch_virustotal_detection_types(request):
+    headers = {
+        "x-apikey": API_KEY
+    }
+    urls = [
+        "https://www.webanalyzer.net/en/www/17ebook.co",
+        "https://www.goldskysecurity.com/the-history-and-impact-of-the-iloveyou-virus/",
+        "https://www.genome.gov/genetics-glossary/Virus",
+        "https://putlockervideos.com/",
+        "https://tubemp4.is/",
+        "https://www.chess.com/",
+    ]
+    detection_types = []
+
+    # Function to generate random fake data for detection types
+    def generate_fake_data():
+        return {
+            "phishing": random.randint(0, 5),
+            "malware": random.randint(0, 5),
+            "spam": random.randint(0, 3),
+            "clean": random.randint(30, 50)
+        }
+
+    for url in urls:
+        try:
+            # Submit the URL for analysis (POST request)
+            response = requests.post(BASE_URL, headers=headers, data={"url": url})
+            if response.status_code == 429:
+                # Rate-limited: Use fake data
+                fake_data = generate_fake_data()
+                detection_types.append({
+                    "url": url,
+                    "phishing": fake_data["phishing"],
+                    "malware": fake_data["malware"],
+                    "spam": fake_data["spam"],
+                    "clean": fake_data["clean"],
+                    "error": "Rate limited by VirusTotal. Using default random data."
+                })
+                continue
+
+            if response.status_code != 200:
+                detection_types.append({
+                    "url": url,
+                    "error": f"Failed to submit URL. Status code: {response.status_code}"
+                })
+                continue
+
+            # Get the URL ID (SHA-256 hash of the URL)
+            url_id = hashlib.sha256(url.encode()).hexdigest()
+
+            # Fetch analysis results using the URL ID (GET request)
+            analysis_response = requests.get(f"{BASE_URL}/{url_id}", headers=headers)
+            if analysis_response.status_code == 200:
+                data = analysis_response.json()
+                categories = data.get("data", {}).get("attributes", {}).get("categories", {})
+                detection_types.append({
+                    "url": url,
+                    "phishing": categories.get("phishing", 0),
+                    "malware": categories.get("malware", 0),
+                    "spam": categories.get("spam", 0),
+                    "clean": categories.get("clean", 0)
+                })
+            else:
+                detection_types.append({
+                    "url": url,
+                    "error": f"Failed to fetch analysis results. Status code: {analysis_response.status_code}"
+                })
+        except Exception as e:
+            detection_types.append({
+                "url": url,
+                "error": str(e)
+            })
+
+    return JsonResponse(detection_types, safe=False)
