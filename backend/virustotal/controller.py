@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 import json
 import os
+from django.utils import timezone
 
 from .services import VirusTotalService
 from .models import UrlReports, FileReports, Analyses, ScanHistory
@@ -83,6 +84,7 @@ class UrlReportViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+
     @action(detail=False, methods=['post'], url_path='restore')
     def restore(self, request):
         id = request.data.get('id')
@@ -94,6 +96,34 @@ class UrlReportViewSet(viewsets.ModelViewSet):
             return Response({"message": "UrlReports restored successfully"}, status=status.HTTP_200_OK)
         except UrlReports.DoesNotExist:
             return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['post'], url_path='multi-delete')
+    def multi_delete(self, request):
+        data = request.data
+        ids = data.get("ids")
+        if not ids:
+            return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            instances = UrlReports.objects.filter(id__in=ids)
+            instances.update(is_deleted=True, deleted_at=timezone.now())
+            return Response({"message": "UrlReports deleted successfully"}, status=status.HTTP_200_OK)
+        
+        except UrlReports.DoesNotExist:
+            return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['post'], url_path='multi-restore')
+    def multi_restore(self, request):
+        data = request.data
+        ids = data.get("ids")
+        if not ids:
+            return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            instances = UrlReports.objects.all_with_deleted().filter(id__in=ids)
+            instances.update(is_deleted=False, deleted_at=None)
+            return Response({"message": "UrlReports restored successfully"}, status=status.HTTP_200_OK)
+        except UrlReports.DoesNotExist:
+            return Response({"error": "UrlReports not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class FileUploadViewSet(viewsets.ModelViewSet):
@@ -159,6 +189,33 @@ class FileUploadViewSet(viewsets.ModelViewSet):
         try:
             instance = FileReports.objects.all_with_deleted().get(id=id)
             instance.restore()
+            return Response({"message": "FileReports restored successfully"}, status=status.HTTP_200_OK)
+        except FileReports.DoesNotExist:
+            return Response({"error": "FileReports not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['post'], url_path='multi-delete')
+    def multi_delete(self, request):
+        data = request.data
+        ids = data.get("ids")
+        if not ids:
+            return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            instances = FileReports.objects.filter(id__in=ids)
+            instances.update(is_deleted=True, deleted_at=timezone.now())
+            return Response({"message": "FileReports deleted successfully"}, status=status.HTTP_200_OK)
+        
+        except FileReports.DoesNotExist:
+            return Response({"error": "FileReports not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['post'], url_path='multi-restore')
+    def multi_restore(self, request):
+        data = request.data
+        ids = data.get("ids")
+        if not ids:
+            return Response({"error": "IDs are required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            instances = FileReports.objects.all_with_deleted().filter(id__in=ids)
+            instances.update(is_deleted=False, deleted_at=None)
             return Response({"message": "FileReports restored successfully"}, status=status.HTTP_200_OK)
         except FileReports.DoesNotExist:
             return Response({"error": "FileReports not found"}, status=status.HTTP_404_NOT_FOUND)
