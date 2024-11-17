@@ -5,12 +5,13 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { CircularProgress } from '@mui/material';
 
 import MDButton from 'components/MDButton';
+
 import useNotification from 'hooks/notifications/useNotification';
 import useFileReportAction from 'hooks/virustotal/useFileReportAction';
 import useUrlReportAction from 'hooks/virustotal/useUrlReportAction';
-
-import React, { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
+
 
 
 const colors = {
@@ -28,9 +29,13 @@ const icons = {
 }
 
 export default function AnalysesTable({ analyses = null }) {
+    const statsCategory = ["all", "malicious", "suspicious", "harmless", "undetected", "timeout"]
+    const [selectedStat, setSelectedStat] = useState('all');
+    const [results, setResults] = useState({});
     const noti = useNotification();
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+
 
     const {
         createUrlReport,
@@ -40,6 +45,13 @@ export default function AnalysesTable({ analyses = null }) {
         createFileReport,
     } = useFileReportAction();
 
+
+    useEffect(() => {
+        if (!analyses) return;
+        if (selectedStat === 'all') return setResults(analyses?.attributes?.last_analysis_results || {});
+        const filteredResults = Object.fromEntries(Object.entries(analyses?.attributes?.last_analysis_results || {}).filter(([key, value]) => value?.category === selectedStat));
+        setResults(filteredResults);
+    }, [analyses, selectedStat]);
 
     if (!analyses) return " " || (<>
         <h4 className='font-semibold border-y border-slate-500 m-0 flex gap-2 py-1'>
@@ -66,7 +78,7 @@ export default function AnalysesTable({ analyses = null }) {
             url = '',
             categories = {},
             last_analysis_date: date = '',
-            last_analysis_results: results = {},
+            last_analysis_results: _results = {},
             last_analysis_stats: {
                 harmless = 0,
                 malicious = 0,
@@ -84,7 +96,7 @@ export default function AnalysesTable({ analyses = null }) {
             } = {},
             reputation = 0,
         } = {},
-    } = analyses
+    } = analyses || {};
 
 
     const analysisPayload = () => ({
@@ -140,6 +152,7 @@ export default function AnalysesTable({ analyses = null }) {
         const date = new Date(timestamp * 1000);
         return date.toLocaleString();
     };
+
 
 
     return !id ? '' : (
@@ -382,10 +395,43 @@ export default function AnalysesTable({ analyses = null }) {
                     </div>
 
                     <div className="md:col-span-2">
-                        <h4 className='print:border-y-2 font-semibold border-y border-slate-500 m-0'>
-                            Results
-                        </h4>
+                        <div className='border-y border-slate-500 flex flex-col md:flex-row md:justify-between md:items-center'>
+                            <h4 className='print:border-y-2 font-semibold  m-0'>
+                                Results
+                            </h4>
+                            <div className='print:hidden'>
+                                <div className="flex flex-wrap gap-2">
+                                    {
+                                        statsCategory.map((stat, index) => (
+                                            <div key={index} className='flex gap-2 items-center'>
+                                                <input
+                                                    type="radio"
+                                                    name="stat"
+                                                    value={stat}
+                                                    checked={selectedStat === stat}
+                                                    onChange={() => setSelectedStat(stat)}
+                                                />
+                                                <label>
+                                                    {stat}
+                                                </label>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
                         <div className="grid md:grid-cols-2">
+                            {/* no results */}
+                            {
+                                Object.keys(results).length === 0 && (
+                                    <div className='flex gap-2 items-center'>
+                                        <p className='text-red-500'>
+                                            No results
+                                        </p>
+                                    </div>
+                                )
+                            }
                             {Object.keys(results).map((key, index) => {
                                 const color = colors[results[key]?.category];
                                 const icon = icons[results[key]?.category];

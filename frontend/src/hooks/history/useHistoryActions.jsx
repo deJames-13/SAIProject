@@ -78,7 +78,7 @@ export default function useHistoryActions() {
 
     const saveHistory = async (data) => {
         return save(data).unwrap().then((data) => {
-            dispatch(actions.add(data));
+            // dispatch(actions.add(data));
         });
     };
 
