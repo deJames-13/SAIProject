@@ -21,8 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
     path('api/', include('virustotal.urls')),
-    path('api/charts/', include('charts.urls')),
+    #path('api/charts/', include('charts.urls')),
+    path('charts/', include('charts.urls')),
 ]
-
-
-
