@@ -16,6 +16,7 @@ idna==3.10; python_version >= '3.6'
 multidict==6.1.0; python_version >= '3.8'
 propcache==0.2.0; python_version >= '3.8'
 psycopg2-binary==2.9.10; python_version >= '3.8'
+psycopg2==2.9.10; python_version >= '3.8'
 py-vt==0.0.6
 pyjwt==2.9.0; python_version >= '3.8'
 python-dotenv==1.0.1; python_version >= '3.8'
@@ -23,5 +24,4 @@ pytz==2024.2
 requests==2.12.4
 sqlparse==0.5.1; python_version >= '3.8'
 urllib3==2.2.3; python_version >= '3.8'
-vt-py==0.18.4; python_full_version >= '3.7.0'
 yarl==1.17.1; python_version >= '3.9'
