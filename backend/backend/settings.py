@@ -17,6 +17,7 @@ load_dotenv()
 from decouple import config
 
 
+
 getEnv = os.getenv
 
 SECRET_KEY =  getEnv('SECRET_KEY')
@@ -60,6 +61,7 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+    
 }
 
 
