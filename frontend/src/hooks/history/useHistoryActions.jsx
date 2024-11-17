@@ -65,18 +65,20 @@ export default function useHistoryActions() {
     const fetchDeletedHistories = async () => {
         return getDeleted().unwrap().then((data) => {
             setData(data);
+            return data;
         });
     }
 
     const fetchAllHistories = async () => {
         return getAll().unwrap().then((data) => {
             setData(data);
+            return data;
         });
     }
 
     const saveHistory = async (data) => {
         return save(data).unwrap().then((data) => {
-            dispatch(actions.add(data));
+            // dispatch(actions.add(data));
         });
     };
 
@@ -88,7 +90,7 @@ export default function useHistoryActions() {
 
     const restoreHistoryById = async (id) => {
         return restore(id).unwrap().then((data) => {
-            dispatch(actions.restore(data));
+            // dispatch(actions.restore(data));
         });
     }
 

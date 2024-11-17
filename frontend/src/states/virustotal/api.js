@@ -238,6 +238,42 @@ export const vtApi = apiSlice.injectEndpoints({
                 body: JSON.stringify({id})
             }),
         }),
+
+        // MULTI
+        // ##############################################################################
+        deleteUrlReports: build.mutation({
+            query: (ids) => ({
+                url: `/url-reports/multi-delete/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ids})
+            }),
+        }),
+        deleteFileReports: build.mutation({
+            query: (ids) => ({
+                url: `/file-reports/multi-delete/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ids})
+            }),
+        }),
+        restoreUrlReports: build.mutation({
+            query: (ids) => ({
+                url: `/url-reports/multi-restore/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ids})
+            }),
+        }),
+        restoreFileReports: build.mutation({
+            query: (ids) => ({
+                url: `/file-reports/multi-restore/`,
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ids})
+            }),
+        }),
+
         
         
     }),

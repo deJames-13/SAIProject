@@ -1,47 +1,160 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+import requests
+import hashlib
 import random
-from datetime import datetime, timedelta
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
-from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view, permission_classes
+from django.http import JsonResponse
+from django.conf import settings
+API_KEY = settings.VIRUSTOTAL_API_KEY
+BASE_URL = "https://www.virustotal.com/api/v3/urls"
 
-@api_view(['GET'])
-@permission_classes([AllowAny])  # Make this specific view public
+# URLs to be checked
+urls = [
+    "https://www.webanalyzer.net/en/www/17ebook.co",
+    "https://www.goldskysecurity.com/the-history-and-impact-of-the-iloveyou-virus/",
+    "https://www.genome.gov/genetics-glossary/Virus",
+    "https://putlockervideos.com/",
+    "https://tubemp4.is/",
+    "https://www.chess.com/",
+]
 
-def get_scan_data(request):
-    # Sample data for demonstration
-    sample_data = [
-        {"date": "Mon", "scans": 150},   # Monday
-        {"date": "Tue", "scans": 160},   # Tuesday
-        {"date": "Wed", "scans": 200},   # Wednesday
-        {"date": "Thu", "scans": 180},   # Thursday
-        {"date": "Fri", "scans": 190},   # Friday
-        {"date": "Sat", "scans": 200},   # Friday
-        {"date": "Sun", "scans": 250},   # Friday
+def fetch_virustotal_stats(request):
+    headers = {
+        "x-apikey": API_KEY
+    }
+    detections = []
+
+    # Function to generate random fake data
+    def generate_fake_data():
+        return {
+            "harmless": random.randint(40, 60),  # Random harmless between 40 and 60
+            "malicious": random.randint(0, 5),   # Random malicious between 0 and 5
+            "suspicious": random.randint(0, 3),  # Random suspicious between 0 and 3
+            "undetected": random.randint(30, 50) # Random undetected between 30 and 50
+        }
+
+    for url in urls:
+        try:
+            # Step 1: Submit the URL for analysis (POST request)
+            response = requests.post(BASE_URL, headers=headers, data={"url": url})
+            if response.status_code == 429:
+                # If we hit the 429 error, use randomly generated fake data
+                fake_data = generate_fake_data()
+                detections.append({
+                    "url": url,
+                    "harmless": fake_data["harmless"],
+                    "malicious": fake_data["malicious"],
+                    "suspicious": fake_data["suspicious"],
+                    "undetected": fake_data["undetected"],
+                    "error": "Rate limited by VirusTotal. Using default random data."
+                })
+                continue  # Skip further requests for this URL
+            
+            # If status code isn't 429, continue as normal
+            if response.status_code != 200:
+                detections.append({
+                    "url": url,
+                    "error": f"Failed to submit URL. Status code: {response.status_code}"
+                })
+                continue
+
+            # Step 2: Get the URL ID (SHA-256 hash of the URL)
+            url_id = hashlib.sha256(url.encode()).hexdigest()
+
+            # Step 3: Fetch the analysis results using the URL ID (GET request)
+            analysis_response = requests.get(f"{BASE_URL}/{url_id}", headers=headers)
+            if analysis_response.status_code == 200:
+                data = analysis_response.json()
+                stats = data.get("data", {}).get("attributes", {}).get("last_analysis_stats", {})
+                detections.append({
+                    "url": url,
+                    "harmless": stats.get("harmless", 0),
+                    "malicious": stats.get("malicious", 0),
+                    "suspicious": stats.get("suspicious", 0),
+                    "undetected": stats.get("undetected", 0)
+                })
+            else:
+                detections.append({
+                    "url": url,
+                    "error": f"Failed to fetch analysis results. Status code: {analysis_response.status_code}"
+                })
+        except Exception as e:
+            detections.append({
+                "url": url,
+                "error": str(e)
+            })
+
+    return JsonResponse(detections, safe=False)
+
+def fetch_virustotal_detection_types(request):
+    headers = {
+        "x-apikey": API_KEY
+    }
+    urls = [
+        "https://www.webanalyzer.net/en/www/17ebook.co",
+        "https://www.goldskysecurity.com/the-history-and-impact-of-the-iloveyou-virus/",
+        "https://www.genome.gov/genetics-glossary/Virus",
+        "https://putlockervideos.com/",
+        "https://tubemp4.is/",
+        "https://www.chess.com/",
     ]
-    return Response(sample_data)
+    detection_types = []
 
-def get_aggregate_summary(request):
-    # Sample data for demonstration (daily summary)
-    aggregate_data = [
-        {"date": "Mon", "total_scans": 150, "avg_scans": 150},   # Monday
-        {"date": "Tue", "total_scans": 160, "avg_scans": 160},   # Tuesday
-        {"date": "Wed", "total_scans": 200, "avg_scans": 200},   # Wednesday
-        {"date": "Thu", "total_scans": 180, "avg_scans": 180},   # Thursday
-        {"date": "Fri", "total_scans": 190, "avg_scans": 190},   # Friday
-        {"date": "Sat", "total_scans": 200, "avg_scans": 200},   # Saturday
-        {"date": "Sun", "total_scans": 250, "avg_scans": 250},   # Sunday
-    ]
-    return JsonResponse(aggregate_data, safe=False)
+    # Function to generate random fake data for detection types
+    def generate_fake_data():
+        return {
+            "phishing": random.randint(0, 5),
+            "malware": random.randint(0, 5),
+            "spam": random.randint(0, 3),
+            "clean": random.randint(30, 50)
+        }
 
-def get_pie_chart_data(request):
-    # Sample data for demonstration (pie chart with scan categories)
-    pie_data = [
-        {"category": "Malware", "scans": 300},   # Malware scans
-        {"category": "Clean", "scans": 500},     # Clean scans
-        {"category": "Suspicious", "scans": 150},  # Suspicious scans
-    ]
-    return JsonResponse(pie_data, safe=False)
+    for url in urls:
+        try:
+            # Submit the URL for analysis (POST request)
+            response = requests.post(BASE_URL, headers=headers, data={"url": url})
+            if response.status_code == 429:
+                # Rate-limited: Use fake data
+                fake_data = generate_fake_data()
+                detection_types.append({
+                    "url": url,
+                    "phishing": fake_data["phishing"],
+                    "malware": fake_data["malware"],
+                    "spam": fake_data["spam"],
+                    "clean": fake_data["clean"],
+                    "error": "Rate limited by VirusTotal. Using default random data."
+                })
+                continue
+
+            if response.status_code != 200:
+                detection_types.append({
+                    "url": url,
+                    "error": f"Failed to submit URL. Status code: {response.status_code}"
+                })
+                continue
+
+            # Get the URL ID (SHA-256 hash of the URL)
+            url_id = hashlib.sha256(url.encode()).hexdigest()
+
+            # Fetch analysis results using the URL ID (GET request)
+            analysis_response = requests.get(f"{BASE_URL}/{url_id}", headers=headers)
+            if analysis_response.status_code == 200:
+                data = analysis_response.json()
+                categories = data.get("data", {}).get("attributes", {}).get("categories", {})
+                detection_types.append({
+                    "url": url,
+                    "phishing": categories.get("phishing", 0),
+                    "malware": categories.get("malware", 0),
+                    "spam": categories.get("spam", 0),
+                    "clean": categories.get("clean", 0)
+                })
+            else:
+                detection_types.append({
+                    "url": url,
+                    "error": f"Failed to fetch analysis results. Status code: {analysis_response.status_code}"
+                })
+        except Exception as e:
+            detection_types.append({
+                "url": url,
+                "error": str(e)
+            })
+
+    return JsonResponse(detection_types, safe=False)

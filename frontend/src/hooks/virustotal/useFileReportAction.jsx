@@ -14,7 +14,9 @@ export default function useFileReportAction() {
         useDeleteFileReportMutation,
         useGetDeletedFileReportsMutation,
         useGetAllFileReportsMutation,
-        useRestoreFileReportMutation
+        useRestoreFileReportMutation,
+        useDeleteFileReportsMutation,
+        useRestoreFileReportsMutation
     } = vtApi
 
     const [getFileReports] = useGetFileReportsMutation();
@@ -25,6 +27,8 @@ export default function useFileReportAction() {
     const [getAllFileReports] = useGetAllFileReportsMutation();
     const [getDeletedFileReports] = useGetDeletedFileReportsMutation();
     const [restoreFileReport] = useRestoreFileReportMutation();
+    const [deleteFileReports] = useDeleteFileReportsMutation();
+    const [restoreFileReports] = useRestoreFileReportsMutation();
 
 
     const fetchFileReports = async () => {
@@ -136,6 +140,35 @@ export default function useFileReportAction() {
             });
     }
 
+    const removeReports = async (ids) => {
+        return deleteFileReports(ids)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+    const restoreReports = async (ids) => {
+        return restoreFileReports(ids)
+            .then((response) => {
+                if (response.error)
+                    throw new Error(response.error);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            });
+    }
+
+
     return {
         reports,
         setReports,
@@ -148,5 +181,7 @@ export default function useFileReportAction() {
         updateReport,
         removeReport,
         restoreReport,
+        removeReports,
+        restoreReports
     }
 }
