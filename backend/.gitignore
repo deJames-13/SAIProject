@@ -35,3 +35,7 @@ venv
 *.sqlite3
 
 .vercel
+# UNCOMMENT for Vercel
+certificates
+.pem
+.crt
